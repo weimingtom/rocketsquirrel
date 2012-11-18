@@ -7,6 +7,7 @@ set_target_properties(${projectName} PROPERTIES DEBUG_POSTFIX _d)
 include_directories(
 	../include
 	${SQUIRREL_INCLUDE_DIR}
+	${SQRAT_INCLUDE_DIR}
 )
 
 add_executable(Sample sample.cpp)

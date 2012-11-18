@@ -9,12 +9,23 @@ if(NOT DEFINED SQUIRREL_LIBS_DIR )
 
 endif()
 
-#check for squirrel variables
 if(NOT DEFINED SQUIRREL_INCLUDE_DIR )
 	
 	message( SEND_ERROR "SQUIRREL_INCLUDE_DIR is missing" )
 
 endif()
+
+if(NOT DEFINED SQRAT_INCLUDE_DIR )
+	
+	message( SEND_ERROR "SQRT_INCLUDE_DIR is missing" )
+
+endif()
+
+
+
+
+
+
 
 add_subdirectory (sample)
 
@@ -32,6 +43,7 @@ include_directories(
 	${VIRUS_INCLUDES}
 	include
 	${SQUIRREL_INCLUDE_DIR}
+	${SQRAT_INCLUDE_DIR}
 )
 
 add_library(RocketSquirrel STATIC ${HDRS} ${SRCS})
