@@ -16,8 +16,38 @@
 
 #include <sqrat.h>
 
+#include <Rocket/Core.h>
+
 namespace Rocket {
 	namespace Squirrel {
+
+
+
+		static HSQUIRRELVM g_vm = 0x0;
+
+
+		class PrivateModule {
+		};
+
+
+		Module::Module(HSQUIRRELVM vm) :
+			m_pPrivate(new PrivateModule(this))
+		{
+			if (vm)
+			{
+			}
+			else
+			{
+				g_vm = vm;
+			}
+		}
+
+		void Module::OnInitialise()
+		{
+			return;
+		}
+
+
 
 
 		void printFunc(HSQUIRRELVM v,const SQChar *s,...)
@@ -89,7 +119,7 @@ namespace Rocket {
 
 
 
-		void Core::initialize()
+		/*void Core::initialize()
 		{
 			std::cout << "Compiling Script: " << std::endl;
 
@@ -121,9 +151,10 @@ namespace Rocket {
     
 			sq_close(v);
 
-		}
+			Rocket::Core::RegisterPlugin(new Module());
 
-
+		}*/
+		
 
 
 

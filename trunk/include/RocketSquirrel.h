@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012 Kuko
+Copyright RocketSquirrel (c) 2012 Kuko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,21 +26,32 @@ THE SOFTWARE.
 
 #define ROCKETSQUIRRELDLL_API
 
+#include "Rocket/Core.h"
+#include "Rocket/Core/Plugin.h"
+#include <squirrel.h>
+
 namespace Rocket {
 	namespace Squirrel {
 
 
+		class PrivateModule;
 
 
-
-
-		class ROCKETSQUIRRELDLL_API Core
+		class ROCKETSQUIRRELDLL_API Module : public Rocket::Core::Plugin
 		{
+		private:
+			/// Hook for rocket plugin initialisation
+			virtual void OnInitialise();
+
+			PrivateModule* m_pPrivate;
 
 		public:
 
-			static void initialize();
-
+			/*if vm is NULL then the module will create 
+			 *a global squirrel virtual machine, for all
+			 *context, tho you can assign a VM per context
+			 *later on*/
+			Module(HSQUIRRELVM vm = 0x0);
 		};
 
 
