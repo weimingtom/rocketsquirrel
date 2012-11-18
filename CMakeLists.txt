@@ -29,7 +29,13 @@ endif()
 
 
 
+set(ROCKETSQUIRREL_VERSION_MAJOR 0)
+set(ROCKETSQUIRREL_VERSION_MINOR 1)
 
+#configure_file(
+#	"${PROJECT_SOURCE_DIR}/RocketSquirrelConfig.h.in"
+#	"${PROJECT_BINARY_DIR}/RocketSquirrelConfig.h"
+#)
 
 
 

@@ -43,6 +43,20 @@ int main()
 	ShellSystemInterface system_interface;
 	Rocket::Core::SetSystemInterface(&system_interface);
 
+
+
+	//RocketSquirrel Sample Code
+	///////////////////////////////////////////
+	
+	
+	//Register the RocketSquirrel module (plugin)
+	Rocket::Core::RegisterPlugin(new Rocket::Squirrel::Module());
+
+
+
+	///////////////////////////////////////////
+
+
 	Rocket::Core::Initialise();
 
 	// Create the main Rocket context and set it on the shell's input layer.
