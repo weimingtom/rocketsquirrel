@@ -1,16 +1,8 @@
 cmake_minimum_required (VERSION 2.6)
 project (Sample)
 
-include_directories(
-	../include
-	${SQUIRREL_INCLUDE_DIR}
-	${SQRAT_INCLUDE_DIR}
-	./dependencies/SFML/include
-)
 
-add_executable(Sample sample.cpp)
-
-set_target_properties(Sample PROPERTIES DEBUG_POSTFIX _d)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 #SFML
 set(SFML_LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SFML/lib/win32)
@@ -21,16 +13,26 @@ set(SFML_BIN_OPTIMIZED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SFML/win32/o
 set(SFML_BIN_EXTERNAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SFML/win32/external)
 
 
+include_directories(
+	../include
+	${SQUIRREL_INCLUDE_DIR}
+	${SQRAT_INCLUDE_DIR}
+	./dependencies/SFML/include
+)
+
 link_directories(
 	${SQUIRREL_LIBS_DIR}
 	${SFML_LIBS_DIR}
 )
 
+add_executable(Sample sample.cpp)
 
-ADD_CUSTOM_COMMAND(TARGET main POST_BUILD COMMAND main WORKING_DIRECTORY ../bin/${TARGET})
-ADD_CUSTOM_COMMAND(TARGET main POST_BUILD COMMAND main COPY ${SFML_BIN_DEBUG_DIR} DESTINATION ../bin/${TARGET})
-ADD_CUSTOM_COMMAND(TARGET main POST_BUILD COMMAND main COPY ${SFML_BIN_OPTIMIZED_DIR} DESTINATION ../bin/${TARGET})
-ADD_CUSTOM_COMMAND(TARGET main POST_BUILD COMMAND main COPY ${SFML_BIN_EXTERNAL_DIR} DESTINATION ../bin/${TARGET})
+set_target_properties(Sample PROPERTIES DEBUG_POSTFIX _d)
+
+
+ADD_CUSTOM_COMMAND(TARGET Sample POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_BIN_DEBUG_DIR}/sfml-window-d.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/sfml-window-d.dll)
+#ADD_CUSTOM_COMMAND(TARGET Sample POST_BUILD COMMAND Sample COPY ${SFML_BIN_OPTIMIZED_DIR} DESTINATION ../bin/${TARGET})
+#ADD_CUSTOM_COMMAND(TARGET Sample POST_BUILD COMMAND Sample COPY ${SFML_BIN_EXTERNAL_DIR} DESTINATION ../bin/${TARGET})
 
 target_link_libraries(
 	Sample
