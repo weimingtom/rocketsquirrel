@@ -3,8 +3,8 @@ project (Sample)
 
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_OPTIMIZED ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin)
 
 #SFML
 set(SFML_LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SFML/lib/win32)
@@ -41,3 +41,8 @@ target_link_libraries(
 	debug sfml-window-d
 	optimized sfml-window
 )
+
+if (MSVC_IDE)
+    # hack to get around the "Debug" and "Release" directories cmake tries to add on Windows
+    set_target_properties (${NAME} PROPERTIES PREFIX "../")
+endif()
