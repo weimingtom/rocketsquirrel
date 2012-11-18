@@ -1,18 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (Sample)
 
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin)
-
-#SFML
-set(SFML_LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SFML/lib/win32)
-
-set(SFML_BIN_DEBUG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SFML/win32/debug)
-set(SFML_BIN_OPTIMIZED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SFML/win32/optimized)
-
-set(SFML_BIN_EXTERNAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/SFML/win32/external)
+find_package(OpenGL REQUIRED)
 
 
 include_directories(
@@ -20,14 +9,31 @@ include_directories(
 	${SQUIRREL_INCLUDE_DIR}
 	${SQRAT_INCLUDE_DIR}
 	./dependencies/SFML/include
+	./shell/include
+	${LIBROCKET_DIR}/Include
 )
 
 link_directories(
 	${SQUIRREL_LIBS_DIR}
 	${SFML_LIBS_DIR}
+	${LIBROCKET_DIR}/bin
 )
 
-add_executable(Sample sample.cpp)
+set(SRCS 
+	Sample.cpp
+	shell/src/Shell.cpp
+	shell/src/Input.cpp
+	shell/src/ShellFileInterface.cpp
+	shell/src/ShellRenderInterfaceOpenGL.cpp
+	shell/src/ShellSystemInterface.cpp
+)
+
+set(OSSRCS
+	shell/src/win32/InputWin32.cpp
+	shell/src/win32/ShellWin32.cpp
+)
+
+add_executable(Sample ${SRCS} ${OSSRCS})
 
 set_target_properties(Sample PROPERTIES DEBUG_POSTFIX _d)
 
@@ -36,13 +42,12 @@ target_link_libraries(
 	RocketSquirrel
 	optimized squirrel
 	debug squirrel_d
-	debug sfml-main-d
-	optimized sfml-main
-	debug sfml-window-d
-	optimized sfml-window
+	debug RocketControls_d
+	optimized RocketControls
+	debug RocketCore_d
+	optimized RocketCore
+	debug RocketDebugger_d
+	optimized RocketDebugger
+	${OPENGL_gl_LIBRARY}
+	${OPENGL_glu_LIBRARY}
 )
-
-if (MSVC_IDE)
-    # hack to get around the "Debug" and "Release" directories cmake tries to add on Windows
-    set_target_properties (${NAME} PROPERTIES PREFIX "../")
-endif()

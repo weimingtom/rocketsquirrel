@@ -21,6 +21,13 @@ if(NOT DEFINED SQRAT_INCLUDE_DIR )
 
 endif()
 
+if(NOT DEFINED LIBROCKET_DIR )
+	
+	message( SEND_ERROR "LIBROCKET_DIR is missing" )
+
+endif()
+
+
 
 
 
@@ -44,6 +51,7 @@ include_directories(
 	include
 	${SQUIRREL_INCLUDE_DIR}
 	${SQRAT_INCLUDE_DIR}
+	${LIBROCKET_DIR}/Include
 )
 
 add_library(RocketSquirrel STATIC ${HDRS} ${SRCS})
