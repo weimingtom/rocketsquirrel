@@ -1,0 +1,1 @@
+SFML is needed to build this sample included in the dependencies folder
