@@ -54,6 +54,12 @@ int main()
 
 
 
+	//Test Squirrel Interfaces
+	std::string scriptTest_Interfaces = " \
+		local v2a = Vector2f(); \
+		local v2b = Vector2f(); ";
+
+
 	///////////////////////////////////////////
 
 

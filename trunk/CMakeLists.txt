@@ -48,6 +48,7 @@ set(HDRS
  
 set(SRCS
 	source/RocketSquirrel.cpp
+	source/Interfaces.cpp
 )
 
 set_target_properties(${projectName} PROPERTIES DEBUG_POSTFIX _d)
