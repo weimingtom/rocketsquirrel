@@ -11,6 +11,7 @@ include_directories(
 	./dependencies/SFML/include
 	./shell/include
 	${LIBROCKET_DIR}/Include
+	${SQBIND_DIR}/include
 )
 
 link_directories(
@@ -42,6 +43,8 @@ target_link_libraries(
 	RocketSquirrel
 	optimized squirrel
 	debug squirrel_d
+	optimized sqstdlib
+	debug sqstdlib_d
 	debug RocketControls_d
 	optimized RocketControls
 	debug RocketCore_d
@@ -50,4 +53,6 @@ target_link_libraries(
 	optimized RocketDebugger
 	${OPENGL_gl_LIBRARY}
 	${OPENGL_glu_LIBRARY}
+	debug ${SQBIND_DIR}/lib/vs2010/x32/debug/sqbind.lib
+	optimized ${SQBIND_DIR}/lib/vs2010/x32/debug/sqbind.lib
 )

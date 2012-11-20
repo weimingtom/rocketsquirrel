@@ -52,15 +52,13 @@ int main()
 	//Register the RocketSquirrel module (plugin)
 	Rocket::Core::RegisterPlugin(new Rocket::Squirrel::Module());
 
-
-
-	//Test Squirrel Interfaces
-	std::string scriptTest_Interfaces = " \
-		local v2a = Vector2f(); \
-		local v2b = Vector2f(); ";
-
-
 	///////////////////////////////////////////
+	
+
+	//DEV lets tests all the interfaces
+#ifdef _DEBUG
+	Rocket::Squirrel::TestInsterfaces();
+#endif
 
 
 	Rocket::Core::Initialise();
