@@ -25,50 +25,55 @@
  *
  */
 
-
-#ifndef __ROCKETSQUIRREL_INCLUDED
-#define __ROCKETSQUIRREL_INCLUDED
-
-#define ROCKETSQUIRRELDLL_API
+#ifndef __ROCKETSQUIRREL_BINDINGUTIL_INCLUDED
+#define __ROCKETSQUIRREL_BINDINGUTIL_INCLUDED
 
 
 
-#include "Rocket/Core.h"
-#include "Rocket/Core/Plugin.h"
 #include <squirrel.h>
+#include <Rocket/Core/Debug.h>
+
 
 namespace Rocket {
 	namespace Squirrel {
 
 
-#ifdef _DEBUG
-		/*Used to test case the Squirrel interfaces*/
-		void TestInsterfaces();
-#endif
 
 
-		class ROCKETSQUIRRELDLL_API Module : public Rocket::Core::Plugin
+
+		void squirrelPrintFunc(HSQUIRRELVM v,const SQChar *s,...);
+		void squirrelCompileErrorFunc(HSQUIRRELVM v, const SQChar* desc, const SQChar* source, SQInteger line, SQInteger column);
+
+		SQRESULT compileNutFile(HSQUIRRELVM v, const char *filename);
+
+		
+		SQInteger squirrelPrintRuntimeError(HSQUIRRELVM v);
+		void squirrelPrintCallStack(HSQUIRRELVM v);
+
+
+
+		template <typename T>
+		inline T* squirrelGetInstanceObj(HSQUIRRELVM v)
 		{
-		private:
-			/// Hook for rocket plugin initialisation
-			virtual void OnInitialise();
-		public:
+			SQUserPointer p = NULL;
 
-			/*/
-			 * if vm is NULL then the module will create 
-			 * a global squirrel virtual machine for all
-			 * contexts, you can assign a VM per context
-			 * later on
-			 */
-			Module(HSQUIRRELVM vm = 0x0);
-		};
+			ROCKET_ASSERT(sq_gettype(v, 1) == OT_INSTANCE);
 
+			//TODO make this a little bit more safe
+			SQRESULT sqr = sq_getinstanceup(v, 1, &p, 0);
 
+			ROCKET_ASSERT(SQ_SUCCEDED(sqr)); 
+
+			return (T*)p;
+		}
 
 
 
 	}
 }
+
+
+
 
 
 
