@@ -10,9 +10,15 @@
 #include "Rocket/Core.h"
 #include "Rocket/Debugger.h"
 
+#include <sqbind/sqbBind.h>
+#include <sqbind/sqbBindMacros.h>
+#include <sqbind/sqbClassDefinition.h>
+
 
 static Rocket::Core::Context* context = NULL;
 
+SQBIND_DECLARE_CLASS(Rocket::Core::Box);
+//SQBIND_DECLARE_CLASS(Rocket::Core::Vector2f);
 
 void GameLoop()
 {
@@ -33,7 +39,6 @@ int main()
 		Shell::Shutdown();
 		return -1;
 	}
-
 
 	// Rocket initialisation.
 	ShellRenderInterfaceOpenGL opengl_renderer;

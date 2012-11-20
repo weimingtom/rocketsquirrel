@@ -15,9 +15,9 @@ if(NOT DEFINED SQUIRREL_INCLUDE_DIR )
 
 endif()
 
-if(NOT DEFINED SQRAT_INCLUDE_DIR )
+if(NOT DEFINED SQBIND_DIR )
 	
-	message( SEND_ERROR "SQRT_INCLUDE_DIR is missing" )
+	message( SEND_ERROR "SQBIND_DIR is missing" )
 
 endif()
 
@@ -27,6 +27,9 @@ if(NOT DEFINED LIBROCKET_DIR )
 
 endif()
 
+
+set(SQBIND_LIB_DEBUG ${SQBIND_DIR}/lib/vs2010/x32/debug/sqbind.lib)
+set(SQBIND_LIB_OPTIMIZED ${SQBIND_DIR}/lib/vs2010/x32/release/sqbind.lib)
 
 
 set(ROCKETSQUIRREL_VERSION_MAJOR 0)
@@ -49,6 +52,9 @@ set(HDRS
 set(SRCS
 	source/RocketSquirrel.cpp
 	source/Interfaces.cpp
+	
+	source/BindingUtil.h
+	source/BindingUtil.cpp
 )
 
 set_target_properties(${projectName} PROPERTIES DEBUG_POSTFIX _d)
@@ -57,10 +63,10 @@ include_directories(
 	${VIRUS_INCLUDES}
 	include
 	${SQUIRREL_INCLUDE_DIR}
-	${SQRAT_INCLUDE_DIR}
 	${LIBROCKET_DIR}/Include
 	${SQBIND_DIR}/include
 )
 
-add_library(RocketSquirrel STATIC ${HDRS} ${SRCS})
+add_definitions( -DSQBIND_STATIC )
 
+add_library(RocketSquirrel STATIC ${HDRS} ${SRCS})

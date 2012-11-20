@@ -29,292 +29,285 @@
 #include <Rocket/Core/URL.h>
 #include <Rocket/Core/Log.h>
 #include <Rocket/Core/Dictionary.h>
-/*#include <Rocket/Core/Python/ConverterScriptObject.h>
-#include <Rocket/Core/Python/PickleTypeConverter.h>
-#include <Rocket/Core/Python/Utilities.h>
-#include <Rocket/Core/Python/VectorInterface.h>*/
 #include <vector>
 #include <squirrel.h>
-#include <sqrat.h>
-
 
 #include <iostream>
-#include <Windows.h>
 
 
 #include <sqbind/sqbBind.h>
+#include <sqbind/sqbBindMacros.h>
+#include <sqbind/sqbClassDefinition.h>
+#include <sqbind/SquirrelBind.h>
 
+#include "BindingUtil.h"
+
+SQBIND_DECLARE_CLASS(Rocket::Core::Vector2f);
+
+SQBIND_DECLARE_CLASS(Rocket::Core::Vector2i);
+
+SQBIND_DECLARE_CLASS(Rocket::Core::Colourf);
+
+SQBIND_DECLARE_CLASS(Rocket::Core::Colourb);
+
+SQBIND_DECLARE_CLASS(Rocket::Core::URL);
+
+SQBIND_DECLARE_ENUM(Rocket::Core::Log::Type);
 
 
 namespace Rocket {
 	namespace Squirrel {
 
 
-
-
-
-		void printFunc(HSQUIRRELVM v,const SQChar *s,...)
-		{
-			va_list vl;
-			va_start(vl, s);
-
-			char text[1024];
-
-			vsnprintf(text, 1024, s, vl);
-
-			vfprintf(stdout, s, vl);
-#ifdef _WINDOWS
-			OutputDebugStringA(text);
-#endif
-			va_end(vl);
-		}
-
-		void compilerErrorFunc(HSQUIRRELVM v, const SQChar* desc, const SQChar* source, SQInteger line, SQInteger column)
-		{
-			std::cout << "Source: " << source << " Line: " << line << std::endl;
-			std::cout << std::endl << desc << std::endl;
-
-			OutputDebugString(desc);
-		}
-
-		SQInteger file_lexfeedASCII(SQUserPointer file)
-		{
-			int ret;
-			char c;
-			if( ( ret=fread(&c,sizeof(c),1,(FILE *)file )>0) )
-				return c;
-			return 0;
-		}
-
-		int compile_file(HSQUIRRELVM v,const char *filename)
-		{
-			FILE *f=fopen(filename,"rb");
-			if(f)
-			{
-				 SQRESULT r = sq_compile(v,file_lexfeedASCII,f,filename,1);
-
-				 r;
-
-				 fclose(f);
-				 return 1;
-			}
-			return 0;
-		}
-
-
-
-		void myFunc() { }
-
-		class MyClass {
-		public:
-
-			MyClass()
-			{
-				std::cout << "MyClass" << std::endl;
-			}
-
-			void Foo() { std::cout << "Hello this is C++" << std::endl;  }
-			int bar;
-		};
-
-		void BindSquirrel(HSQUIRRELVM vm) {
-
-			/*Sqrat::Table myTable(vm);
-			myTable.Func("MyFunc", &myFunc);
-		
-			Sqrat::Class<MyClass> myClass(vm);
-			myClass.Func("Foo", &MyClass::Foo);
-			myClass.Var("bar", &MyClass::bar);
-		
-			Sqrat::RootTable(vm).Bind("MyTable", myTable);
-			Sqrat::RootTable(vm).Bind("MyClass", myClass);*/
-
-
-
-			Sqrat::Class<Rocket::Core::Vector2f> classVector2f(vm);
-
-
-			//Rocket::Core::Vector2f (*func)(operator-(const Rocket::Core::Vector2f&) const) = Rocket::Core::Vector2f::operator-;
-
-			typedef Rocket::Core::Vector2f (Rocket::Core::Vector2f::* Vector2fSubOperator)(const Rocket::Core::Vector2f&) const;
-
-			classVector2f.Var("x", &Rocket::Core::Vector2f::x);
-			classVector2f.Var("y", &Rocket::Core::Vector2f::y);
-			classVector2f.Overload("_mul", &Rocket::Core::Vector2f::operator*);
-			classVector2f.Overload("_div", &Rocket::Core::Vector2f::operator/);
-			classVector2f.Overload("_add", &Rocket::Core::Vector2f::operator+);
-			classVector2f.Overload("_sub", (Vector2fSubOperator)&Rocket::Core::Vector2f::operator-);
-			classVector2f.Overload("_cmp", &Rocket::Core::Vector2f::operator==);
-			classVector2f.Func("DotProduct", &Rocket::Core::Vector2f::DotProduct);
-			classVector2f.Func("Normalise", &Rocket::Core::Vector2f::Normalise);
-			classVector2f.Func("Rotate", &Rocket::Core::Vector2f::Rotate);
-			classVector2f.Func("Magnitude", &Rocket::Core::Vector2f::Magnitude);
-
-
-
-			Sqrat::RootTable(vm).Bind("Vector2f", classVector2f);
-
-
-
-		}
 		HSQUIRRELVM vm;
 
+		static void Log(Rocket::Core::Log::Type level, const char* message)
+		{	
+			Core::Log::Message(level, "%s", message);
+		}
 
-
-		SQInteger print_args(HSQUIRRELVM v)
+		static SQInteger Vector2fConstructor(HSQUIRRELVM v)
 		{
-			SQInteger nargs = sq_gettop(v); //number of arguments
-			for(SQInteger n=1;n<=nargs;n++)
+			SQInteger nargs = sq_gettop(v);
+
+			if (nargs >= 3)
 			{
-				printf("arg %d is ",n);
-				switch(sq_gettype(v,n))
+				Rocket::Core::Vector2f* pVec2f = squirrelGetInstanceObj<Rocket::Core::Vector2f>(v);
+
+				if (pVec2f)
 				{
-					case OT_NULL:
-						printf("null");        
-						break;
-					case OT_INTEGER:
-						printf("integer");
-						break;
-					case OT_FLOAT:
-						printf("float");
-						break;
-					case OT_STRING:
-						printf("string");
-						break;    
-					case OT_TABLE:
-						printf("table");
-						break;
-					case OT_ARRAY:
-						printf("array");
-						break;
-					case OT_USERDATA:
-						printf("userdata");
-						break;
-					case OT_CLOSURE:        
-						printf("closure(function)");    
-						break;
-					case OT_NATIVECLOSURE:
-						printf("native closure(C function)");
-						break;
-					case OT_GENERATOR:
-						printf("generator");
-						break;
-					case OT_USERPOINTER:
-						printf("userpointer");
-						break;
-					case OT_CLASS:
-						printf("class");
-						break;
-					case OT_INSTANCE:
-						printf("instance");
-						break;
-					case OT_WEAKREF:
-						printf("weak reference");
-						break;
-					default:
-						return sq_throwerror(v,"invalid param"); //throws an exception
+					sq_getfloat(v, 2, &pVec2f->x);
+					sq_getfloat(v, 3, &pVec2f->y);
 				}
-				printf("\n");
 			}
-			printf("\n\n");
-			sq_pushinteger(v,nargs); //push the number of arguments as return value
-			return 1; //1 because 1 value is returned
+
+			sq_pushinteger(v,nargs);
+
+			return 1;
+		}
+
+		static SQInteger Vector2iConstructor(HSQUIRRELVM v)
+		{
+			SQInteger nargs = sq_gettop(v);
+
+			if (nargs >= 4)
+			{
+				Rocket::Core::Vector2i* pVec2i = squirrelGetInstanceObj<Rocket::Core::Vector2i>(v);
+
+				if (pVec2i)
+				{
+					sq_getinteger(v, 2, &pVec2i->x);
+					sq_getinteger(v, 3, &pVec2i->y);
+				}
+			}
+
+			sq_pushinteger(v,nargs);
+
+			return 1;
+		}
+
+		static SQInteger ColourfConstructor(HSQUIRRELVM v)
+		{
+			SQInteger nargs = sq_gettop(v);
+
+			if (nargs >= 4)
+			{
+				Rocket::Core::Colourf* pColf = squirrelGetInstanceObj<Rocket::Core::Colourf>(v);
+
+				if (pColf)
+				{
+					sq_getfloat(v, 2, &pColf->red);
+					sq_getfloat(v, 3, &pColf->green);
+					sq_getfloat(v, 4, &pColf->blue);
+					sq_getfloat(v, 5, &pColf->alpha);
+				}
+			}
+
+			sq_pushinteger(v,nargs);
+
+			return 1;
+		}
+
+		static SQInteger ColourbConstructor(HSQUIRRELVM v)
+		{
+			SQInteger nargs = sq_gettop(v);
+
+			if (nargs >= 3)
+			{
+				Rocket::Core::Colourb* pColb = squirrelGetInstanceObj<Rocket::Core::Colourb>(v);
+
+				if (pColb)
+				{
+					SQInteger red, green, blue, alpha;
+
+					sq_getinteger(v, 2, &red);
+					sq_getinteger(v, 3, &green);
+					sq_getinteger(v, 4, &blue);
+					sq_getinteger(v, 5, &alpha);
+
+					pColb->red = red;
+					pColb->green = green;
+					pColb->blue = blue;
+					pColb->alpha = alpha;
+				}
+			}
+
+			sq_pushinteger(v,nargs);
+
+			return 1;
+		}
+
+		static SQInteger URLConstructor(HSQUIRRELVM v)
+		{
+			SQInteger nargs = sq_gettop(v);
+
+			if (nargs >= 2)
+			{
+				Rocket::Core::URL* pURL = squirrelGetInstanceObj<Rocket::Core::URL>(v);
+
+				if (pURL)
+				{
+					const SQChar* url;
+					if (SQ_SUCCEEDED(sq_getstring(v, 2, &url)))
+					{
+						//pURL->SetURL(url);
+					}
+				}
+			}
+
+			sq_pushinteger(v,nargs);
+
+			return 1;
 		}
 
 		void RegisterSquirrelInterfaces()
 		{
-			//debug
-			vm = sq_open(10024);
+			vm = sq_open(1024);
 
-			sq_setcompilererrorhandler(vm, &compilerErrorFunc);
-
-			sq_setprintfunc(vm, &printFunc, &printFunc);
-
-			
+			sq_setcompilererrorhandler(vm, &squirrelCompileErrorFunc);
+			sq_setprintfunc(vm, &squirrelPrintFunc, &squirrelPrintFunc);
 
 
-			Sqrat::Script script(vm);
-				
-			Sqrat::string error;
-
-			if (!script.CompileString(" local obj = MyClass(); print_args(\"hello\", 1.0, -100, obj); print(obj); ", error))
-			{
-				return;
-			}
+			sq_pushroottable(vm);
+			sq_newclosure(vm, &squirrelPrintRuntimeError, 0);
+			sq_seterrorhandler(vm);
+			sq_pop(vm, 1);
 
 
-			try 
-			{
-				script.Run();
-			}
-			catch (Sqrat::Exception& e)
-			{
-				std::cout << "Sqrat::Exception: " << e.Message() << std::endl;
-				return;
-			}
 
-
-			return;
 			//Vector2f
-			Sqrat::Class<Rocket::Core::Vector2f> classVector2f(vm);
+			sq_pushroottable(vm);
 
-			classVector2f.Var("x", &Rocket::Core::Vector2f::x);
-			classVector2f.Var("y", &Rocket::Core::Vector2f::y);
-			classVector2f.Overload("_mul", &Rocket::Core::Vector2f::operator*);
-			classVector2f.Overload("_div", &Rocket::Core::Vector2f::operator/);
-			classVector2f.Overload("_add", &Rocket::Core::Vector2f::operator+);
-			classVector2f.Overload<Rocket::Core::Vector2f (Rocket::Core::Vector2f::*)(const Rocket::Core::Vector2f&) const>("_sub", &Rocket::Core::Vector2f::operator-);
-			classVector2f.Overload("_cmp", &Rocket::Core::Vector2f::operator==);
-			classVector2f.Overload("DotProduct", &Rocket::Core::Vector2f::DotProduct);
-			classVector2f.Overload("Rotate", &Rocket::Core::Vector2f::Rotate);
-			classVector2f.Func("Normalise", &Rocket::Core::Vector2f::Normalise);
-			classVector2f.Func("Magnitude", &Rocket::Core::Vector2f::Magnitude);
+			sqb::ClassDefinition<Rocket::Core::Vector2f> cV2f(vm, -1, _SC("Vector2f"));
 
-			Sqrat::RootTable(vm).Bind("Vector2f", classVector2f);
+			cV2f.Constructor(&Vector2fConstructor, sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("xff")));
 
-			
+			cV2f.Variable(&Rocket::Core::Vector2f::x, _SC("x"));
+			cV2f.Variable(&Rocket::Core::Vector2f::y, _SC("y"));
+			cV2f.ClassFunction(&Rocket::Core::Vector2f::operator*, _SC("_mul"));
+			cV2f.ClassFunction(&Rocket::Core::Vector2f::operator/, _SC("_div"));
+			cV2f.ClassFunction(&Rocket::Core::Vector2f::operator+, _SC("_add"));
+			cV2f.ClassFunction<Rocket::Core::Vector2f (Rocket::Core::Vector2f::*)(const Rocket::Core::Vector2f&) const>(&Rocket::Core::Vector2f::operator-, _SC("_sub"));
+			cV2f.ClassFunction(&Rocket::Core::Vector2f::operator==, _SC("_cmp"));
+			cV2f.ClassFunction(&Rocket::Core::Vector2f::DotProduct, _SC("DotProduct"));
+			cV2f.ClassFunction(&Rocket::Core::Vector2f::Rotate, _SC("Rotate"));
+			cV2f.ClassFunction(&Rocket::Core::Vector2f::Normalise, _SC("Normalise"));
+			cV2f.ClassFunction(&Rocket::Core::Vector2f::Magnitude, _SC("Magnitude"));
+
+			sq_poptop(vm);
+
+
 			//Vector2i
-			Sqrat::Class<Rocket::Core::Vector2i> classVector2i(vm);
+			sq_pushroottable(vm);
 
-			classVector2i.Var("x", &Rocket::Core::Vector2i::x);
-			classVector2i.Var("y", &Rocket::Core::Vector2i::y);
-			classVector2i.Overload("_mul", &Rocket::Core::Vector2i::operator*);
-			classVector2i.Overload("_div", &Rocket::Core::Vector2i::operator/);
-			classVector2i.Overload("_add", &Rocket::Core::Vector2i::operator+);
-			classVector2i.Overload<Rocket::Core::Vector2i (Rocket::Core::Vector2i::*)(const Rocket::Core::Vector2i&) const>("_sub", &Rocket::Core::Vector2i::operator-);
-			classVector2i.Overload("_cmp", &Rocket::Core::Vector2i::operator==);
+			sqb::ClassDefinition<Rocket::Core::Vector2i> cV2i(vm, -1, _SC("Vector2i"));
 
-			Sqrat::RootTable(vm).Bind("Vector2i", classVector2i);
+			cV2i.Constructor(&Vector2iConstructor, sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("xii")));
 
+			cV2i.Variable(&Rocket::Core::Vector2i::x, _SC("x"));
+			cV2i.Variable(&Rocket::Core::Vector2i::y, _SC("y"));
+			cV2i.ClassFunction(&Rocket::Core::Vector2i::operator*, _SC("_mul"));
+			cV2i.ClassFunction(&Rocket::Core::Vector2i::operator/, _SC("_div"));
+			cV2i.ClassFunction(&Rocket::Core::Vector2i::operator+, _SC("_add"));
+			cV2i.ClassFunction<Rocket::Core::Vector2i (Rocket::Core::Vector2i::*)(const Rocket::Core::Vector2i&) const>(&Rocket::Core::Vector2i::operator-, _SC("_sub"));
+			cV2i.ClassFunction(&Rocket::Core::Vector2i::operator==, _SC("_cmp"));
+
+			sq_poptop(vm);
 
 
 			//Colourf
-			Sqrat::Class<Rocket::Core::Colourf> classColourf(vm);
+			sq_pushroottable(vm);
 
-			classColourf.Var("red", &Rocket::Core::Colourf::red);
-			classColourf.Var("green", &Rocket::Core::Colourf::green);
-			classColourf.Var("blue", &Rocket::Core::Colourf::blue);
-			classColourf.Var("alpha", &Rocket::Core::Colourf::alpha);
-			classColourf.Overload("_cmp", &Rocket::Core::Colourf::operator==);
+			sqb::ClassDefinition<Rocket::Core::Colourf> cCf(vm, -1, _SC("Colourf"));
 
-			Sqrat::RootTable(vm).Bind("Colourf", classColourf);
+			cCf.Constructor(&ColourfConstructor, sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("xffff")));
 
+			cCf.Variable(&Rocket::Core::Colourf::red, _SC("red"));
+			cCf.Variable(&Rocket::Core::Colourf::green, _SC("green"));
+			cCf.Variable(&Rocket::Core::Colourf::blue, _SC("blue"));
+			cCf.Variable(&Rocket::Core::Colourf::alpha, _SC("alpha"));
+			cCf.ClassFunction(&Rocket::Core::Colourf::operator==, _SC("_cmp"));
+
+			sq_poptop(vm);
 
 
 
 			//Colourb
-			Sqrat::Class<Rocket::Core::Colourb> classColourb(vm);
+			sq_pushroottable(vm);
 
-			classColourb.Var("red", &Rocket::Core::Colourb::red);
-			classColourb.Var("green", &Rocket::Core::Colourb::green);
-			classColourb.Var("blue", &Rocket::Core::Colourb::blue);
-			classColourb.Var("alpha", &Rocket::Core::Colourb::alpha);
-			//classColourb.Overload("_cmp", &Rocket::Core::Colourb::operator==);
-			//classColourb.Overload("_add", &Rocket::Core::Colourb::operator+);
-			//classColourb.Overload<Rocket::Core::Colourb (Rocket::Core::Colourb::*)(float) const>("_mul", &Rocket::Core::Colourb::operator*);
+			sqb::ClassDefinition<Rocket::Core::Colourb> cCb(vm, -1, _SC("Colourb"));
 
-			Sqrat::RootTable(vm).Bind("Colourb", classColourb);
+			//cCb.Constructor(&ColourbConstructor, sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("xiiii")));
 
+			cCb.Variable(&Rocket::Core::Colourb::red, _SC("red"));
+			cCb.Variable(&Rocket::Core::Colourb::green, _SC("green"));
+			cCb.Variable(&Rocket::Core::Colourb::blue, _SC("blue"));
+			cCb.Variable(&Rocket::Core::Colourb::alpha, _SC("alpha"));
+			cCb.ClassFunction(&Rocket::Core::Colourb::operator==, _SC("_cmp"));
+			cCb.ClassFunction(&Rocket::Core::Colourb::operator+, _SC("_add"));
+			cCb.ClassFunction<Rocket::Core::Colourb (Rocket::Core::Colourb::*)(float) const>(&Rocket::Core::Colourb::operator*, _SC("_mul"));
+
+			sq_poptop(vm);
+
+
+			//URL
+			sq_pushroottable(vm);
+
+			sqb::ClassDefinition<Rocket::Core::URL> cURL(vm, -1, _SC("URL"));
+
+			cURL.Constructor(&URLConstructor, sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC("xs")));
+
+			cURL.ClassFunction(&Rocket::Core::URL::ClearParameters, _SC("ClearParameters"));
+
+
+			sq_poptop(vm);
+
+
+			//Log
+			sq_pushroottable(vm);
+
+			sqb::Bind::BindFunction(vm, -1, &Log, _SC("Log"));
+
+			sq_poptop(vm);
+
+			//LogType
+			sq_pushroottable(vm);
+
+			sqb::ClassDefinition<Rocket::Core::Log::Type> cLT(vm, -1, _SC("LogType"));
+			cLT.EnumEntry(Rocket::Core::Log::LT_ALWAYS, "always");
+			cLT.EnumEntry(Rocket::Core::Log::LT_ERROR, "error");
+			cLT.EnumEntry(Rocket::Core::Log::LT_WARNING, "warning");
+			cLT.EnumEntry(Rocket::Core::Log::LT_INFO, "info");
+			cLT.EnumEntry(Rocket::Core::Log::LT_DEBUG, "debug");
+
+			sq_poptop(vm);
+
+			new Rocket::Core::Colourb();
+
+			Rocket::Core::URL* url = new Rocket::Core::URL();
+			url->SetURL("asdasd");
+
+			return;
 		}
 
 
@@ -326,26 +319,17 @@ namespace Rocket {
 
 		void TestInsterfaces()
 		{
+			std::string script = " local v = Vector2f(); local v2 = Vector2f(); print(v.DotProduct(v2)); v.x = \"asdasd\"; ";
+
+			sq_compilebuffer(vm, script.c_str(), script.size(), "Script.nut", true);
+
+			compileNutFile(vm, "./testingscripts/Interfaces.nut");
+  
+			sq_pushroottable(vm);
+
+			sq_call(vm, 1, false, true);
+
 			return;
-			Sqrat::Script script(vm);
-				
-			Sqrat::string error;
-
-			if (!script.CompileFile("./testingscripts/interfaces.nut", error))
-			{
-				return;
-			}
-
-
-			try 
-			{
-				script.Run();
-			}
-			catch (Sqrat::Exception& e)
-			{
-				std::cout << "Sqrat::Exception: " << e.Message() << std::endl;
-				return;
-			}
 		}
 
 

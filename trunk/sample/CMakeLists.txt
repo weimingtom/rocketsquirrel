@@ -7,7 +7,6 @@ find_package(OpenGL REQUIRED)
 include_directories(
 	../include
 	${SQUIRREL_INCLUDE_DIR}
-	${SQRAT_INCLUDE_DIR}
 	./dependencies/SFML/include
 	./shell/include
 	${LIBROCKET_DIR}/Include
@@ -34,12 +33,16 @@ set(OSSRCS
 	shell/src/win32/ShellWin32.cpp
 )
 
+add_definitions( -DSQBIND_STATIC )
+
 add_executable(Sample ${SRCS} ${OSSRCS})
 
 set_target_properties(Sample PROPERTIES DEBUG_POSTFIX _d)
 
 target_link_libraries(
 	Sample
+	debug ${SQBIND_LIB_DEBUG}
+	optimized ${SQBIND_LIB_OPTIMIZED}
 	RocketSquirrel
 	optimized squirrel
 	debug squirrel_d
@@ -53,6 +56,4 @@ target_link_libraries(
 	optimized RocketDebugger
 	${OPENGL_gl_LIBRARY}
 	${OPENGL_glu_LIBRARY}
-	debug ${SQBIND_DIR}/lib/vs2010/x32/debug/sqbind.lib
-	optimized ${SQBIND_DIR}/lib/vs2010/x32/debug/sqbind.lib
 )
