@@ -31,6 +31,8 @@
 
 #define ROCKETSQUIRRELDLL_API
 
+
+
 #include "Rocket/Core.h"
 #include "Rocket/Core/Plugin.h"
 #include <squirrel.h>
@@ -39,7 +41,10 @@ namespace Rocket {
 	namespace Squirrel {
 
 
-		class PrivateModule;
+#ifdef _DEBUG
+		/*Used to test case the Squirrel interfaces*/
+		void TestInsterfaces();
+#endif
 
 
 		class ROCKETSQUIRRELDLL_API Module : public Rocket::Core::Plugin

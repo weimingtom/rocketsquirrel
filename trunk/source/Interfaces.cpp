@@ -39,12 +39,17 @@
 
 
 #include <iostream>
-
-
 #include <Windows.h>
+
+
+#include <sqbind/sqbBind.h>
+
+
 
 namespace Rocket {
 	namespace Squirrel {
+
+
 
 
 
@@ -58,9 +63,9 @@ namespace Rocket {
 			vsnprintf(text, 1024, s, vl);
 
 			vfprintf(stdout, s, vl);
-
+#ifdef _WINDOWS
 			OutputDebugStringA(text);
-
+#endif
 			va_end(vl);
 		}
 
@@ -155,16 +160,101 @@ namespace Rocket {
 		HSQUIRRELVM vm;
 
 
+
+		SQInteger print_args(HSQUIRRELVM v)
+		{
+			SQInteger nargs = sq_gettop(v); //number of arguments
+			for(SQInteger n=1;n<=nargs;n++)
+			{
+				printf("arg %d is ",n);
+				switch(sq_gettype(v,n))
+				{
+					case OT_NULL:
+						printf("null");        
+						break;
+					case OT_INTEGER:
+						printf("integer");
+						break;
+					case OT_FLOAT:
+						printf("float");
+						break;
+					case OT_STRING:
+						printf("string");
+						break;    
+					case OT_TABLE:
+						printf("table");
+						break;
+					case OT_ARRAY:
+						printf("array");
+						break;
+					case OT_USERDATA:
+						printf("userdata");
+						break;
+					case OT_CLOSURE:        
+						printf("closure(function)");    
+						break;
+					case OT_NATIVECLOSURE:
+						printf("native closure(C function)");
+						break;
+					case OT_GENERATOR:
+						printf("generator");
+						break;
+					case OT_USERPOINTER:
+						printf("userpointer");
+						break;
+					case OT_CLASS:
+						printf("class");
+						break;
+					case OT_INSTANCE:
+						printf("instance");
+						break;
+					case OT_WEAKREF:
+						printf("weak reference");
+						break;
+					default:
+						return sq_throwerror(v,"invalid param"); //throws an exception
+				}
+				printf("\n");
+			}
+			printf("\n\n");
+			sq_pushinteger(v,nargs); //push the number of arguments as return value
+			return 1; //1 because 1 value is returned
+		}
+
 		void RegisterSquirrelInterfaces()
 		{
 			//debug
-			vm = sq_open(1024);
+			vm = sq_open(10024);
 
 			sq_setcompilererrorhandler(vm, &compilerErrorFunc);
 
 			sq_setprintfunc(vm, &printFunc, &printFunc);
 
+			
 
+
+			Sqrat::Script script(vm);
+				
+			Sqrat::string error;
+
+			if (!script.CompileString(" local obj = MyClass(); print_args(\"hello\", 1.0, -100, obj); print(obj); ", error))
+			{
+				return;
+			}
+
+
+			try 
+			{
+				script.Run();
+			}
+			catch (Sqrat::Exception& e)
+			{
+				std::cout << "Sqrat::Exception: " << e.Message() << std::endl;
+				return;
+			}
+
+
+			return;
 			//Vector2f
 			Sqrat::Class<Rocket::Core::Vector2f> classVector2f(vm);
 
@@ -182,21 +272,48 @@ namespace Rocket {
 
 			Sqrat::RootTable(vm).Bind("Vector2f", classVector2f);
 
+			
+			//Vector2i
+			Sqrat::Class<Rocket::Core::Vector2i> classVector2i(vm);
+
+			classVector2i.Var("x", &Rocket::Core::Vector2i::x);
+			classVector2i.Var("y", &Rocket::Core::Vector2i::y);
+			classVector2i.Overload("_mul", &Rocket::Core::Vector2i::operator*);
+			classVector2i.Overload("_div", &Rocket::Core::Vector2i::operator/);
+			classVector2i.Overload("_add", &Rocket::Core::Vector2i::operator+);
+			classVector2i.Overload<Rocket::Core::Vector2i (Rocket::Core::Vector2i::*)(const Rocket::Core::Vector2i&) const>("_sub", &Rocket::Core::Vector2i::operator-);
+			classVector2i.Overload("_cmp", &Rocket::Core::Vector2i::operator==);
+
+			Sqrat::RootTable(vm).Bind("Vector2i", classVector2i);
 
 
-			python::class_< Vector2i >("Vector2i")
-		.def(python::init< int, int >())
-		.def_readwrite("x", &Vector2i::x)
-		.def_readwrite("y", &Vector2i::y)
-		.def(python::self * int())		 // * int
-		.def(python::self / int())		 // / int
-		.def(python::self + Vector2i())	 // + Vector2i
-		.def(python::self - Vector2i())	 // - Vector2i
-		.def(python::self == Vector2i()) // ==
-		.def(python::self != Vector2i()) // !=
-		.def_pickle(PickleTypeConverter< Vector2i >())
 
-			return;
+			//Colourf
+			Sqrat::Class<Rocket::Core::Colourf> classColourf(vm);
+
+			classColourf.Var("red", &Rocket::Core::Colourf::red);
+			classColourf.Var("green", &Rocket::Core::Colourf::green);
+			classColourf.Var("blue", &Rocket::Core::Colourf::blue);
+			classColourf.Var("alpha", &Rocket::Core::Colourf::alpha);
+			classColourf.Overload("_cmp", &Rocket::Core::Colourf::operator==);
+
+			Sqrat::RootTable(vm).Bind("Colourf", classColourf);
+
+
+
+
+			//Colourb
+			Sqrat::Class<Rocket::Core::Colourb> classColourb(vm);
+
+			classColourb.Var("red", &Rocket::Core::Colourb::red);
+			classColourb.Var("green", &Rocket::Core::Colourb::green);
+			classColourb.Var("blue", &Rocket::Core::Colourb::blue);
+			classColourb.Var("alpha", &Rocket::Core::Colourb::alpha);
+			//classColourb.Overload("_cmp", &Rocket::Core::Colourb::operator==);
+			//classColourb.Overload("_add", &Rocket::Core::Colourb::operator+);
+			//classColourb.Overload<Rocket::Core::Colourb (Rocket::Core::Colourb::*)(float) const>("_mul", &Rocket::Core::Colourb::operator*);
+
+			Sqrat::RootTable(vm).Bind("Colourb", classColourb);
 
 		}
 
@@ -204,43 +321,34 @@ namespace Rocket {
 
 		void TestSquirrel()
 		{
-			std::string strScript = " local v = Vector2f(); local v2 = Vector2f(); print(v.DotProduct(v2)); print(v.x);      ";
+		}
 
 
-			try {
-				Sqrat::Script script(vm);
+		void TestInsterfaces()
+		{
+			return;
+			Sqrat::Script script(vm);
 				
-				Sqrat::string error;
+			Sqrat::string error;
 
-				if (script.CompileString(strScript, error))
-				{
-
-					if (!script.Run(error))
-					{
-						return;
-					}
-				}
-
-			} catch(Sqrat::Exception& e) {
-				
-
+			if (!script.CompileFile("./testingscripts/interfaces.nut", error))
+			{
 				return;
-
-			} catch(std::exception& e) {
-				
-
-				return;
-
 			}
 
-			//SQRESULT r;
-			
-			//r = sq_compilebuffer(vm, strScript.c_str(), strScript.size(), "Script.nut", true);
 
-			//Execute the entry function
-			//sq_pushroottable(vm);
-			//r = sq_call(vm, 1, SQFalse, SQTrue);
+			try 
+			{
+				script.Run();
+			}
+			catch (Sqrat::Exception& e)
+			{
+				std::cout << "Sqrat::Exception: " << e.Message() << std::endl;
+				return;
+			}
 		}
+
+
 
 
 

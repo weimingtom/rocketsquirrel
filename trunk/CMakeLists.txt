@@ -59,6 +59,7 @@ include_directories(
 	${SQUIRREL_INCLUDE_DIR}
 	${SQRAT_INCLUDE_DIR}
 	${LIBROCKET_DIR}/Include
+	${SQBIND_DIR}/include
 )
 
 add_library(RocketSquirrel STATIC ${HDRS} ${SRCS})
