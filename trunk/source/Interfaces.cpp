@@ -34,6 +34,7 @@
 
 #include <iostream>
 
+#include "RocketSquirrel.h"
 
 #include <sqbind/sqbBind.h>
 #include <sqbind/sqbBindMacros.h>
@@ -59,7 +60,12 @@ namespace Rocket {
 	namespace Squirrel {
 
 
-		HSQUIRRELVM vm;
+
+
+
+
+
+
 
 		static void Log(Rocket::Core::Log::Type level, const char* message)
 		{	
@@ -180,20 +186,8 @@ namespace Rocket {
 			return sqb::ClassDefinition<Rocket::Core::URL>::DefaultConstructor(v);
 		}
 
-		void RegisterSquirrelInterfaces()
+		void RegisterSquirrelInterfaces(HSQUIRRELVM vm)
 		{
-			vm = sq_open(1024);
-
-			sq_setcompilererrorhandler(vm, &squirrelCompileErrorFunc);
-			sq_setprintfunc(vm, &squirrelPrintFunc, &squirrelPrintFunc);
-
-
-			sq_pushroottable(vm);
-			sq_newclosure(vm, &squirrelPrintRuntimeError, 0);
-			sq_seterrorhandler(vm);
-			sq_pop(vm, 1);
-
-
 			sq_pushroottable(vm);
 
 
@@ -277,28 +271,6 @@ namespace Rocket {
 			cLT.EnumEntry(Rocket::Core::Log::LT_DEBUG, "debug");
 
 			sq_poptop(vm);
-
-			return;
-		}
-
-
-
-		void TestSquirrel()
-		{
-		}
-
-
-		void TestInsterfaces()
-		{
-			std::string script = " local v = Vector2f(); local v2 = Vector2f(); print(v.DotProduct(v2)); v.x = \"asdasd\"; ";
-
-			sq_compilebuffer(vm, script.c_str(), script.size(), "Script.nut", true);
-
-			compileNutFile(vm, "./testingscripts/Interfaces.nut");
-  
-			sq_pushroottable(vm);
-
-			sq_call(vm, 1, false, true);
 
 			return;
 		}

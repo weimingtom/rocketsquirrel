@@ -34,11 +34,12 @@ set(SQBIND_LIB_OPTIMIZED ${SQBIND_DIR}/lib/vs2010/x32/release/sqbind.lib)
 
 set(ROCKETSQUIRREL_VERSION_MAJOR 0)
 set(ROCKETSQUIRREL_VERSION_MINOR 1)
+set(ROCKETSQUIRREL_SCRIPTS ${PROJECT_SOURCE_DIR}/scripts)
 
-#configure_file(
-#	"${PROJECT_SOURCE_DIR}/RocketSquirrelConfig.h.in"
-#	"${PROJECT_BINARY_DIR}/RocketSquirrelConfig.h"
-#)
+configure_file(
+	"${PROJECT_SOURCE_DIR}/Config.h.in"
+	"${PROJECT_BINARY_DIR}/Config.h"
+)
 
 
 
@@ -65,6 +66,7 @@ include_directories(
 	${SQUIRREL_INCLUDE_DIR}
 	${LIBROCKET_DIR}/Include
 	${SQBIND_DIR}/include
+	${PROJECT_BINARY_DIR}
 )
 
 add_definitions( -DSQBIND_STATIC )

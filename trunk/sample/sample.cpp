@@ -58,15 +58,10 @@ int main()
 	Rocket::Core::RegisterPlugin(new Rocket::Squirrel::Module());
 
 	///////////////////////////////////////////
-	
-
-	//DEV lets tests all the interfaces
-#ifdef _DEBUG
-	Rocket::Squirrel::TestInsterfaces();
-#endif
-
-
 	Rocket::Core::Initialise();
+
+	/*Warning all scripting should be done after Rocket Core initialization*/
+
 
 	// Create the main Rocket context and set it on the shell's input layer.
 	context = Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(1024, 768));

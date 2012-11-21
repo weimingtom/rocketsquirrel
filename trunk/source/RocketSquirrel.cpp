@@ -27,7 +27,9 @@
 
 #include "RocketSquirrel.h"
 #include <Rocket/Core.h>
+#include "BindingUtil.h"
 
+#include "Config.h"
 
 
 
@@ -38,40 +40,96 @@ namespace Rocket {
 
 
 
-		void RegisterSquirrelInterfaces();
-		void RegisterSquirrelConverters();
-
-		void TestSquirrel();
+		void RegisterSquirrelInterfaces(HSQUIRRELVM vm);
+		void RegisterSquirrelConverters(HSQUIRRELVM vm);
 
 
-		Module::Module(HSQUIRRELVM vm)
+		Module* Module::s_pInstance = 0x0;
+
+
+		Module::Module(HSQUIRRELVM vm, bool useNamespace) :
+			mUseNamespace(useNamespace),
+			mVM(vm),
+			mVMCreated(false),
+			mInitialized(false)
 		{
-			
+			s_pInstance = this;
+		}
 
-			RegisterSquirrelInterfaces();
-			//RegisterSquirrelConverters();
+		Module::~Module()
+		{
+		}
 
+		Module& Module::instance()
+		{
+			ROCKET_ASSERT(s_pInstance != 0x0);
+			return *s_pInstance;
+		}
+
+		bool Module::isUsingNamespace() const
+		{
+			return mUseNamespace;
+		}
+
+		HSQUIRRELVM Module::getSquirrelVM() const
+		{
+			return mVM;
 		}
 
 		void Module::OnInitialise()
 		{
-			Rocket::Core::Vector2f v;
-			Rocket::Core::Vector2f v2;
+			ROCKET_ASSERT(mInitialized == false);
 
-			v.DotProduct(v2);
-
-
-			try 
+			if (!mVM)
 			{
-				TestSquirrel();
+				mVM = sq_open(1024);
 
+				sq_setcompilererrorhandler(mVM, &squirrelCompileErrorFunc);
+				sq_setprintfunc(mVM, &squirrelPrintFunc, &squirrelPrintFunc);
+
+				sq_pushroottable(mVM);
+				sq_newclosure(mVM, &squirrelPrintRuntimeError, 0);
+				sq_seterrorhandler(mVM);
+				sq_pop(mVM, 1);
+
+				mVMCreated = true;
 			}
-			catch (std::exception& e)
-			{
-				return;
-			}
-			return;
+
+			RegisterSquirrelInterfaces(mVM);
+			//RegisterSquirrelConverters(mVM);
+
+
+
+			//DEV lets tests all the interfaces
+#ifdef ROCKETSQUIRREL_DEV
+			using Rocket::Core::String;
+
+			HSQUIRRELVM vm = Module::instance().getSquirrelVM();
+
+			String scriptsDir(ROCKETSQUIRREL_SCRIPTS);
+
+			compileNutFile(vm, String(scriptsDir + "/Interfaces.nut").CString());
+  
+			sq_pushroottable(vm);
+
+			sq_call(vm, 1, false, true);
+#endif
+
+			mInitialized = true;
 		}
+
+		void Module::OnShutdown()
+		{
+			ROCKET_ASSERT(mInitialized == true);
+
+			if (mVM && mVMCreated)
+			{
+				sq_close(mVM);
+			}
+
+			mInitialized = false;
+		}
+
 
 
 		
