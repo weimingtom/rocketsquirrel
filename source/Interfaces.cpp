@@ -72,18 +72,18 @@ namespace Rocket {
 
 			if (nargs >= 3)
 			{
-				Rocket::Core::Vector2f* pVec2f = squirrelGetInstanceObj<Rocket::Core::Vector2f>(v);
+				Rocket::Core::Vector2f* pVec2f = squirrelNewInstance<Rocket::Core::Vector2f>(v);
 
 				if (pVec2f)
 				{
 					sq_getfloat(v, 2, &pVec2f->x);
 					sq_getfloat(v, 3, &pVec2f->y);
 				}
+
+				return 1;
 			}
 
-			sq_pushinteger(v,nargs);
-
-			return 1;
+			return sqb::ClassDefinition<Rocket::Core::Vector2f>::DefaultConstructor(v);
 		}
 
 		static SQInteger Vector2iConstructor(HSQUIRRELVM v)
@@ -92,18 +92,18 @@ namespace Rocket {
 
 			if (nargs >= 4)
 			{
-				Rocket::Core::Vector2i* pVec2i = squirrelGetInstanceObj<Rocket::Core::Vector2i>(v);
+				Rocket::Core::Vector2i* pVec2i = squirrelNewInstance<Rocket::Core::Vector2i>(v);
 
 				if (pVec2i)
 				{
 					sq_getinteger(v, 2, &pVec2i->x);
 					sq_getinteger(v, 3, &pVec2i->y);
 				}
+
+				return 1;
 			}
 
-			sq_pushinteger(v,nargs);
-
-			return 1;
+			return sqb::ClassDefinition<Rocket::Core::Vector2i>::DefaultConstructor(v);
 		}
 
 		static SQInteger ColourfConstructor(HSQUIRRELVM v)
@@ -112,7 +112,7 @@ namespace Rocket {
 
 			if (nargs >= 4)
 			{
-				Rocket::Core::Colourf* pColf = squirrelGetInstanceObj<Rocket::Core::Colourf>(v);
+				Rocket::Core::Colourf* pColf = squirrelNewInstance<Rocket::Core::Colourf>(v);
 
 				if (pColf)
 				{
@@ -121,11 +121,11 @@ namespace Rocket {
 					sq_getfloat(v, 4, &pColf->blue);
 					sq_getfloat(v, 5, &pColf->alpha);
 				}
+
+				return 1;
 			}
 
-			sq_pushinteger(v,nargs);
-
-			return 1;
+			return sqb::ClassDefinition<Rocket::Core::Colourf>::DefaultConstructor(v);
 		}
 
 		static SQInteger ColourbConstructor(HSQUIRRELVM v)
@@ -134,7 +134,7 @@ namespace Rocket {
 
 			if (nargs >= 3)
 			{
-				Rocket::Core::Colourb* pColb = squirrelGetInstanceObj<Rocket::Core::Colourb>(v);
+				Rocket::Core::Colourb* pColb = squirrelNewInstance<Rocket::Core::Colourb>(v);
 
 				if (pColb)
 				{
@@ -150,11 +150,11 @@ namespace Rocket {
 					pColb->blue = blue;
 					pColb->alpha = alpha;
 				}
+
+				return 1;
 			}
 
-			sq_pushinteger(v,nargs);
-
-			return 1;
+			return sqb::ClassDefinition<Rocket::Core::Colourb>::DefaultConstructor(v);
 		}
 
 		static SQInteger URLConstructor(HSQUIRRELVM v)
@@ -163,21 +163,21 @@ namespace Rocket {
 
 			if (nargs >= 2)
 			{
-				Rocket::Core::URL* pURL = squirrelGetInstanceObj<Rocket::Core::URL>(v);
+				Rocket::Core::URL* pURL = squirrelNewInstance<Rocket::Core::URL>(v);
 
 				if (pURL)
 				{
 					const SQChar* url;
 					if (SQ_SUCCEEDED(sq_getstring(v, 2, &url)))
 					{
-						//pURL->SetURL(url);
+						pURL->SetURL(url);
 					}
 				}
-			}
 
-			sq_pushinteger(v,nargs);
+				return 1;
+			}	
 
-			return 1;
+			return sqb::ClassDefinition<Rocket::Core::URL>::DefaultConstructor(v);
 		}
 
 		void RegisterSquirrelInterfaces()
@@ -194,10 +194,10 @@ namespace Rocket {
 			sq_pop(vm, 1);
 
 
-
-			//Vector2f
 			sq_pushroottable(vm);
 
+
+			//Vector2f
 			sqb::ClassDefinition<Rocket::Core::Vector2f> cV2f(vm, -1, _SC("Vector2f"));
 
 			cV2f.Constructor(&Vector2fConstructor, sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("xff")));
@@ -214,12 +214,8 @@ namespace Rocket {
 			cV2f.ClassFunction(&Rocket::Core::Vector2f::Normalise, _SC("Normalise"));
 			cV2f.ClassFunction(&Rocket::Core::Vector2f::Magnitude, _SC("Magnitude"));
 
-			sq_poptop(vm);
-
 
 			//Vector2i
-			sq_pushroottable(vm);
-
 			sqb::ClassDefinition<Rocket::Core::Vector2i> cV2i(vm, -1, _SC("Vector2i"));
 
 			cV2i.Constructor(&Vector2iConstructor, sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("xii")));
@@ -232,12 +228,8 @@ namespace Rocket {
 			cV2i.ClassFunction<Rocket::Core::Vector2i (Rocket::Core::Vector2i::*)(const Rocket::Core::Vector2i&) const>(&Rocket::Core::Vector2i::operator-, _SC("_sub"));
 			cV2i.ClassFunction(&Rocket::Core::Vector2i::operator==, _SC("_cmp"));
 
-			sq_poptop(vm);
-
 
 			//Colourf
-			sq_pushroottable(vm);
-
 			sqb::ClassDefinition<Rocket::Core::Colourf> cCf(vm, -1, _SC("Colourf"));
 
 			cCf.Constructor(&ColourfConstructor, sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("xffff")));
@@ -248,16 +240,12 @@ namespace Rocket {
 			cCf.Variable(&Rocket::Core::Colourf::alpha, _SC("alpha"));
 			cCf.ClassFunction(&Rocket::Core::Colourf::operator==, _SC("_cmp"));
 
-			sq_poptop(vm);
-
 
 
 			//Colourb
-			sq_pushroottable(vm);
-
 			sqb::ClassDefinition<Rocket::Core::Colourb> cCb(vm, -1, _SC("Colourb"));
 
-			//cCb.Constructor(&ColourbConstructor, sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("xiiii")));
+			cCb.Constructor(&ColourbConstructor, sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("xiiii")));
 
 			cCb.Variable(&Rocket::Core::Colourb::red, _SC("red"));
 			cCb.Variable(&Rocket::Core::Colourb::green, _SC("green"));
@@ -267,12 +255,8 @@ namespace Rocket {
 			cCb.ClassFunction(&Rocket::Core::Colourb::operator+, _SC("_add"));
 			cCb.ClassFunction<Rocket::Core::Colourb (Rocket::Core::Colourb::*)(float) const>(&Rocket::Core::Colourb::operator*, _SC("_mul"));
 
-			sq_poptop(vm);
-
 
 			//URL
-			sq_pushroottable(vm);
-
 			sqb::ClassDefinition<Rocket::Core::URL> cURL(vm, -1, _SC("URL"));
 
 			cURL.Constructor(&URLConstructor, sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC("xs")));
@@ -280,19 +264,11 @@ namespace Rocket {
 			cURL.ClassFunction(&Rocket::Core::URL::ClearParameters, _SC("ClearParameters"));
 
 
-			sq_poptop(vm);
-
-
 			//Log
-			sq_pushroottable(vm);
-
 			sqb::Bind::BindFunction(vm, -1, &Log, _SC("Log"));
 
-			sq_poptop(vm);
 
 			//LogType
-			sq_pushroottable(vm);
-
 			sqb::ClassDefinition<Rocket::Core::Log::Type> cLT(vm, -1, _SC("LogType"));
 			cLT.EnumEntry(Rocket::Core::Log::LT_ALWAYS, "always");
 			cLT.EnumEntry(Rocket::Core::Log::LT_ERROR, "error");
@@ -301,11 +277,6 @@ namespace Rocket {
 			cLT.EnumEntry(Rocket::Core::Log::LT_DEBUG, "debug");
 
 			sq_poptop(vm);
-
-			new Rocket::Core::Colourb();
-
-			Rocket::Core::URL* url = new Rocket::Core::URL();
-			url->SetURL("asdasd");
 
 			return;
 		}

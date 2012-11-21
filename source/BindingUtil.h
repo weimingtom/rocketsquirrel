@@ -53,18 +53,24 @@ namespace Rocket {
 
 
 		template <typename T>
-		inline T* squirrelGetInstanceObj(HSQUIRRELVM v)
+		inline T* squirrelNewInstance(HSQUIRRELVM v)
 		{
-			SQUserPointer p = NULL;
+			sqb::StackHandler stack(v);
 
-			ROCKET_ASSERT(sq_gettype(v, 1) == OT_INSTANCE);
+			sqb::ClassTypeTag<T>* classTypeTag = sqb::ClassTypeTag<T>::Get();
 
-			//TODO make this a little bit more safe
-			SQRESULT sqr = sq_getinstanceup(v, 1, &p, 0);
+			SQUserPointer userPointer;
+			SQBIND_ASSERT(sq_gettype(vm, 1) == OT_INSTANCE);
+			sq_getinstanceup(vm, 1, &userPointer, nullptr);
+			SQBIND_ASSERT_MSG(userPointer != nullptr, "new instance user pointer was null, did you forget to call sq_setclassudsize?");
 
-			ROCKET_ASSERT(SQ_SUCCEDED(sqr)); 
+			SQRELEASEHOOK hook = classTypeTag->GetReleaseHook();
+			sq_setreleasehook(vm, 1, hook);
 
-			return (T*)p;
+			T* instance = new (userPointer)T();
+			(void)instance;
+
+			return (T*)instance;
 		}
 
 
