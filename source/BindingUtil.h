@@ -53,9 +53,9 @@ namespace Rocket {
 
 
 		template <typename T>
-		inline T* squirrelNewInstance(HSQUIRRELVM v)
+		inline T* squirrelNewInstance(HSQUIRRELVM vm)
 		{
-			sqb::StackHandler stack(v);
+			sqb::StackHandler stack(vm);
 
 			sqb::ClassTypeTag<T>* classTypeTag = sqb::ClassTypeTag<T>::Get();
 
