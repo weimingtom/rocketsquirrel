@@ -30,6 +30,7 @@
 #include "BindingUtil.h"
 
 #include "Config.h"
+#include "Debug.h"
 
 
 
@@ -62,7 +63,7 @@ namespace Rocket {
 
 		Module& Module::instance()
 		{
-			ROCKET_ASSERT(s_pInstance != 0x0);
+			ROCKETSQUIRREL_ASSERT(s_pInstance != 0x0);
 			return *s_pInstance;
 		}
 
@@ -78,7 +79,7 @@ namespace Rocket {
 
 		void Module::OnInitialise()
 		{
-			ROCKET_ASSERT(mInitialized == false);
+			ROCKETSQUIRREL_ASSERT(mInitialized == false);
 
 			if (!mVM)
 			{
@@ -103,16 +104,36 @@ namespace Rocket {
 			//DEV lets tests all the interfaces
 #ifdef ROCKETSQUIRREL_DEV
 			using Rocket::Core::String;
+			using Rocket::Core::StringList;
 
 			HSQUIRRELVM vm = Module::instance().getSquirrelVM();
 
 			String scriptsDir(ROCKETSQUIRREL_SCRIPTS);
+			scriptsDir += "/";
 
-			compileNutFile(vm, String(scriptsDir + "/Interfaces.nut").CString());
+
+			StringList tests;
+			tests.push_back("Interfaces.nut");
+			tests.push_back("Dictionary.nut");
+
+
+			for (unsigned int i = 0; i < tests.size(); i++)
+			{
+				SQRESULT sqr;
+
+				sqr = compileNutFile(vm, String(scriptsDir + tests[i]).CString());
+
+				ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
   
-			sq_pushroottable(vm);
+				sq_pushroottable(vm);
 
-			sq_call(vm, 1, false, true);
+				sqr = sq_call(vm, 1, false, true);
+
+				ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+				sq_poptop(vm);
+			}
+
 #endif
 
 			mInitialized = true;
@@ -120,7 +141,7 @@ namespace Rocket {
 
 		void Module::OnShutdown()
 		{
-			ROCKET_ASSERT(mInitialized == true);
+			ROCKETSQUIRREL_ASSERT(mInitialized == true);
 
 			if (mVM && mVMCreated)
 			{

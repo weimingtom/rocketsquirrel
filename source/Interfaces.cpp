@@ -43,6 +43,89 @@
 
 #include "BindingUtil.h"
 
+#include "Debug.h"
+
+
+namespace Rocket {
+	namespace Squirrel {
+
+
+		//VariantInterface
+		class VariantInterface : public Rocket::Core::Variant
+		{
+		public:
+
+			VariantInterface()
+			{
+				this->Set("hello");
+			}
+
+			void __test()
+			{
+				return;
+			}
+		};
+
+
+		// Dictionary Interface
+		class DictionaryInterface
+		{
+		private:
+			Rocket::Core::Dictionary dict;
+
+		public:
+
+			DictionaryInterface()
+			{	
+			}
+
+			std::size_t Size()
+			{
+				return dict.Size();
+			}
+
+			void SetItem(const char* key, const VariantInterface& value)
+			{
+				dict.Set(key, value);
+			}
+
+			void DelItem(const char* key)
+			{
+				if (dict.Remove(key))
+				{
+					return;
+				}
+			}
+
+			static SQInteger __GetItem(HSQUIRRELVM vm);
+
+			VariantInterface* GetItem(const char* key)
+			{
+				VariantInterface* variant = (VariantInterface*)dict.Get(key);
+				if (!variant)
+				{
+					return 0x0;
+				}
+				return variant;
+			}
+
+			bool Contains(const char* key)
+			{
+				return dict.Get(key) != NULL;
+			}
+		};
+
+
+
+
+
+	}
+}
+
+SQBIND_DECLARE_CLASS(Rocket::Squirrel::DictionaryInterface);
+
+SQBIND_DECLARE_CLASS(Rocket::Squirrel::VariantInterface);
+
 SQBIND_DECLARE_CLASS(Rocket::Core::Vector2f);
 
 SQBIND_DECLARE_CLASS(Rocket::Core::Vector2i);
@@ -61,8 +144,30 @@ namespace Rocket {
 
 
 
+		
+		SQInteger DictionaryInterface::__GetItem(HSQUIRRELVM vm)
+		{
+			sqb::StackHandler sh(vm);
 
+			SQInteger count = sq_gettop(vm);
+			ROCKETSQUIRREL_ASSERT(count >= 2);
 
+			//Here we assume that the obj has been allocated already TODO??
+			DictionaryInterface* instance = (DictionaryInterface*)squirrelGetInstance(vm);
+
+			const SQChar* key = sqb::Get(sqb::TypeWrapper<const SQChar*>(), vm, 2);
+			ROCKETSQUIRREL_ASSERT(key);
+
+			VariantInterface* vari = instance->GetItem(key);
+
+			if (!vari)
+			{
+				sh.ThrowNull();
+				return 0;
+			}
+
+			return sqb::Push(vm, (*vari));
+		}
 
 
 
@@ -269,6 +374,24 @@ namespace Rocket {
 			cLT.EnumEntry(Rocket::Core::Log::LT_WARNING, "warning");
 			cLT.EnumEntry(Rocket::Core::Log::LT_INFO, "info");
 			cLT.EnumEntry(Rocket::Core::Log::LT_DEBUG, "debug");
+
+
+
+			//Dictionary
+			sqb::ClassDefinition<VariantInterface> cVar(vm, -1, _SC("Variant"));
+
+			cVar.ClassFunction(&VariantInterface::__test, _SC("test"));
+
+
+			//Dictionary
+			sqb::ClassDefinition<DictionaryInterface> cDic(vm, -1, _SC("Dictionary"));
+
+			//cDic.NativeFunction
+			cDic.ClassFunction(&DictionaryInterface::Size, _SC("len"));
+			cDic.ClassFunction(&DictionaryInterface::SetItem, _SC("_set"));
+			cDic.ClassFunction(&DictionaryInterface::DelItem, _SC("remove"));
+			cDic.NativeFunction(&DictionaryInterface::__GetItem, _SC("_get"), sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("xs")));
+			cDic.ClassFunction(&DictionaryInterface::Contains, _SC("Contains"));
 
 			sq_poptop(vm);
 

@@ -26,67 +26,12 @@
  */
 
 
-#ifndef __ROCKETSQUIRREL_INCLUDED
-#define __ROCKETSQUIRREL_INCLUDED
+#ifndef __ROCKETSQUIRREL_DEBUG_INCLUDED
+#define __ROCKETSQUIRREL_DEBUG_INCLUDED
 
 #include <assert.h>
 
-#define ROCKETSQUIRRELDLL_API
-
-
-
-#include "Rocket/Core.h"
-#include "Rocket/Core/Plugin.h"
-#include <squirrel.h>
-
-namespace Rocket {
-	namespace Squirrel {
-
-
-		
-
-
-
-		class ROCKETSQUIRRELDLL_API Module : public Rocket::Core::Plugin
-		{
-		private:
-
-			void OnInitialise();
-			void OnShutdown();
-
-			static Module* s_pInstance;
-			HSQUIRRELVM mVM;
-			const bool mUseNamespace;
-			bool mVMCreated;
-			bool mInitialized;
-
-		public:
-
-			/*! Module entry point
-			 * @param vm Squirrel Virtual Machine, if NULL then it will be created internally
-			 * @param useNamespace If this is true, then every single class and type would be put in 
-			 * Rocket.Core.$class/Type, usefull if you're also doing binding with the vm
-			 */
-			Module(HSQUIRRELVM vm = NULL, bool useNamespace = false);
-			~Module();
-
-			/*! Gets the instance (itself)*/
-			static Module& instance();
-
-			/*! True if the binding was done with a namespace */
-			bool isUsingNamespace() const;
-
-			/*! True if the binding was done with a namespace */
-			HSQUIRRELVM getSquirrelVM() const;
-
-		};
-
-
-
-
-
-	}
-}
+#define ROCKETSQUIRREL_ASSERT(expr) assert(expr)
 
 
 
