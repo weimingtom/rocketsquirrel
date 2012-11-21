@@ -56,6 +56,13 @@ set(SRCS
 	
 	source/BindingUtil.h
 	source/BindingUtil.cpp
+	
+	#Some "heavy" interfaces
+	source/DictionaryInterface.h
+	source/VectorInterface.h
+	source/VariantInterface.h
+	
+	source/Debug.h
 )
 
 set_target_properties(${projectName} PROPERTIES DEBUG_POSTFIX _d)

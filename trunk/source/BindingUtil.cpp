@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
+#include "Debug.h"
 
 #ifdef _WINDOWS
 #include <Windows.h>
@@ -158,7 +159,7 @@ namespace Rocket {
 							pf(v,_SC("[%s] %s\n"),name,i?_SC("true"):_SC("false"));
 									 }
 							break;
-						default: ROCKET_ASSERT(0); break;
+						default: ROCKETSQUIRREL_ASSERT(0); break;
 						}
 						sq_pop(v,1);
 					}
