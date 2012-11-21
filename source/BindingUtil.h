@@ -36,55 +36,58 @@
 
 
 namespace Rocket {
-	namespace Squirrel {
+namespace Core {
+namespace Squirrel {
 
 
 
 
 
-		void squirrelPrintFunc(HSQUIRRELVM v,const SQChar *s,...);
-		void squirrelCompileErrorFunc(HSQUIRRELVM v, const SQChar* desc, const SQChar* source, SQInteger line, SQInteger column);
+void squirrelPrintFunc(HSQUIRRELVM v,const SQChar *s,...);
+void squirrelCompileErrorFunc(HSQUIRRELVM v, const SQChar* desc, const SQChar* source, SQInteger line, SQInteger column);
 
-		SQRESULT compileNutFile(HSQUIRRELVM v, const char *filename);
+SQRESULT compileNutFile(HSQUIRRELVM v, const char *filename);
 
 		
-		SQInteger squirrelPrintRuntimeError(HSQUIRRELVM v);
-		void squirrelPrintCallStack(HSQUIRRELVM v);
+SQInteger squirrelPrintRuntimeError(HSQUIRRELVM v);
+void squirrelPrintCallStack(HSQUIRRELVM v);
 
-		inline SQUserPointer squirrelGetInstance(HSQUIRRELVM vm)
-		{
-			sqb::StackHandler stack(vm);
+inline SQUserPointer squirrelGetInstance(HSQUIRRELVM vm)
+{
+	sqb::StackHandler stack(vm);
 
-			SQUserPointer userPointer;
-			SQBIND_ASSERT(sq_gettype(vm, 1) == OT_INSTANCE);
+	SQUserPointer userPointer;
+	SQBIND_ASSERT(sq_gettype(vm, 1) == OT_INSTANCE);
 
-			sq_getinstanceup(vm, 1, &userPointer, nullptr);
-			SQBIND_ASSERT_MSG(userPointer != nullptr, "new instance user pointer was null, did you forget to call sq_setclassudsize?");
+	sq_getinstanceup(vm, 1, &userPointer, nullptr);
+	SQBIND_ASSERT_MSG(userPointer != nullptr, "new instance user pointer was null, did you forget to call sq_setclassudsize?");
 			
-			return userPointer;
-		}
+	return userPointer;
+}
 
-		template <typename T>
-		inline T* squirrelNewInstance(HSQUIRRELVM vm)
-		{
-			sqb::StackHandler stack(vm);
+template <typename T>
+inline T* squirrelNewInstance(HSQUIRRELVM vm)
+{
+	sqb::StackHandler stack(vm);
 
-			sqb::ClassTypeTag<T>* classTypeTag = sqb::ClassTypeTag<T>::Get();
+	sqb::ClassTypeTag<T>* classTypeTag = sqb::ClassTypeTag<T>::Get();
 
-			SQUserPointer userPointer = squirrelGetInstance(vm);
+	SQUserPointer userPointer = squirrelGetInstance(vm);
 
-			SQRELEASEHOOK hook = classTypeTag->GetReleaseHook();
-			sq_setreleasehook(vm, 1, hook);
+	SQRELEASEHOOK hook = classTypeTag->GetReleaseHook();
+	sq_setreleasehook(vm, 1, hook);
 
-			T* instance = new (userPointer)T();
-			(void)instance;
+	T* instance = new (userPointer)T();
+	(void)instance;
 
-			return (T*)instance;
-		}
+	return (T*)instance;
+}
 
 
 
-	}
+
+}
+}
 }
 
 

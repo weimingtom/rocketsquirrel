@@ -35,121 +35,122 @@
 
 
 namespace Rocket {
-	namespace Squirrel {
+namespace Core {
+namespace Squirrel {
 
 
 
 
 
-		void RegisterSquirrelInterfaces(HSQUIRRELVM vm);
-		void RegisterSquirrelConverters(HSQUIRRELVM vm);
+void RegisterSquirrelInterfaces(HSQUIRRELVM vm);
+void RegisterSquirrelConverters(HSQUIRRELVM vm);
 
 
-		Module* Module::s_pInstance = 0x0;
+Module* Module::s_pInstance = 0x0;
 
 
-		Module::Module(HSQUIRRELVM vm, bool useNamespace) :
-			mUseNamespace(useNamespace),
-			mVM(vm),
-			mVMCreated(false),
-			mInitialized(false)
-		{
-			s_pInstance = this;
-		}
+Module::Module(HSQUIRRELVM vm, bool useNamespace) :
+	mUseNamespace(useNamespace),
+	mVM(vm),
+	mVMCreated(false),
+	mInitialized(false)
+{
+	s_pInstance = this;
+}
 
-		Module::~Module()
-		{
-		}
+Module::~Module()
+{
+}
 
-		Module& Module::instance()
-		{
-			ROCKETSQUIRREL_ASSERT(s_pInstance != 0x0);
-			return *s_pInstance;
-		}
+Module& Module::instance()
+{
+	ROCKETSQUIRREL_ASSERT(s_pInstance != 0x0);
+	return *s_pInstance;
+}
 
-		bool Module::isUsingNamespace() const
-		{
-			return mUseNamespace;
-		}
+bool Module::isUsingNamespace() const
+{
+	return mUseNamespace;
+}
 
-		HSQUIRRELVM Module::getSquirrelVM() const
-		{
-			return mVM;
-		}
+HSQUIRRELVM Module::getSquirrelVM() const
+{
+	return mVM;
+}
 
-		void Module::OnInitialise()
-		{
-			ROCKETSQUIRREL_ASSERT(mInitialized == false);
+void Module::OnInitialise()
+{
+	ROCKETSQUIRREL_ASSERT(mInitialized == false);
 
-			if (!mVM)
-			{
-				mVM = sq_open(1024);
+	if (!mVM)
+	{
+		mVM = sq_open(1024);
 
-				sq_setcompilererrorhandler(mVM, &squirrelCompileErrorFunc);
-				sq_setprintfunc(mVM, &squirrelPrintFunc, &squirrelPrintFunc);
+		sq_setcompilererrorhandler(mVM, &squirrelCompileErrorFunc);
+		sq_setprintfunc(mVM, &squirrelPrintFunc, &squirrelPrintFunc);
 
-				sq_pushroottable(mVM);
-				sq_newclosure(mVM, &squirrelPrintRuntimeError, 0);
-				sq_seterrorhandler(mVM);
-				sq_pop(mVM, 1);
+		sq_pushroottable(mVM);
+		sq_newclosure(mVM, &squirrelPrintRuntimeError, 0);
+		sq_seterrorhandler(mVM);
+		sq_pop(mVM, 1);
 
-				mVMCreated = true;
-			}
+		mVMCreated = true;
+	}
 
-			RegisterSquirrelInterfaces(mVM);
-			//RegisterSquirrelConverters(mVM);
+	RegisterSquirrelInterfaces(mVM);
+	//RegisterSquirrelConverters(mVM);
 
 
 
-			//DEV lets tests all the interfaces
+	//DEV lets tests all the interfaces
 #ifdef ROCKETSQUIRREL_DEV
-			using Rocket::Core::String;
-			using Rocket::Core::StringList;
+	using Rocket::Core::String;
+	using Rocket::Core::StringList;
 
-			HSQUIRRELVM vm = Module::instance().getSquirrelVM();
+	HSQUIRRELVM vm = Module::instance().getSquirrelVM();
 
-			String scriptsDir(ROCKETSQUIRREL_SCRIPTS);
-			scriptsDir += "/";
-
-
-			StringList tests;
-			tests.push_back("Interfaces.nut");
-			tests.push_back("Dictionary.nut");
+	String scriptsDir(ROCKETSQUIRREL_SCRIPTS);
+	scriptsDir += "/";
 
 
-			for (unsigned int i = 0; i < tests.size(); i++)
-			{
-				SQRESULT sqr;
+	StringList tests;
+	tests.push_back("Interfaces.nut");
+	tests.push_back("Dictionary.nut");
 
-				sqr = compileNutFile(vm, String(scriptsDir + tests[i]).CString());
 
-				ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+	for (unsigned int i = 0; i < tests.size(); i++)
+	{
+		SQRESULT sqr;
+
+		sqr = compileNutFile(vm, String(scriptsDir + tests[i]).CString());
+
+		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
   
-				sq_pushroottable(vm);
+		sq_pushroottable(vm);
 
-				sqr = sq_call(vm, 1, false, true);
+		sqr = sq_call(vm, 1, false, true);
 
-				ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
 
-				sq_poptop(vm);
-			}
+		sq_poptop(vm);
+	}
 
 #endif
 
-			mInitialized = true;
-		}
+	mInitialized = true;
+}
 
-		void Module::OnShutdown()
-		{
-			ROCKETSQUIRREL_ASSERT(mInitialized == true);
+void Module::OnShutdown()
+{
+	ROCKETSQUIRREL_ASSERT(mInitialized == true);
 
-			if (mVM && mVMCreated)
-			{
-				sq_close(mVM);
-			}
+	if (mVM && mVMCreated)
+	{
+		sq_close(mVM);
+	}
 
-			mInitialized = false;
-		}
+	mInitialized = false;
+}
 
 
 
@@ -158,5 +159,8 @@ namespace Rocket {
 
 
 
-	}
+
+
+}
+}
 }

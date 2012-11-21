@@ -52,15 +52,18 @@ set(HDRS
  
 set(SRCS
 	source/RocketSquirrel.cpp
-	source/Interfaces.cpp
 	
 	source/BindingUtil.h
 	source/BindingUtil.cpp
 	
-	#Some "heavy" interfaces
-	source/DictionaryInterface.h
-	source/VectorInterface.h
-	source/VariantInterface.h
+	#Core
+	source/Core/Interfaces.cpp
+	source/Core/DictionaryInterface.h
+	source/Core/DictionaryInterface.cpp
+	source/Core/VectorInterface.h
+	source/Core/VectorInterface.cpp
+	source/Core/VariantInterface.h
+	source/Core/VariantInterface.cpp
 	
 	source/Debug.h
 )
