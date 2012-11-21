@@ -55,7 +55,7 @@ int main()
 	
 	
 	//Register the RocketSquirrel module (plugin)
-	Rocket::Core::RegisterPlugin(new Rocket::Squirrel::Module());
+	Rocket::Core::RegisterPlugin(new Rocket::Core::Squirrel::Module());
 
 	///////////////////////////////////////////
 	Rocket::Core::Initialise();
