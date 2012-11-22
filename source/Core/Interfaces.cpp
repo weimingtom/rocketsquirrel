@@ -46,8 +46,14 @@
 
 #include "DictionaryInterface.h"
 #include "VariantInterface.h"
+
 #include "VectorInterface.h"
 
+SQBIND_DECLARE_CLASS(Rocket::Core::String);
+
+SQBIND_DECLARE_CLASS(Rocket::Core::StringList);
+
+SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::VectorInterface<Rocket::Core::StringList>);
 
 SQBIND_DECLARE_CLASS(Rocket::Core::Vector2f);
 
@@ -191,10 +197,78 @@ static SQInteger URLConstructor(HSQUIRRELVM v)
 	return sqb::ClassDefinition<Rocket::Core::URL>::DefaultConstructor(v);
 }
 
+
+static SQInteger StringConstructor(HSQUIRRELVM v)
+{
+	SQInteger nargs = sq_gettop(v);
+
+	if (nargs >= 2)
+	{
+		Rocket::Core::String* pStr = squirrelNewInstance<Rocket::Core::String>(v);
+
+		Rocket::Core::Variant variant;
+
+		switch (sq_gettype(v, 2))
+		{
+		case OT_STRING:
+			{
+				const SQChar* str;
+				if (SQ_SUCCEEDED(sq_getstring(v, 2, &str)))
+				{
+					variant.Set(str);
+				}
+			} break;
+		case OT_INTEGER:
+			{
+				SQInteger inte;
+				if (SQ_SUCCEEDED(sq_getinteger(v, 2, &inte)))
+				{
+					variant.Set(inte);
+				}
+			} break;
+		case OT_FLOAT:
+			{
+				float f;
+				if (SQ_SUCCEEDED(sq_getfloat(v, 2, &f)))
+				{
+					variant.Set(f);
+				}
+			} break;
+		}
+
+		pStr->Append(variant.Get<Rocket::Core::String>().CString());
+
+		return 1;
+	}	
+
+	return sqb::ClassDefinition<Rocket::Core::String>::DefaultConstructor(v);
+}
+
 void RegisterSquirrelInterfaces(HSQUIRRELVM vm)
 {
 	sq_pushroottable(vm);
 
+
+	//RocketString
+	sqb::ClassDefinition<Rocket::Core::String> cStr(vm, -1, _SC("RocketString"));
+
+	cStr.Constructor(&StringConstructor, sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("x")));
+
+	cStr.ClassFunction<Rocket::Core::String& (Rocket::Core::String::*)(const char* assign)>(&Rocket::Core::String::operator=, _SC("Set"));
+	cStr.ClassFunction(&Rocket::Core::String::CString, _SC("_tostring"));
+
+
+
+	//StringList
+	sqb::ClassDefinition<VectorInterface<Rocket::Core::StringList>> cVec(vm, -1, _SC("StringList"));
+
+	cVec.ClassFunction(&VectorInterface<Rocket::Core::StringList>::Contains, _SC("Contains"));
+	cVec.ClassFunction(&VectorInterface<Rocket::Core::StringList>::SetItem, _SC("_set"));
+	cVec.ClassFunction(&VectorInterface<Rocket::Core::StringList>::GetItem, _SC("_get"));
+	cVec.ClassFunction(&VectorInterface<Rocket::Core::StringList>::PushBack, _SC("append"));
+	cVec.ClassFunction(&VectorInterface<Rocket::Core::StringList>::PushBack, _SC("push"));
+	cVec.ClassFunction(&VectorInterface<Rocket::Core::StringList>::Size, _SC("len"));
+	cVec.ClassFunction(&VectorInterface<Rocket::Core::StringList>::DelItem, _SC("remove"));
 
 	//Vector2f
 	sqb::ClassDefinition<Rocket::Core::Vector2f> cV2f(vm, -1, _SC("Vector2f"));
@@ -275,23 +349,9 @@ void RegisterSquirrelInterfaces(HSQUIRRELVM vm)
 	cLT.EnumEntry(Rocket::Core::Log::LT_INFO, "info");
 	cLT.EnumEntry(Rocket::Core::Log::LT_DEBUG, "debug");
 
+	VariantInterface::Bind(vm);
+	DictionaryInterface::Bind(vm);
 
-
-	//Dictionary
-	sqb::ClassDefinition<VariantInterface> cVar(vm, -1, _SC("Variant"));
-
-	cVar.ClassFunction(&VariantInterface::__test, _SC("test"));
-
-
-	//Dictionary
-	sqb::ClassDefinition<DictionaryInterface> cDic(vm, -1, _SC("Dictionary"));
-
-	//cDic.NativeFunction
-	cDic.ClassFunction(&DictionaryInterface::Size, _SC("len"));
-	cDic.ClassFunction(&DictionaryInterface::SetItem, _SC("_set"));
-	cDic.ClassFunction(&DictionaryInterface::DelItem, _SC("remove"));
-	cDic.NativeFunction(&DictionaryInterface::__GetItem, _SC("_get"), sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("xs")));
-	cDic.ClassFunction(&DictionaryInterface::Contains, _SC("Contains"));
 
 	sq_poptop(vm);
 

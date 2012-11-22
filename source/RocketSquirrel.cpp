@@ -116,6 +116,7 @@ void Module::OnInitialise()
 	StringList tests;
 	tests.push_back("Interfaces.nut");
 	tests.push_back("Dictionary.nut");
+	tests.push_back("StringList.nut");
 
 
 	for (unsigned int i = 0; i < tests.size(); i++)

@@ -86,6 +86,9 @@ inline T* squirrelNewInstance(HSQUIRRELVM vm)
 
 
 
+
+
+
 }
 }
 }
