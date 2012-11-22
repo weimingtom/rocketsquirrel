@@ -64,6 +64,10 @@ public:
 	VariantInterface* GetItem(const char* key);
 
 	bool Contains(const char* key);
+
+
+	//Binding function
+	static void Bind(HSQUIRRELVM vm);
 };
 
 

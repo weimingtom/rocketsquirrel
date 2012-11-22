@@ -52,6 +52,8 @@ public:
 
 	void __test();
 
+
+	static void Bind(HSQUIRRELVM vm);
 };
 
 
