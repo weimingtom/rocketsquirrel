@@ -252,7 +252,7 @@ static SQInteger StringConstructor(HSQUIRRELVM v)
 	return sqb::ClassDefinition<Rocket::Core::String>::DefaultConstructor(v);
 }
 
-void RegisterSquirrelInterfaces(HSQUIRRELVM vm)
+void RegisterSquirrelInterfaces(HSQUIRRELVM vm)-lin
 {
 	sq_pushroottable(vm);
 
@@ -262,8 +262,14 @@ void RegisterSquirrelInterfaces(HSQUIRRELVM vm)
 
 	cStr.Constructor(&StringConstructor, sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("x")));
 
-	cStr.ClassFunction<Rocket::Core::String& (Rocket::Core::String::*)(const char* assign)>(&Rocket::Core::String::operator=, _SC("Set"));
+	typedef Rocket::Core::String& (Rocket::Core::String::* AppendType)(const char* assign);
+
+	cStr.ClassFunction<AppendType>(&Rocket::Core::String::operator=, _SC("Set"));
 	cStr.ClassFunction(&Rocket::Core::String::CString, _SC("_tostring"));
+	cStr.ClassFunction<AppendType>(&Rocket::Core::String::operator+=, _SC("Append"));
+	cStr.ClassFunction<AppendType>(&Rocket::Core::String::operator+=, _SC("_add"));
+	cStr.ClassFunction(&Rocket::Core::String::Clear, _SC("Clear"));
+	//sqb::ClassDefinition
 
 
 

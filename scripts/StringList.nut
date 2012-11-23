@@ -7,6 +7,14 @@ local str = RocketString("Hello");
 local str2 = RocketString(50);
 local str3 = RocketString(1.5999);
 
+//str2 = str2 + " Float + string";
+
+str2 = RocketString(str3 + " STR");
+
+local sqStr = "SquirrelString";
+
+str.Set(sqStr);
+
 list[0] = str;
 list[1] = str2;
 list[2] = RocketString(-100.0);
