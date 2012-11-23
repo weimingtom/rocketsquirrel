@@ -81,8 +81,21 @@ namespace Squirrel {
 
 
 
-static void Log(Rocket::Core::Log::Type level, const char* message)
+static void Log(int intLevel, const char* message)
 {	
+	using Rocket::Core::Log;
+	
+	Log::Type level;
+	
+	switch (intLevel)
+	{
+	case Log::LT_ALWAYS: level = Log::LT_ALWAYS; break;
+	case Log::LT_ERROR: level = Log::LT_ERROR; break;
+	case Log::LT_WARNING: level = Log::LT_WARNING; break;
+	case Log::LT_INFO: level = Log::LT_INFO; break;
+	case Log::LT_DEBUG: level = Log::LT_DEBUG; break;
+	}
+	
 	Core::Log::Message(level, "%s", message);
 }
 
@@ -252,7 +265,7 @@ static SQInteger StringConstructor(HSQUIRRELVM v)
 	return sqb::ClassDefinition<Rocket::Core::String>::DefaultConstructor(v);
 }
 
-void RegisterSquirrelInterfaces(HSQUIRRELVM vm)-lin
+void RegisterSquirrelInterfaces(HSQUIRRELVM vm)
 {
 	sq_pushroottable(vm);
 
