@@ -79,6 +79,7 @@ include_directories(
 	${PROJECT_BINARY_DIR}
 )
 
-add_definitions( -DSQBIND_STATIC )
+ADD_DEFINITIONS(-std=c++0x)
+ADD_DEFINITIONS(-DSQBIND_STATIC)
 
 add_library(RocketSquirrel STATIC ${HDRS} ${SRCS})

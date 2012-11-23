@@ -30,7 +30,7 @@
 #include "ShellFileInterface.h"
 #include <x11/InputX11.h>
 #include <X11/Xlib.h>
-#include <X11/extensions/xf86vmode.h>
+#include <X11/extensions/xf86vm.h>
 #include <GL/glx.h>
 #include <GL/gl.h>
 #include <sys/types.h>
