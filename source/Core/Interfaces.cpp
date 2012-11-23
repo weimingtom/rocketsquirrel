@@ -113,8 +113,13 @@ static SQInteger Vector2iConstructor(HSQUIRRELVM v)
 
 		if (pVec2i)
 		{
-			sq_getinteger(v, 2, &pVec2i->x);
-			sq_getinteger(v, 3, &pVec2i->y);
+			SQInteger x, y;
+			
+			sq_getinteger(v, 2, &x);
+			sq_getinteger(v, 3, &y);
+			
+			pVec2i->x = x;
+			pVec2i->y = y;
 		}
 
 		return 1;
@@ -223,7 +228,7 @@ static SQInteger StringConstructor(HSQUIRRELVM v)
 				SQInteger inte;
 				if (SQ_SUCCEEDED(sq_getinteger(v, 2, &inte)))
 				{
-					variant.Set(inte);
+					variant.Set((int)inte);
 				}
 			} break;
 		case OT_FLOAT:
@@ -342,7 +347,7 @@ void RegisterSquirrelInterfaces(HSQUIRRELVM vm)
 
 
 	//LogType
-	sqb::ClassDefinition<Rocket::Core::Log::Type> cLT(vm, -1, _SC("LogType"));
+	sqb::ClassDefinition<Rocket::Core::Log> cLT(vm, -1, _SC("LogType"));
 	cLT.EnumEntry(Rocket::Core::Log::LT_ALWAYS, "always");
 	cLT.EnumEntry(Rocket::Core::Log::LT_ERROR, "error");
 	cLT.EnumEntry(Rocket::Core::Log::LT_WARNING, "warning");

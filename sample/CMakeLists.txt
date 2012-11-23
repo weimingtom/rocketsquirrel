@@ -28,16 +28,33 @@ set(SRCS
 	shell/src/ShellSystemInterface.cpp
 )
 
-set(OSSRCS
-	shell/src/win32/InputWin32.cpp
-	shell/src/win32/ShellWin32.cpp
-)
+if (DEFINED WIN32)
+	set(OSSRCS
+		shell/src/win32/InputWin32.cpp
+		shell/src/win32/ShellWin32.cpp
+	)
+elseif (DEFINED UNIX)
+	
+	find_package(X11 REQUIRED)
+	
+	include_directories(${X11_INCLUDE_DIR})
+
+	set(OSSRCS
+		shell/src/x11/InputX11.cpp
+		shell/src/x11/ShellX11.cpp
+	)
+endif()
+
+
 
 add_definitions( -DSQBIND_STATIC )
 
 add_executable(Sample ${SRCS} ${OSSRCS})
 
 set_target_properties(Sample PROPERTIES DEBUG_POSTFIX _d)
+
+ADD_DEFINITIONS(-std=c++0x)
+ADD_DEFINITIONS(-DSQBIND_STATIC)
 
 target_link_libraries(
 	Sample
