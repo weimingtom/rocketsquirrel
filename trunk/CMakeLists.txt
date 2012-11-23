@@ -28,8 +28,14 @@ if(NOT DEFINED LIBROCKET_DIR )
 endif()
 
 
-set(SQBIND_LIB_DEBUG ${SQBIND_DIR}/lib/vs2010/x32/debug/sqbind.lib)
-set(SQBIND_LIB_OPTIMIZED ${SQBIND_DIR}/lib/vs2010/x32/release/sqbind.lib)
+if (DEFINED WIN32)
+	set(SQBIND_LIB_DEBUG ${SQBIND_DIR}/lib/vs2010/x32/debug/sqbind.lib)
+	set(SQBIND_LIB_OPTIMIZED ${SQBIND_DIR}/lib/vs2010/x32/release/sqbind.lib)
+elseif (DEFINED UNIX)
+	
+	set(SQBIND_LIB_DEBUG ${SQBIND_DIR}/libsqbind.a)
+	set(SQBIND_LIB_OPTIMIZED ${SQBIND_DIR}/libsqbind.a)
+endif()
 
 
 set(ROCKETSQUIRREL_VERSION_MAJOR 0)
@@ -43,8 +49,12 @@ configure_file(
 
 
 
+if(DEFINED BUILD_SAMPLE )
+	add_subdirectory (sample)
+	set(BUILDING_SAMPLE ${BUILD_SAMPLE})
+endif()
 
-add_subdirectory (sample)
+
 
 set(HDRS
 	include/RocketSquirrel.h

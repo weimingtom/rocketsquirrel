@@ -65,7 +65,10 @@ SQBIND_DECLARE_CLASS(Rocket::Core::Colourb);
 
 SQBIND_DECLARE_CLASS(Rocket::Core::URL);
 
-SQBIND_DECLARE_ENUM(Rocket::Core::Log::Type);
+SQBIND_DECLARE_CLASS(Rocket::Core::Log);
+
+//SQBIND_DECLARE_ENUM(Rocket::Core::Log::Type);
+SQBIND_DECLARE_CLASS(Rocket::Core::Log::Type);
 
 
 namespace Rocket {

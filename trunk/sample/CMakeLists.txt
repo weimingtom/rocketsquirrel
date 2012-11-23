@@ -58,9 +58,9 @@ ADD_DEFINITIONS(-DSQBIND_STATIC)
 
 target_link_libraries(
 	Sample
+	RocketSquirrel
 	debug ${SQBIND_LIB_DEBUG}
 	optimized ${SQBIND_LIB_OPTIMIZED}
-	RocketSquirrel
 	optimized squirrel
 	debug squirrel_d
 	optimized sqstdlib
