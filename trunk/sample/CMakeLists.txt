@@ -20,7 +20,7 @@ link_directories(
 )
 
 set(SRCS 
-	Sample.cpp
+	sample.cpp
 	shell/src/Shell.cpp
 	shell/src/Input.cpp
 	shell/src/ShellFileInterface.cpp
