@@ -91,5 +91,6 @@ include_directories(
 
 ADD_DEFINITIONS(-std=c++0x)
 ADD_DEFINITIONS(-DSQBIND_STATIC)
+ADD_DEFINITIONS(-DROCKETSQUIRREL_DEV)
 
 add_library(RocketSquirrel STATIC ${HDRS} ${SRCS})
