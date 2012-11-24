@@ -1,15 +1,15 @@
 print("\n\n :: StringList Tests :: \n\n");
 
-local list = StringList();
+local list = Rocket.StringList();
 
-local str = RocketString("Hello");
+local str = Rocket.String("Hello");
 
-local str2 = RocketString(50);
-local str3 = RocketString(1.5999);
+local str2 = Rocket.String(50);
+local str3 = Rocket.String(1.5999);
 
 //str2 = str2 + " Float + string";
 
-str2 = RocketString(str3 + " STR");
+str2 = Rocket.String(str3 + " STR");
 
 local sqStr = "SquirrelString";
 
@@ -18,13 +18,13 @@ str.Set(sqStr);
 
 list[0] = str;
 list[1] = str2;
-list[2] = RocketString(-100.0);
+list[2] = Rocket.String(-100.0);
 list[3] = str3;
 
 list.append(str);
 list.push(str);
 
-if (list.Contains(RocketString("Hello")))
+if (list.Contains(Rocket.String("Hello")))
 {
 	print("\nlist contains Hello\n"); 
 }
