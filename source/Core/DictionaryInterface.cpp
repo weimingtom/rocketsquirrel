@@ -73,7 +73,7 @@ SQInteger DictionaryInterface::__GetItem(HSQUIRRELVM vm)
 	ROCKETSQUIRREL_ASSERT(count >= 2);
 
 	//Here we assume that the obj has been allocated already TODO??
-	DictionaryInterface* instance = (DictionaryInterface*)squirrelGetInstance(vm);
+	DictionaryInterface* instance = (DictionaryInterface*)GetInstance(vm);
 
 	const SQChar* key = sqb::Get(sqb::TypeWrapper<const SQChar*>(), vm, 2);
 	ROCKETSQUIRREL_ASSERT(key);

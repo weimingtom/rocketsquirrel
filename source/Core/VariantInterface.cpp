@@ -28,6 +28,9 @@
 #include "VariantInterface.h"
 #include <squirrel.h>
 #include <sqbind/SquirrelBind.h>
+#include "../BindingUtil.h"
+
+
 
 namespace Rocket {
 namespace Core {
@@ -42,19 +45,112 @@ namespace Squirrel {
 
 VariantInterface::VariantInterface()
 {
-	this->Set("hello");
+	Set("NULL");
 }
 
-void VariantInterface::__test()
+VariantInterface::~VariantInterface()
 {
-	return;
+}
+
+SQInteger VariantInterface::constructor(HSQUIRRELVM v)
+{
+	SQInteger nargs = sq_gettop(v);
+
+	if (nargs >= 2)
+	{
+		Rocket::Core::Squirrel::VariantInterface* pVari = NewInstance<Rocket::Core::Squirrel::VariantInterface>(v);
+
+		switch (sq_gettype(v, 2))
+		{
+		case OT_STRING:
+			{
+				const SQChar* str;
+				if (SQ_SUCCEEDED(sq_getstring(v, 2, &str)))
+				{
+					pVari->Set(str);
+				}
+			} 
+			break;
+		case OT_INTEGER:
+			{
+				SQInteger inte;
+				if (SQ_SUCCEEDED(sq_getinteger(v, 2, &inte)))
+				{
+					pVari->Set((int)inte);
+				}
+			} 
+			break;
+		case OT_FLOAT:
+			{
+				float f;
+				if (SQ_SUCCEEDED(sq_getfloat(v, 2, &f)))
+				{
+					pVari->Set(f);
+				}
+			} 
+			break;
+		case OT_INSTANCE:
+			{
+				TypeTagUtility ttu(v, 2);
+
+				if (ttu.matches<Rocket::Core::Vector2f>())
+				{
+					pVari->Set(*((Rocket::Core::Vector2f*)GetInstance(v, 2)));
+				}
+			}
+			break;
+		default:
+			{
+			}
+			break;
+		}
+
+		return 1;
+	}	
+
+	return sqb::ClassDefinition<Rocket::Core::Squirrel::VariantInterface>::DefaultConstructor(v);
+}
+
+const char* VariantInterface::toString()
+{
+	mCacheStr.Clear();
+	mCacheStr = Get<Rocket::Core::String>();
+
+	return mCacheStr.CString();
+}
+
+float VariantInterface::toFloat()
+{
+	return Get<float>();
+}
+
+SQInteger VariantInterface::toInteger()
+{
+	return Get<SQInteger>();
+}
+
+Rocket::Core::Vector2f VariantInterface::toVector2f()
+{
+	return Rocket::Core::Vector2f(Get<Rocket::Core::Vector2f>());
+}
+
+Rocket::Core::Vector2i VariantInterface::toVector2i()
+{
+	return Rocket::Core::Vector2i(Get<Rocket::Core::Vector2i>());
 }
 
 void VariantInterface::Bind(HSQUIRRELVM vm)
 {
 	sqb::ClassDefinition<VariantInterface> cVar(vm, -1, _SC("Variant"));
 
-	cVar.ClassFunction(&VariantInterface::__test, _SC("test"));
+	cVar.Constructor(&VariantInterface::constructor, sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("x")));
+
+	cVar.ClassFunction(&VariantInterface::toString, _SC("_tostring"));
+	cVar.ClassFunction(&VariantInterface::toFloat, _SC("tofloat"));
+	cVar.ClassFunction(&VariantInterface::toInteger, _SC("tointeger"));
+	cVar.ClassFunction(&VariantInterface::toVector2f, _SC("toVector2f"));
+	cVar.ClassFunction(&VariantInterface::toVector2i, _SC("toVector2i"));
+
 }
 
 

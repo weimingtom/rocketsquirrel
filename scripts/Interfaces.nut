@@ -1,3 +1,5 @@
+local str = Rocket.String();
+
 print("RocketSquirrel Test Cases \n\n");
 
 function vector2fToStr(vec2f)
