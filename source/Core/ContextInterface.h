@@ -33,6 +33,8 @@
 #include <squirrel.h>
 #include <sqbind/SquirrelBind.h>
 
+#include <hash_map>
+
 
 
 namespace Rocket {
@@ -45,26 +47,22 @@ namespace Squirrel {
 
 
 
-class VariantInterface : public Rocket::Core::Context
+class ContextInterface
 {
 protected:
-	Rocket::Core::String mCacheStr;
+	Rocket::Core::Context* m_pContext;
 
 public:
 
-	VariantInterface();
-	~VariantInterface();
-
-	const char* toString();
-	float toFloat();
-	SQInteger toInteger();
-	Rocket::Core::Vector2f toVector2f();
-	Rocket::Core::Vector2i toVector2i();
-
+	ContextInterface();
 
 	static SQInteger constructor(HSQUIRRELVM v);
 
 	static void Bind(HSQUIRRELVM vm);
+	//just to be consistent
+	static void Register(HSQUIRRELVM vm);
+
+	static void InitialiseRocketInterface();
 };
 
 
@@ -72,20 +70,13 @@ public:
 
 
 
-
-
-
-
 }
 }
 }
 
 
-SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::VariantInterface);
-
-
-
-
+SQBIND_TYPE_POD(Rocket::Core::Squirrel::ContextInterface);
+SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::ContextInterface);
 
 
 #endif

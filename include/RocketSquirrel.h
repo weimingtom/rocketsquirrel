@@ -77,9 +77,8 @@ public:
 	/*! True if the binding was done with a namespace */
 	bool isUsingNamespace() const;
 
-	/*! True if the binding was done with a namespace */
+	/*! Gets Squirrel Virtual Machine */
 	HSQUIRRELVM getSquirrelVM() const;
-
 };
 
 
