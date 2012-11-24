@@ -1,8 +1,8 @@
 print("\n\n :: Dictionary Tests :: \n\n");
 
-local dict = Dictionary();
+local dict = Rocket.Dictionary();
 
-local vari = Variant();
+local vari = Rocket.Variant();
 
 print("Set/[]\n");
 dict["test"] = vari;

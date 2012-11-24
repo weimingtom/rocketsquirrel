@@ -1,5 +1,3 @@
-local str = Rocket.String();
-
 print("RocketSquirrel Test Cases \n\n");
 
 function vector2fToStr(vec2f)
@@ -18,8 +16,8 @@ function printTestTitle(title)
 ///////////////////////////////////////////////
 printTestTitle("Vector2f Testing");
 
-local v2fa = Vector2f(10.0, 5.0);
-local v2fb = Vector2f(10.0, 5.0);
+local v2fa = Rocket.Vector2f(10.0, 5.0);
+local v2fb = Rocket.Vector2f(10.0, 5.0);
 
 function printVectors2f(title)
 {
@@ -71,8 +69,8 @@ printVectors2f("Dot");
 //VECTOR2I
 printTestTitle("Vector2i Testing");
 
-local v2ia = Vector2i();
-local v2ib = Vector2i(10, 10);
+local v2ia = Rocket.Vector2i();
+local v2ib = Rocket.Vector2i(10, 10);
 
 function printVectors2i(title)
 {
@@ -112,8 +110,8 @@ if (v2ib != v2ia)
 ///////////////////////////////////////////////
 printTestTitle("Colourf Testing");
 
-local colfa = Colourf();
-local colfb = Colourf(0.4, 0.4, 0.3, 0.9);
+local colfa = Rocket.Colourf();
+local colfb = Rocket.Colourf(0.4, 0.4, 0.3, 0.9);
 
 colfa = colfb;
 
@@ -133,8 +131,8 @@ if (colfa == colfb)
 //COLOURB
 printTestTitle("Colourb Testing");
 
-local colba = Colourb();
-local colbb = Colourb(200, 100, 200, 255);
+local colba = Rocket.Colourb();
+local colbb = Rocket.Colourb(200, 100, 200, 255);
 
 print("assing\n");
 colba = colbb;
@@ -152,7 +150,7 @@ if (colbb == colba)
 ///////////////////////////////////////////////
 printTestTitle("URL Testing");
 
-local url = URL("http://google.com");
+local url = Rocket.URL("http://google.com");
 
 url.ClearParameters();
 
@@ -164,7 +162,7 @@ print(url);
 ///////////////////////////////////////////////
 printTestTitle("Log Testing");
 
-Log(LogType.debug, "Debbuging interface OK!");
+Rocket.Log(Rocket.LogType.debug, "Debbuging interface OK!");
 
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
