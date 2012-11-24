@@ -25,13 +25,15 @@
  *
  */
 
-#include "RocketSquirrel.h"
-#include <Rocket/Core.h>
-#include "BindingUtil.h"
+#ifndef __ROCKETSQUIRREL_CONTEXTINSTANCER_INCLUDED
+#define __ROCKETSQUIRREL_CONTEXTINSTANCER_INCLUDED
 
-#include "Config.h"
-#include "Debug.h"
-#include "Core/ContextInterface.h"
+
+
+#include <Rocket/Core/ContextInstancer.h>
+#include <Rocket/Core/String.h>
+#include <squirrel.h>
+#include <hash_map>
 
 
 
@@ -43,85 +45,34 @@ namespace Squirrel {
 
 
 
-void RegisterSquirrelInterfaces(HSQUIRRELVM vm);
-void RegisterSquirrelConverters(HSQUIRRELVM vm);
 
 
-Module* Module::s_pInstance = 0x0;
-
-
-Module::Module(HSQUIRRELVM vm, bool useNamespace) :
-	mUseNamespace(useNamespace),
-	mVM(vm),
-	mVMCreated(false),
-	mInitialized(false)
+class ContextInstancer : public Rocket::Core::ContextInstancer
 {
-	s_pInstance = this;
-}
+private:
 
-Module::~Module()
-{
-}
+	static ContextInstancer* s_pInstance;
 
-Module& Module::instance()
-{
-	ROCKETSQUIRREL_ASSERT(s_pInstance != 0x0);
-	return *s_pInstance;
-}
+protected:
+	typedef std::hash_map<const char*, Rocket::Core::Context*> ContextMap;
 
-bool Module::isUsingNamespace() const
-{
-	return mUseNamespace;
-}
+	ContextMap mContexts;
+public:
+	ContextInstancer();
+	virtual ~ContextInstancer();
 
-HSQUIRRELVM Module::getSquirrelVM() const
-{
-	return mVM;
-}
+	virtual Context* InstanceContext(const Rocket::Core::String& name);
 
-void Module::OnInitialise()
-{
-	ROCKETSQUIRREL_ASSERT(mInitialized == false);
+	virtual void ReleaseContext(Rocket::Core::Context* context);
 
-	if (!mVM)
-	{
-		mVM = sq_open(1024);
+	virtual void Release();
 
-		sq_setcompilererrorhandler(mVM, &CompileErrorFunc);
-		sq_setprintfunc(mVM, &PrintFunc, &PrintFunc);
-
-		sq_pushroottable(mVM);
-		sq_newclosure(mVM, &PrintRuntimeError, 0);
-		sq_seterrorhandler(mVM);
-		sq_pop(mVM, 1);
-
-		mVMCreated = true;
-	}
-
-	//Register Core interfaces
-	RegisterSquirrelInterfaces(mVM);
-	ContextInterface::Register(mVM);
-
-	ContextInterface::InitialiseRocketInterface();
-
-	mInitialized = true;
-}
-
-void Module::OnShutdown()
-{
-	ROCKETSQUIRREL_ASSERT(mInitialized == true);
-
-	if (mVM && mVMCreated)
-	{
-		sq_close(mVM);
-	}
-
-	mInitialized = false;
-}
+	static ContextInstancer& instance();
+};
 
 
 
-		
+
 
 
 
@@ -131,3 +82,10 @@ void Module::OnShutdown()
 }
 }
 }
+
+
+
+
+
+
+#endif

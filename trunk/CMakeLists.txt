@@ -42,9 +42,11 @@ set(ROCKETSQUIRREL_VERSION_MAJOR 0)
 set(ROCKETSQUIRREL_VERSION_MINOR 1)
 set(ROCKETSQUIRREL_SCRIPTS ${PROJECT_SOURCE_DIR}/scripts)
 
+set(ROCKETSQUIRREL_CONFIG_DIR ${PROJECT_BINARY_DIR}/Config)
+
 configure_file(
 	"${PROJECT_SOURCE_DIR}/Config.h.in"
-	"${PROJECT_BINARY_DIR}/Config.h"
+	"${ROCKETSQUIRREL_CONFIG_DIR}/Config.h"
 )
 
 
@@ -52,6 +54,11 @@ configure_file(
 if(DEFINED BUILD_SAMPLE )
 	add_subdirectory (sample)
 	set(BUILDING_SAMPLE ${BUILD_SAMPLE})
+endif()
+
+if(DEFINED BUILD_TESTS )
+	add_subdirectory (tests)
+	set(BUILD_TESTS ${BUILD_TESTS})
 endif()
 
 
@@ -77,6 +84,8 @@ set(SRCS
 	source/Core/VariantInterface.h
 	source/Core/VariantInterface.cpp
 	
+	source/Core/ContextInstancer.h
+	source/Core/ContextInstancer.cpp
 	source/Core/ContextInterface.h
 	source/Core/ContextInterface.cpp
 	source/Core/ElementInterface.h
@@ -96,6 +105,7 @@ include_directories(
 	${LIBROCKET_DIR}/Include
 	${SQBIND_DIR}/include
 	${PROJECT_BINARY_DIR}
+	${ROCKETSQUIRREL_CONFIG_DIR}
 )
 
 ADD_DEFINITIONS(-std=c++0x)

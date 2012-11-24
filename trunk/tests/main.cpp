@@ -9,16 +9,11 @@
 
 #include "Rocket/Core.h"
 #include "Rocket/Debugger.h"
+#include "../source/Debug.h"
 
-#include <sqbind/sqbBind.h>
-#include <sqbind/sqbBindMacros.h>
-#include <sqbind/sqbClassDefinition.h>
-
+void developingTests();
 
 static Rocket::Core::Context* context = NULL;
-
-SQBIND_DECLARE_CLASS(Rocket::Core::Box);
-//SQBIND_DECLARE_CLASS(Rocket::Core::Vector2f);
 
 void GameLoop()
 {
@@ -34,7 +29,7 @@ void GameLoop()
 int main()
 {
 	// Generic OS initialisation
-	if (!Shell::Initialise("./") || !Shell::OpenWindow("RocketSquirrel Sample", true))
+	if (!Shell::Initialise("./") || !Shell::OpenWindow("RocketSquirrel Tests", true))
 	{
 		Shell::Shutdown();
 		return -1;
@@ -48,19 +43,12 @@ int main()
 	ShellSystemInterface system_interface;
 	Rocket::Core::SetSystemInterface(&system_interface);
 
-
-
-	//RocketSquirrel Sample Code
-	///////////////////////////////////////////
-	
-	
-	//Register the RocketSquirrel module (plugin)
 	Rocket::Core::RegisterPlugin(new Rocket::Core::Squirrel::Module());
 
-	///////////////////////////////////////////
 	Rocket::Core::Initialise();
 
-	/*Warning all scripting should be done after Rocket Core initialization*/
+	developingTests();
+
 	// Create the main Rocket context and set it on the shell's input layer.
 	context = Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(1024, 768));
 	if (context == NULL)
@@ -74,14 +62,6 @@ int main()
 	Input::SetContext(context);
 
 	Shell::LoadFonts("./assets/");
-
-	// Load and show the demo document.
-	Rocket::Core::ElementDocument* document = context->LoadDocument("./assets/demo.rml");
-	if (document != NULL)
-	{
-		document->Show();
-		document->RemoveReference();
-	}
 
 	//Main Loop
 	Shell::EventLoop(GameLoop);
