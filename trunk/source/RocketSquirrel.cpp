@@ -86,11 +86,11 @@ void Module::OnInitialise()
 	{
 		mVM = sq_open(1024);
 
-		sq_setcompilererrorhandler(mVM, &squirrelCompileErrorFunc);
-		sq_setprintfunc(mVM, &squirrelPrintFunc, &squirrelPrintFunc);
+		sq_setcompilererrorhandler(mVM, &CompileErrorFunc);
+		sq_setprintfunc(mVM, &PrintFunc, &PrintFunc);
 
 		sq_pushroottable(mVM);
-		sq_newclosure(mVM, &squirrelPrintRuntimeError, 0);
+		sq_newclosure(mVM, &PrintRuntimeError, 0);
 		sq_seterrorhandler(mVM);
 		sq_pop(mVM, 1);
 
@@ -116,6 +116,7 @@ void Module::OnInitialise()
 	StringList tests;
 	tests.push_back("Interfaces.nut");
 	tests.push_back("Dictionary.nut");
+	tests.push_back("Variant.nut");
 	tests.push_back("StringList.nut");
 
 
@@ -123,7 +124,7 @@ void Module::OnInitialise()
 	{
 		SQRESULT sqr;
 
-		sqr = compileNutFile(vm, String(scriptsDir + tests[i]).CString());
+		sqr = CompileNutFile(vm, String(scriptsDir + tests[i]).CString());
 
 		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
   

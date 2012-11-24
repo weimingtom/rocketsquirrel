@@ -25,12 +25,11 @@
  *
  */
 
-#ifndef __ROCKETSQUIRREL_VARIANTINTERFACE_INCLUDED
-#define __ROCKETSQUIRREL_VARIANTINTERFACE_INCLUDED
+#ifndef __ROCKETSQUIRREL_CONTEXTINTERFACE_INCLUDED
+#define __ROCKETSQUIRREL_CONTEXTINTERFACE_INCLUDED
 
 
-#include <Rocket/Core/Variant.h>
-#include <Rocket/Core/Vector2.h>
+#include <Rocket/Core/Context.h>
 #include <squirrel.h>
 #include <sqbind/SquirrelBind.h>
 
@@ -46,7 +45,7 @@ namespace Squirrel {
 
 
 
-class VariantInterface : public Rocket::Core::Variant
+class VariantInterface : public Rocket::Core::Context
 {
 protected:
 	Rocket::Core::String mCacheStr;

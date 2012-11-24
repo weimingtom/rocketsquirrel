@@ -29,11 +29,11 @@ endif()
 
 
 if (DEFINED WIN32)
-	set(SQBIND_LIB_DEBUG ${SQBIND_DIR}/lib/vs2010/x32/debug/sqbind.lib)
-	set(SQBIND_LIB_OPTIMIZED ${SQBIND_DIR}/lib/vs2010/x32/release/sqbind.lib)
+	set(SQBIND_LIB_DEBUG ${SQBIND_DIR}/lib/Debug/sqbind_d.lib)
+	set(SQBIND_LIB_OPTIMIZED ${SQBIND_DIR}/lib/Release/sqbind.lib)
 elseif (DEFINED UNIX)
 	
-	set(SQBIND_LIB_DEBUG ${SQBIND_DIR}/libsqbind.a)
+	set(SQBIND_LIB_DEBUG ${SQBIND_DIR}/libsqbind_d.a)
 	set(SQBIND_LIB_OPTIMIZED ${SQBIND_DIR}/libsqbind.a)
 endif()
 
@@ -65,6 +65,8 @@ set(SRCS
 	
 	source/BindingUtil.h
 	source/BindingUtil.cpp
+	source/NamespaceHelper.h
+	source/NamespaceHelper.cpp
 	
 	#Core
 	source/Core/Interfaces.cpp
@@ -74,6 +76,13 @@ set(SRCS
 	source/Core/VectorInterface.cpp
 	source/Core/VariantInterface.h
 	source/Core/VariantInterface.cpp
+	
+	source/Core/ContextInterface.h
+	source/Core/ContextInterface.cpp
+	source/Core/ElementInterface.h
+	source/Core/ElementInterface.cpp
+	source/Core/EventInterface.h
+	source/Core/EventInterface.cpp
 	
 	source/Debug.h
 )

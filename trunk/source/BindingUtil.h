@@ -43,36 +43,82 @@ namespace Squirrel {
 
 
 
-void squirrelPrintFunc(HSQUIRRELVM v,const SQChar *s,...);
-void squirrelCompileErrorFunc(HSQUIRRELVM v, const SQChar* desc, const SQChar* source, SQInteger line, SQInteger column);
+void PrintFunc(HSQUIRRELVM v,const SQChar *s,...);
+void CompileErrorFunc(HSQUIRRELVM v, const SQChar* desc, const SQChar* source, SQInteger line, SQInteger column);
 
-SQRESULT compileNutFile(HSQUIRRELVM v, const char *filename);
+SQRESULT CompileNutFile(HSQUIRRELVM v, const char *filename);
 
 		
-SQInteger squirrelPrintRuntimeError(HSQUIRRELVM v);
-void squirrelPrintCallStack(HSQUIRRELVM v);
+SQInteger PrintRuntimeError(HSQUIRRELVM v);
+void PrintCallStack(HSQUIRRELVM v);
 
-inline SQUserPointer squirrelGetInstance(HSQUIRRELVM vm)
+
+/*!
+ * Utility class to compare classes tag ids to filter out types 
+ * from the stack
+ *
+ *	//Gets the tag id from the stack at index 1
+ *	TypeTagUtility tagutil(vm, 1);
+ *
+ *	//You can also switch the index by caling
+ *	tagutil.getTypeTagAt(2);
+ *
+ *	//Then you can compare it
+ *	if (tagutil.matches<MyNameSpace::MyClass>())
+ *	{
+ *	//Get the instance and do something with it
+ * 	}
+ *
+ */
+class TypeTagUtility 
 {
-	sqb::StackHandler stack(vm);
+protected:
+	HSQUIRRELVM mVM;
+	SQUserPointer mTypeTagID;
 
-	SQUserPointer userPointer;
-	SQBIND_ASSERT(sq_gettype(vm, 1) == OT_INSTANCE);
+public:
+	/*!
+	 * Initializes the object with the selected VM
+	 * and gets the TagID from the stack at index $idx
+	 */
+	TypeTagUtility(HSQUIRRELVM vm, SQInteger idx = 1);
+	
+	/*!
+	 * Gets the typetag id from the stack at index $idx.
+	 * You can call this as many times you want
+	 * as long the idx is not the same ovbiously
+	 */
+	void getTypeTagAt(SQInteger idx);
 
-	sq_getinstanceup(vm, 1, &userPointer, nullptr);
-	SQBIND_ASSERT_MSG(userPointer != nullptr, "new instance user pointer was null, did you forget to call sq_setclassudsize?");
-			
-	return userPointer;
-}
+	/*!
+	 * Returns true if the type is equal to the TypeTag
+	 */
+	template <typename T>
+	inline bool matches()
+	{
+		//Get the tag
+		sqb::ClassTypeTag<T>* classTypeTag = sqb::ClassTypeTag<T>::Get();
+
+		//Compare the tag id in the stack with the one provided
+		return (mTypeTagID == classTypeTag);
+	}
+
+
+};
+
+/*!
+ * Gets the UsrPointer from the stack at index idx
+ */
+SQUserPointer GetInstance(HSQUIRRELVM vm, SQInteger idx = 1);
 
 template <typename T>
-inline T* squirrelNewInstance(HSQUIRRELVM vm)
+inline T* NewInstance(HSQUIRRELVM vm)
 {
 	sqb::StackHandler stack(vm);
 
 	sqb::ClassTypeTag<T>* classTypeTag = sqb::ClassTypeTag<T>::Get();
 
-	SQUserPointer userPointer = squirrelGetInstance(vm);
+	SQUserPointer userPointer = GetInstance(vm);
 
 	SQRELEASEHOOK hook = classTypeTag->GetReleaseHook();
 	sq_setreleasehook(vm, 1, hook);

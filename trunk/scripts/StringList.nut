@@ -13,6 +13,7 @@ str2 = RocketString(str3 + " STR");
 
 local sqStr = "SquirrelString";
 
+str.Clear();
 str.Set(sqStr);
 
 list[0] = str;

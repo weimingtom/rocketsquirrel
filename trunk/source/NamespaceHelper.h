@@ -25,15 +25,12 @@
  *
  */
 
-#ifndef __ROCKETSQUIRREL_VARIANTINTERFACE_INCLUDED
-#define __ROCKETSQUIRREL_VARIANTINTERFACE_INCLUDED
+#ifndef __ROCKETSQUIRREL_NAMESPACEHELPER_INCLUDED
+#define __ROCKETSQUIRREL_NAMESPACEHELPER_INCLUDED
 
 
-#include <Rocket/Core/Variant.h>
-#include <Rocket/Core/Vector2.h>
+
 #include <squirrel.h>
-#include <sqbind/SquirrelBind.h>
-
 
 
 namespace Rocket {
@@ -44,28 +41,15 @@ namespace Squirrel {
 
 
 
-
-
-class VariantInterface : public Rocket::Core::Variant
+class NamespaceHelper 
 {
-protected:
-	Rocket::Core::String mCacheStr;
-
 public:
 
-	VariantInterface();
-	~VariantInterface();
 
-	const char* toString();
-	float toFloat();
-	SQInteger toInteger();
-	Rocket::Core::Vector2f toVector2f();
-	Rocket::Core::Vector2i toVector2i();
+	static bool switchTo(HSQUIRRELVM vm, const char* name);
+	static bool create(HSQUIRRELVM vm, const char* name);
 
 
-	static SQInteger constructor(HSQUIRRELVM v);
-
-	static void Bind(HSQUIRRELVM vm);
 };
 
 
@@ -76,16 +60,9 @@ public:
 
 
 
-
 }
 }
 }
-
-
-SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::VariantInterface);
-
-
-
 
 
 

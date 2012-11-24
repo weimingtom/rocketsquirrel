@@ -48,6 +48,7 @@
 #include "VariantInterface.h"
 
 #include "VectorInterface.h"
+#include "../NamespaceHelper.h"
 
 SQBIND_DECLARE_CLASS(Rocket::Core::String);
 
@@ -105,7 +106,7 @@ static SQInteger Vector2fConstructor(HSQUIRRELVM v)
 
 	if (nargs >= 3)
 	{
-		Rocket::Core::Vector2f* pVec2f = squirrelNewInstance<Rocket::Core::Vector2f>(v);
+		Rocket::Core::Vector2f* pVec2f = NewInstance<Rocket::Core::Vector2f>(v);
 
 		if (pVec2f)
 		{
@@ -125,7 +126,7 @@ static SQInteger Vector2iConstructor(HSQUIRRELVM v)
 
 	if (nargs >= 4)
 	{
-		Rocket::Core::Vector2i* pVec2i = squirrelNewInstance<Rocket::Core::Vector2i>(v);
+		Rocket::Core::Vector2i* pVec2i = NewInstance<Rocket::Core::Vector2i>(v);
 
 		if (pVec2i)
 		{
@@ -150,7 +151,7 @@ static SQInteger ColourfConstructor(HSQUIRRELVM v)
 
 	if (nargs >= 4)
 	{
-		Rocket::Core::Colourf* pColf = squirrelNewInstance<Rocket::Core::Colourf>(v);
+		Rocket::Core::Colourf* pColf = NewInstance<Rocket::Core::Colourf>(v);
 
 		if (pColf)
 		{
@@ -172,7 +173,7 @@ static SQInteger ColourbConstructor(HSQUIRRELVM v)
 
 	if (nargs >= 3)
 	{
-		Rocket::Core::Colourb* pColb = squirrelNewInstance<Rocket::Core::Colourb>(v);
+		Rocket::Core::Colourb* pColb = NewInstance<Rocket::Core::Colourb>(v);
 
 		if (pColb)
 		{
@@ -201,7 +202,7 @@ static SQInteger URLConstructor(HSQUIRRELVM v)
 
 	if (nargs >= 2)
 	{
-		Rocket::Core::URL* pURL = squirrelNewInstance<Rocket::Core::URL>(v);
+		Rocket::Core::URL* pURL = NewInstance<Rocket::Core::URL>(v);
 
 		if (pURL)
 		{
@@ -225,7 +226,7 @@ static SQInteger StringConstructor(HSQUIRRELVM v)
 
 	if (nargs >= 2)
 	{
-		Rocket::Core::String* pStr = squirrelNewInstance<Rocket::Core::String>(v);
+		Rocket::Core::String* pStr = NewInstance<Rocket::Core::String>(v);
 
 		Rocket::Core::Variant variant;
 
@@ -267,11 +268,16 @@ static SQInteger StringConstructor(HSQUIRRELVM v)
 
 void RegisterSquirrelInterfaces(HSQUIRRELVM vm)
 {
+
+	//Namespace Rocket
 	sq_pushroottable(vm);
+	NamespaceHelper::create(vm, "Rocket");
+	
+	NamespaceHelper::switchTo(vm, "Rocket");
 
 
 	//RocketString
-	sqb::ClassDefinition<Rocket::Core::String> cStr(vm, -1, _SC("RocketString"));
+	sqb::ClassDefinition<Rocket::Core::String> cStr(vm, -1, _SC("String"));
 
 	cStr.Constructor(&StringConstructor, sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("x")));
 
@@ -282,7 +288,6 @@ void RegisterSquirrelInterfaces(HSQUIRRELVM vm)
 	cStr.ClassFunction<AppendType>(&Rocket::Core::String::operator+=, _SC("Append"));
 	cStr.ClassFunction<AppendType>(&Rocket::Core::String::operator+=, _SC("_add"));
 	cStr.ClassFunction(&Rocket::Core::String::Clear, _SC("Clear"));
-	//sqb::ClassDefinition
 
 
 
@@ -369,7 +374,7 @@ void RegisterSquirrelInterfaces(HSQUIRRELVM vm)
 
 
 	//LogType
-	sqb::ClassDefinition<Rocket::Core::Log> cLT(vm, -1, _SC("LogType"));
+	sqb::ClassDefinition<Rocket::Core::Log> cLT(vm, -1, _SC("LogType")); //TODO create a need class? is it needed?
 	cLT.EnumEntry(Rocket::Core::Log::LT_ALWAYS, "always");
 	cLT.EnumEntry(Rocket::Core::Log::LT_ERROR, "error");
 	cLT.EnumEntry(Rocket::Core::Log::LT_WARNING, "warning");

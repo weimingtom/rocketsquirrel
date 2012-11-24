@@ -48,7 +48,7 @@ namespace Squirrel {
 
 
 
-void squirrelPrintFunc(HSQUIRRELVM v,const SQChar *s,...)
+void PrintFunc(HSQUIRRELVM v,const SQChar *s,...)
 {
 	va_list vl;
 	va_start(vl, s);
@@ -65,7 +65,7 @@ void squirrelPrintFunc(HSQUIRRELVM v,const SQChar *s,...)
 }
 
 
-void squirrelCompileErrorFunc(HSQUIRRELVM v, const SQChar* desc, const SQChar* source, SQInteger line, SQInteger column)
+void CompileErrorFunc(HSQUIRRELVM v, const SQChar* desc, const SQChar* source, SQInteger line, SQInteger column)
 {
 	std::cout << "Source: " << source << " Line: " << line << std::endl;
 	std::cout << std::endl << desc << std::endl;
@@ -85,7 +85,7 @@ static SQInteger file_lexfeedASCII(SQUserPointer file)
 	return 0;
 }
 
-SQRESULT compileNutFile(HSQUIRRELVM v, const char *filename)
+SQRESULT CompileNutFile(HSQUIRRELVM v, const char *filename)
 {
 	SQRESULT r = -1;
 
@@ -103,7 +103,7 @@ SQRESULT compileNutFile(HSQUIRRELVM v, const char *filename)
 
 
 
-void squirrelPrintCallStack(HSQUIRRELVM v)
+void PrintCallStack(HSQUIRRELVM v)
 {
 	SQPRINTFUNCTION pf = sq_geterrorfunc(v);
 	if(pf) {
@@ -195,7 +195,7 @@ void squirrelPrintCallStack(HSQUIRRELVM v)
 	}
 }
 
-SQInteger squirrelPrintRuntimeError(HSQUIRRELVM v)
+SQInteger PrintRuntimeError(HSQUIRRELVM v)
 {
 	SQPRINTFUNCTION pf = sq_geterrorfunc(v);
 	if(pf) {
@@ -207,12 +207,40 @@ SQInteger squirrelPrintRuntimeError(HSQUIRRELVM v)
 			else{
 				pf(v,_SC("\nAN ERROR HAS OCCURED [unknown]\n"));
 			}
-			squirrelPrintCallStack(v);
+			PrintCallStack(v);
 		}
 	}
 	return 0;
 }
 
+
+SQUserPointer GetInstance(HSQUIRRELVM vm, SQInteger idx)
+{
+	sqb::StackHandler stack(vm);
+
+	SQUserPointer userPointer;
+	ROCKETSQUIRREL_ASSERT(sq_gettype(vm, idx) == OT_INSTANCE);
+
+	sq_getinstanceup(vm, idx, &userPointer, nullptr);
+	ROCKETSQUIRREL_ASSERT(userPointer != nullptr);
+			
+	return userPointer;
+}
+
+
+
+TypeTagUtility::TypeTagUtility(HSQUIRRELVM vm, SQInteger idx) :
+	mVM(vm)
+{
+	getTypeTagAt(idx);
+}
+	
+void TypeTagUtility::getTypeTagAt(SQInteger idx)
+{
+	SQRESULT sqr = sq_gettypetag(mVM, 2, &mTypeTagID);
+
+	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+}
 
 
 
