@@ -11,19 +11,10 @@
 #include "Rocket/Debugger.h"
 #include "../source/Debug.h"
 
+#include <sqbind/SquirrelBind.h>
+
 void developingTests();
-
-static Rocket::Core::Context* context = NULL;
-
-void GameLoop()
-{
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	context->Update();
-	context->Render();
-
-	Shell::FlipBuffers();
-}
+void GameLoop();
 
 
 int main()
@@ -49,25 +40,32 @@ int main()
 
 	developingTests();
 
+
 	// Create the main Rocket context and set it on the shell's input layer.
-	context = Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(1024, 768));
+	Rocket::Core::Context* context = Rocket::Core::GetContext("ScriptsContext");
 	if (context == NULL)
 	{
 		Rocket::Core::Shutdown();
 		Shell::Shutdown();
 		return -1;
 	}
-
 	Rocket::Debugger::Initialise(context);
 	Input::SetContext(context);
 
+
+	// Load and show the demo document.
+	Rocket::Core::ElementDocument* document = context->LoadDocument("./assets/demo.rml");
+	if (document != NULL)
+	{
+		document->Show();
+		document->RemoveReference();
+	}
+
+
 	Shell::LoadFonts("./assets/");
 
-	//Main Loop
 	Shell::EventLoop(GameLoop);
 
-	// Shutdown Rocket.
-	context->RemoveReference();
 	Rocket::Core::Shutdown();
 
 	Shell::CloseWindow();

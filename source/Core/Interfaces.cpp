@@ -25,7 +25,7 @@
  *
  */
 
-
+#include "Interfaces.h"
 #include <Rocket/Core/URL.h>
 #include <Rocket/Core/Log.h>
 #include <Rocket/Core/Dictionary.h>
@@ -50,26 +50,7 @@
 #include "VectorInterface.h"
 #include "../NamespaceHelper.h"
 
-SQBIND_DECLARE_CLASS(Rocket::Core::String);
 
-SQBIND_DECLARE_CLASS(Rocket::Core::StringList);
-
-SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::VectorInterface<Rocket::Core::StringList>);
-
-SQBIND_DECLARE_CLASS(Rocket::Core::Vector2f);
-
-SQBIND_DECLARE_CLASS(Rocket::Core::Vector2i);
-
-SQBIND_DECLARE_CLASS(Rocket::Core::Colourf);
-
-SQBIND_DECLARE_CLASS(Rocket::Core::Colourb);
-
-SQBIND_DECLARE_CLASS(Rocket::Core::URL);
-
-SQBIND_DECLARE_CLASS(Rocket::Core::Log);
-
-//SQBIND_DECLARE_ENUM(Rocket::Core::Log::Type);
-SQBIND_DECLARE_CLASS(Rocket::Core::Log::Type);
 
 
 namespace Rocket {
@@ -124,7 +105,7 @@ static SQInteger Vector2iConstructor(HSQUIRRELVM v)
 {
 	SQInteger nargs = sq_gettop(v);
 
-	if (nargs >= 4)
+	if (nargs >= 3)
 	{
 		Rocket::Core::Vector2i* pVec2i = NewInstance<Rocket::Core::Vector2i>(v);
 

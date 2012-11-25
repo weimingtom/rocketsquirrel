@@ -19,7 +19,7 @@ try
 	dict["test"].test();
 } catch (e)
 {
-	print("Exception: " + e + "\n\n");
+	print("Handled Exception: " + e + "\n\n");
 }
 
 if (!dict.Contains("test"))

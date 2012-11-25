@@ -32,6 +32,7 @@
 #include "Config.h"
 #include "Debug.h"
 #include "Core/ContextInterface.h"
+#include "Core/Interfaces.h"
 
 
 
@@ -40,11 +41,6 @@ namespace Core {
 namespace Squirrel {
 
 
-
-
-
-void RegisterSquirrelInterfaces(HSQUIRRELVM vm);
-void RegisterSquirrelConverters(HSQUIRRELVM vm);
 
 
 Module* Module::s_pInstance = 0x0;

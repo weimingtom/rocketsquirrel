@@ -76,6 +76,7 @@ set(SRCS
 	source/NamespaceHelper.cpp
 	
 	#Core
+	source/Core/Interfaces.h
 	source/Core/Interfaces.cpp
 	source/Core/DictionaryInterface.h
 	source/Core/DictionaryInterface.cpp
