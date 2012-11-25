@@ -25,16 +25,16 @@
  *
  */
 
-#ifndef __ROCKETSQUIRREL_CONTEXTINTERFACE_INCLUDED
-#define __ROCKETSQUIRREL_CONTEXTINTERFACE_INCLUDED
+#ifndef __ROCKETSQUIRREL_INTERFACES_INCLUDED
+#define __ROCKETSQUIRREL_INTERFACES_INCLUDED
 
 
-#include <Rocket/Core/Context.h>
+#include <Rocket/Core/URL.h>
+#include <Rocket/Core/Log.h>
+#include <Rocket/Core/Dictionary.h>
+#include <Rocket/Core/Vector2.h>
 #include <squirrel.h>
-#include <sqbind/SquirrelBind.h>
-
-#include <hash_map>
-
+#include "VectorInterface.h"
 
 
 namespace Rocket {
@@ -44,37 +44,7 @@ namespace Squirrel {
 
 
 
-
-
-
-class ContextInterface
-{
-protected:
-	Rocket::Core::Context* m_pContext;
-
-public:
-
-	ContextInterface();
-	////////////////////////
-
-	bool Render();
-	bool Update();
-
-	const char* GetName() const;
-	const Rocket::Core::Vector2i& GetDimensions() const;
-	void SetDimensions(const Rocket::Core::Vector2i& dim);
-
-	////////////////////////
-
-	static SQInteger constructor(HSQUIRRELVM v);
-
-	static void Bind(HSQUIRRELVM vm);
-	//just to be consistent
-	static void Register(HSQUIRRELVM vm);
-
-	static void InitialiseRocketInterface();
-};
-
+void RegisterSquirrelInterfaces(HSQUIRRELVM vm);
 
 
 
@@ -85,8 +55,26 @@ public:
 }
 
 
-SQBIND_TYPE_POD(Rocket::Core::Squirrel::ContextInterface);
-SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::ContextInterface);
+SQBIND_DECLARE_CLASS(Rocket::Core::String);
+
+SQBIND_DECLARE_CLASS(Rocket::Core::StringList);
+
+SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::VectorInterface<Rocket::Core::StringList>);
+
+SQBIND_DECLARE_CLASS(Rocket::Core::Vector2f);
+
+SQBIND_DECLARE_CLASS(Rocket::Core::Vector2i);
+
+SQBIND_DECLARE_CLASS(Rocket::Core::Colourf);
+
+SQBIND_DECLARE_CLASS(Rocket::Core::Colourb);
+
+SQBIND_DECLARE_CLASS(Rocket::Core::URL);
+
+SQBIND_DECLARE_CLASS(Rocket::Core::Log);
+
+//SQBIND_DECLARE_ENUM(Rocket::Core::Log::Type);
+SQBIND_DECLARE_CLASS(Rocket::Core::Log::Type);
 
 
 #endif

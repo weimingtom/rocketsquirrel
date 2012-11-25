@@ -34,13 +34,6 @@ Rocket::Core::Context* ContextInstancer::InstanceContext(const Rocket::Core::Str
 		context = new Context(name);
 		mContexts[name.CString()] = context;
 	}
-	else
-	{
-		//this will do nothing on the release version of libRocket / log as a fallback
-		ROCKET_ASSERT(false);
-		Rocket::Core::Log::Message(Rocket::Core::Log::LT_ERROR, "RocketSquirrel: Context name '%s' already exists", name.CString());
-	}
-
 
 	return context;
 }

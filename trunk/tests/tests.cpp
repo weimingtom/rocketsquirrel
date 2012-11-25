@@ -3,6 +3,11 @@
 #include "Config.h"
 #include "../source/BindingUtil.h"
 #include "../source/Debug.h"
+#include "ShellRenderInterfaceOpenGL.h"
+#include "Shell.h"
+
+
+static HSQUIRRELVM vm = 0;
 
 
 void developingTests()
@@ -10,7 +15,7 @@ void developingTests()
 	using Rocket::Core::String;
 	using Rocket::Core::StringList;
 
-	HSQUIRRELVM vm = Rocket::Core::Squirrel::Module::instance().getSquirrelVM();
+	vm = Rocket::Core::Squirrel::Module::instance().getSquirrelVM();
 
 	String scriptsDir(ROCKETSQUIRREL_SCRIPTS);
 	scriptsDir += "/";
@@ -41,4 +46,31 @@ void developingTests()
 		sq_poptop(vm);
 	}
 
+
+
+}
+
+void GameLoop()
+{
+	using Rocket::Core::String;
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	static String gameLoopScript(String(ROCKETSQUIRREL_SCRIPTS) + "/GameLoop.nut");
+
+	SQRESULT sqr;
+
+	sqr = Rocket::Core::Squirrel::CompileNutFile(vm, gameLoopScript.CString());
+
+	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+  
+	sq_pushroottable(vm);
+
+	sqr = sq_call(vm, 1, false, true);
+
+	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+	sq_poptop(vm);
+
+
+	Shell::FlipBuffers();
 }

@@ -1,11 +1,24 @@
-local context = Rocket.Context("MyContext");
-local context2 = Rocket.Context("MyContext2", Rocket.Vector2i(100, 200));
+context <- Rocket.Context("ScriptsContext");
 
 try {
-	print("\nTrying to create a context with an existent name");
-	local context = Rocket.Context("MyContext", Rocket.Vector2i(100, 200));
+	local context = Rocket.Context("ScriptsContext", Rocket.Vector2i(1024, 768));
 
 } catch (e)
 {
 	print("\nHandled Exception: " + e + "\n");
 }
+
+function printContextDimensions()
+{
+	print("\nContext '" + context.GetName() + "' Dimensions: x = " 
+		+ context.GetDimensions().x 
+		+ " y = " + context.GetDimensions().y + "\n");
+}
+
+printContextDimensions();
+
+context.SetDimensions(Rocket.Vector2i(1024, 768));
+
+printContextDimensions();
+
+
