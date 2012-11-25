@@ -33,6 +33,7 @@
 #include "Debug.h"
 #include "Core/ContextInterface.h"
 #include "Core/Interfaces.h"
+#include "Core/ElementInterface.h"
 
 
 
@@ -97,6 +98,7 @@ void Module::OnInitialise()
 	//Register Core interfaces
 	RegisterSquirrelInterfaces(mVM);
 	ContextInterface::Register(mVM);
+	ElementInterface::Register(mVM);
 
 	ContextInterface::InitialiseRocketInterface();
 

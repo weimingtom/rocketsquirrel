@@ -77,6 +77,7 @@ int main()
 
 	// Load and show the demo document.
 	Rocket::Core::ElementDocument* document = context->LoadDocument("./assets/demo.rml");
+
 	if (document != NULL)
 	{
 		document->Show();

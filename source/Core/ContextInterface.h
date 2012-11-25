@@ -32,7 +32,6 @@
 #include <Rocket/Core/Context.h>
 #include <squirrel.h>
 #include <sqbind/SquirrelBind.h>
-
 #include <hash_map>
 
 
@@ -43,6 +42,8 @@ namespace Squirrel {
 
 
 
+class ElementWrapper;
+class ElementDocumentWrapper;
 
 
 
@@ -55,6 +56,7 @@ protected:
 public:
 
 	ContextInterface();
+	~ContextInterface();
 	////////////////////////
 
 	bool Render();
@@ -63,6 +65,13 @@ public:
 	const char* GetName() const;
 	const Rocket::Core::Vector2i& GetDimensions() const;
 	void SetDimensions(const Rocket::Core::Vector2i& dim);
+
+	ElementDocumentWrapper LoadDocument(const char* path);
+
+	ElementDocumentWrapper CreateDocument(const char* tag);
+
+	void UnloadDocument(ElementDocumentWrapper& doc);
+	void UnloadAllDocuments();
 
 	////////////////////////
 

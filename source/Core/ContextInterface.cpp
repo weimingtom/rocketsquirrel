@@ -10,6 +10,8 @@
 #include "../BindingUtil.h"
 #include "../NamespaceHelper.h"
 #include "Interfaces.h"
+#include "ElementInterface.h"
+#include <Rocket/Debugger.h>
 
 
 
@@ -24,6 +26,11 @@ namespace Squirrel {
 
 ContextInterface::ContextInterface()
 {
+}
+
+ContextInterface::~ContextInterface()
+{
+	//m_pContext->RemoveReference();
 }
 
 SQInteger ContextInterface::constructor(HSQUIRRELVM v)
@@ -76,6 +83,10 @@ void ContextInterface::Bind(HSQUIRRELVM vm)
 	cCon.ClassFunction(&ContextInterface::GetName, _SC("GetName"));
 	cCon.ClassFunction(&ContextInterface::GetDimensions, _SC("GetDimensions"));
 	cCon.ClassFunction(&ContextInterface::SetDimensions, _SC("SetDimensions"));
+	cCon.ClassFunction(&ContextInterface::LoadDocument, _SC("LoadDocument"));
+	cCon.ClassFunction(&ContextInterface::CreateDocument, _SC("CreateDocument"));
+	cCon.ClassFunction(&ContextInterface::UnloadDocument, _SC("UnloadDocument"));
+	cCon.ClassFunction(&ContextInterface::UnloadAllDocuments, _SC("UnloadAllDocuments"));
 }
 
 void ContextInterface::Register(HSQUIRRELVM vm)
@@ -119,6 +130,43 @@ void ContextInterface::SetDimensions(const Rocket::Core::Vector2i& dim)
 {
 	return m_pContext->SetDimensions(dim);
 }
+
+ElementDocumentWrapper ContextInterface::LoadDocument(const char* path)
+{
+	Rocket::Core::ElementDocument* rocketDoc = m_pContext->LoadDocument(path);
+
+	ElementDocumentWrapper elemDoc;
+
+	if (!rocketDoc)
+	{
+		rocketDoc = m_pContext->CreateDocument();
+	}
+
+	elemDoc.setElement(rocketDoc);
+
+	return elemDoc;
+}
+
+void ContextInterface::UnloadAllDocuments()
+{
+	m_pContext->UnloadAllDocuments();
+}
+
+void ContextInterface::UnloadDocument(ElementDocumentWrapper& doc)
+{
+
+	m_pContext->UnloadDocument((Rocket::Core::ElementDocument*)doc.getElement());
+}
+
+ElementDocumentWrapper ContextInterface::CreateDocument(const char* tag)
+{
+	ElementDocumentWrapper elemDoc;
+
+	elemDoc.setElement(m_pContext->CreateDocument());
+
+	return elemDoc;
+}
+
 
 
 

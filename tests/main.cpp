@@ -13,8 +13,9 @@
 
 #include <sqbind/SquirrelBind.h>
 
-void developingTests();
+void DevelopingTests();
 void GameLoop();
+void ExecuteScript(const char* script);
 
 
 int main()
@@ -38,7 +39,7 @@ int main()
 
 	Rocket::Core::Initialise();
 
-	developingTests();
+	DevelopingTests();
 
 
 	// Create the main Rocket context and set it on the shell's input layer.
@@ -49,20 +50,16 @@ int main()
 		Shell::Shutdown();
 		return -1;
 	}
+
 	Rocket::Debugger::Initialise(context);
+
 	Input::SetContext(context);
 
-
-	// Load and show the demo document.
-	Rocket::Core::ElementDocument* document = context->LoadDocument("./assets/demo.rml");
-	if (document != NULL)
-	{
-		document->Show();
-		document->RemoveReference();
-	}
-
-
 	Shell::LoadFonts("./assets/");
+
+
+	//Execute the script that will create the testing GUI
+	ExecuteScript("LoadDocument.nut");
 
 	Shell::EventLoop(GameLoop);
 
