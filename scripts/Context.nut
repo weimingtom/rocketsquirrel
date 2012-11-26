@@ -1,5 +1,9 @@
 context <- Rocket.Context("ScriptsContext");
 
+local cursor = context.LoadMouseCursor("./assets/cursor.rml");
+
+cursor.Show();
+
 try {
 	local context = Rocket.Context("ScriptsContext", Rocket.Vector2i(1024, 768));
 

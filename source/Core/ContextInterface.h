@@ -53,6 +53,8 @@ class ContextInterface
 protected:
 	Rocket::Core::Context* m_pContext;
 
+	ElementDocumentWrapper __returnElementDocument(Rocket::Core::ElementDocument* rocketDoc) const;
+
 public:
 
 	ContextInterface();
@@ -67,6 +69,7 @@ public:
 	void SetDimensions(const Rocket::Core::Vector2i& dim);
 
 	ElementDocumentWrapper LoadDocument(const char* path);
+	ElementDocumentWrapper LoadMouseCursor(const char* path);
 
 	ElementDocumentWrapper CreateDocument(const char* tag);
 
