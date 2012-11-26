@@ -32,129 +32,13 @@
 #include "../Debug.h"
 #include "../BindingUtil.h"
 #include "../NamespaceHelper.h"
+#include "ElementWrapper.h"
+#include "ElementWrapperDerived.h"
 
 
 namespace Rocket {
 namespace Core {
 namespace Squirrel {
-
-
-
-
-//Element
-ElementWrapper::ElementWrapper(const ElementWrapper& other)
-{
-	operator=(other);
-}
-
-ElementWrapper::ElementWrapper() : 
-	m_pElement(0x0) 
-{
-}
-
-ElementWrapper::~ElementWrapper()
-{ 
-	ROCKETSQUIRREL_ASSERT(m_pElement);
-	m_pElement->RemoveReference();
-}
-
-const char* ElementWrapper::GetTagName() const
-{
-	return m_pElement->GetTagName().CString();
-}
-
-void ElementWrapper::Blur()
-{
-	m_pElement->Blur();
-}
-
-void ElementWrapper::Click()
-{
-	m_pElement->Click();
-}
-
-bool ElementWrapper::Focus()
-{
-	return m_pElement->Focus();
-}
-
-void ElementWrapper::SetClass(const char* classname, bool activate)
-{
-	m_pElement->SetClass(classname, activate);
-}
-
-bool ElementWrapper::IsClassSet(const char* classname) const
-{
-	return m_pElement->IsClassSet(classname);
-}
-
-void ElementWrapper::SetPseudoClass(const char* classname, bool activate)
-{
-	m_pElement->SetPseudoClass(classname, activate);
-}
-
-bool ElementWrapper::IsPseudoClassSet(const char* classname) const
-{
-	return m_pElement->IsPseudoClassSet(classname);
-}
-
-void ElementWrapper::SetId(const char* id)
-{
-	m_pElement->SetId(id);
-}
-
-const char* ElementWrapper::GetId() const
-{
-	return m_pElement->GetId().CString();
-}
-
-Rocket::Core::Element* ElementWrapper::getElement()
-{
-	ROCKETSQUIRREL_ASSERT(m_pElement);
-	return m_pElement;
-}
-
-void ElementWrapper::setElement(Rocket::Core::Element* pElement)
-{
-	//This wrapper should be virgin before attemping to set the element pointer
-	ROCKETSQUIRREL_ASSERT(m_pElement == 0x0);
-	m_pElement = pElement;
-	m_pElement->AddReference();
-}
-
-ElementWrapper& ElementWrapper::operator= (const ElementWrapper& other)
-{
-	m_pElement = other.m_pElement;
-	m_pElement->AddReference();
-
-	return *this;
-}
-
-
-///////////////////////////////////////////////////////
-
-
-void ElementDocumentWrapper::Show(int flags)
-{
-	doc()->Show(flags);
-}
-
-void ElementDocumentWrapper::Show()
-{
-	doc()->Show();
-}
-
-void ElementDocumentWrapper::Hide()
-{
-	doc()->Hide();
-}
-
-Rocket::Core::ElementDocument* ElementDocumentWrapper::doc()
-{
-	ROCKETSQUIRREL_ASSERT(m_pElement);
-	//TODO find out if theres any Type property or method
-	return (Rocket::Core::ElementDocument*)m_pElement;
-}
 
 
 
@@ -179,6 +63,7 @@ void ElementInterface::Bind(HSQUIRRELVM vm)
 	
 	cE.Constructor(&ElementInterface::NoConstructable);
 
+	cE.ClassFunction(&ElementWrapper::operator==, _SC("_cmp"));
 	cE.ClassFunction(&ElementWrapper::GetTagName, _SC("GetTagName"));
 	cE.ClassFunction(&ElementWrapper::Blur, _SC("Blur"));
 	cE.ClassFunction(&ElementWrapper::Click, _SC("Click"));
@@ -187,12 +72,32 @@ void ElementInterface::Bind(HSQUIRRELVM vm)
 	cE.ClassFunction(&ElementWrapper::SetClass, _SC("SetClass"));
 	cE.ClassFunction(&ElementWrapper::SetPseudoClass, _SC("SetPseudoClass"));
 	cE.ClassFunction(&ElementWrapper::IsPseudoClassSet, _SC("IsPseudoClassSet"));
+	cE.ClassFunction(&ElementWrapper::GetElementById, _SC("GetElementById"));
+	cE.ClassFunction(&ElementWrapper::HasChildNodes, _SC("HasChildNodes"));
+	cE.ClassFunction(&ElementWrapper::RemoveChild, _SC("RemoveChild"));
+	cE.ClassFunction(&ElementWrapper::ReplaceChild, _SC("ReplaceChild"));
+	cE.ClassFunction(&ElementWrapper::InsertBefore, _SC("InsertBefore"));
+	cE.ClassFunction(&ElementWrapper::AppendChild, _SC("AppendChild"));
+	cE.ClassFunction(&ElementWrapper::GetAddress, _SC("GetAddress"));
+	cE.ClassFunction(&ElementWrapper::SetClassNames, _SC("SetClassNames"));
+	cE.ClassFunction(&ElementWrapper::GetClassNames, _SC("GetClassNames"));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
+	cE.ClassFunction(&ElementWrapper::GetAbsoluteLeft, _SC("GetAbsoluteLeft"));
+	cE.ClassFunction(&ElementWrapper::GetAbsoluteTop, _SC("GetAbsoluteTop"));
+	cE.ClassFunction(&ElementWrapper::GetClientLeft, _SC("GetClientLeft"));
+	cE.ClassFunction(&ElementWrapper::GetClientHeight, _SC("GetClientHeight"));
+	cE.ClassFunction(&ElementWrapper::GetClientTop, _SC("GetClientTop"));
+	cE.ClassFunction(&ElementWrapper::GetClientWidth, _SC("GetClientWidth"));
+	cE.ClassFunction(&ElementWrapper::GetOffsetHeight, _SC("GetOffsetHeight"));
+	cE.ClassFunction(&ElementWrapper::GetOffsetLeft, _SC("GetOffsetLeft"));
+	cE.ClassFunction(&ElementWrapper::GetOffsetParent, _SC("GetOffsetParent"));
+	cE.ClassFunction(&ElementWrapper::GetOffsetTop, _SC("GetOffsetTop"));
+	cE.ClassFunction(&ElementWrapper::GetOffsetWidth, _SC("GetOffsetWidth"));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
@@ -205,41 +110,24 @@ void ElementInterface::Bind(HSQUIRRELVM vm)
 
 
 
+
+
 	/*
 	.def("AddEventListener", AddEventListener)
 	.def("AddEventListener", AddEventListenerDefault)
-	.def("AppendChild", &ElementInterface::AppendChild)
 	.def("DispatchEvent", &ElementInterface::DispatchEvent)
 	.def("GetAttribute", python::make_function(&ElementInterface::GetAttribute, python::return_value_policy< python::return_by_value >()))
-	.def("GetElementById", &Element::GetElementById, python::return_value_policy< python::return_by_value >())
 	.def("GetElementsByTagName", &ElementInterface::GetElementsByTagName)
 	.def("HasAttribute", &Element::HasAttribute)
-	.def("HasChildNodes", &Element::HasChildNodes)
-	.def("InsertBefore", &Element::InsertBefore)
 	.def("RemoveAttribute", &Element::RemoveAttribute)
-	.def("RemoveChild", &Element::RemoveChild)		
-	.def("ReplaceChild", &Element::ReplaceChild)
 	.def("ScrollIntoView", &Element::ScrollIntoView)
 	.def("SetAttribute", &ElementInterface::SetAttribute)
-	.add_property("absolute_left", &Element::GetAbsoluteLeft)
-	.add_property("absolute_top", &Element::GetAbsoluteTop)
-	.add_property("address", python::make_function(&ElementInterface::GetAddress, python::return_value_policy< python::return_by_value >()))
 	.add_property("attributes", &ElementInterface::GetAttributes)
 	.add_property("child_nodes", &ElementInterface::GetChildren)
-	.add_property("class_name", python::make_function(&Element::GetClassNames, python::return_value_policy< python::return_by_value >()), &Element::SetClassNames)
-	.add_property("client_left", &Element::GetClientLeft)
-	.add_property("client_height", &Element::GetClientHeight)
-	.add_property("client_top", &Element::GetClientTop)
-	.add_property("client_width", &Element::GetClientWidth)
 	.add_property("first_child", python::make_function(&Element::GetFirstChild, python::return_value_policy< python::return_by_value >()))
 	.add_property("inner_rml", &ElementInterface::GetInnerRML, &Element::SetInnerRML)
 	.add_property("last_child", python::make_function(&Element::GetLastChild, python::return_value_policy< python::return_by_value >()))
 	.add_property("next_sibling", python::make_function(&Element::GetNextSibling, python::return_value_policy< python::return_by_value >()))
-	.add_property("offset_height", &Element::GetOffsetHeight)
-	.add_property("offset_left", &Element::GetOffsetLeft)
-	.add_property("offset_parent", python::make_function(&Element::GetOffsetParent, python::return_value_policy< python::return_by_value >()))
-	.add_property("offset_top", &Element::GetOffsetTop)
-	.add_property("offset_width", &Element::GetOffsetWidth)
 	.add_property("owner_document", python::make_function(&Element::GetOwnerDocument, python::return_value_policy< python::return_by_value >()))
 	.add_property("parent_node", python::make_function(&Element::GetParentNode, python::return_value_policy< python::return_by_value >()))
 	.add_property("previous_sibling", python::make_function(&Element::GetPreviousSibling, python::return_value_policy< python::return_by_value >()))

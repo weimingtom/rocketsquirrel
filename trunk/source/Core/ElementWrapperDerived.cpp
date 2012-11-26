@@ -25,13 +25,14 @@
  *
  */
 
-#ifndef __ROCKETSQUIRREL_ELEMENTINTERFACE_INCLUDED
-#define __ROCKETSQUIRREL_ELEMENTINTERFACE_INCLUDED
+#include "ElementWrapperDerived.h"
+#include "ElementInterface.h"
+#include "VariantInterface.h"
 
-
-#include <Rocket/Core/ElementDocument.h>
-#include <squirrel.h>
 #include <sqbind/SquirrelBind.h>
+#include "../Debug.h"
+#include "../BindingUtil.h"
+#include "../NamespaceHelper.h"
 
 
 namespace Rocket {
@@ -42,26 +43,29 @@ namespace Squirrel {
 
 
 
-class ElementInterface
+
+
+void ElementDocumentWrapper::Show(int flags)
 {
-private:
+	doc()->Show(flags);
+}
 
+void ElementDocumentWrapper::Show()
+{
+	doc()->Show();
+}
 
+void ElementDocumentWrapper::Hide()
+{
+	doc()->Hide();
+}
 
-public:
-
-	ElementInterface();
-
-
-	static SQInteger NoConstructable(HSQUIRRELVM vm);
-
-	//Binding function
-	static void Bind(HSQUIRRELVM vm);
-
-	static void Register(HSQUIRRELVM vm);
-
-	static void InitialiseRocketInterface();
-};
+Rocket::Core::ElementDocument* ElementDocumentWrapper::doc()
+{
+	ROCKETSQUIRREL_ASSERT(m_pElement);
+	//TODO find out if theres any Type property or method
+	return (Rocket::Core::ElementDocument*)m_pElement;
+}
 
 
 
@@ -72,8 +76,3 @@ public:
 }
 }
 }
-
-
-
-
-#endif

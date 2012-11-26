@@ -11,6 +11,7 @@
 #include "../NamespaceHelper.h"
 #include "Interfaces.h"
 #include "ElementInterface.h"
+#include "ElementWrapperDerived.h"
 #include <Rocket/Debugger.h>
 
 
@@ -83,6 +84,7 @@ void ContextInterface::Bind(HSQUIRRELVM vm)
 	cCon.ClassFunction(&ContextInterface::GetName, _SC("GetName"));
 	cCon.ClassFunction(&ContextInterface::GetDimensions, _SC("GetDimensions"));
 	cCon.ClassFunction(&ContextInterface::SetDimensions, _SC("SetDimensions"));
+	cCon.ClassFunction(&ContextInterface::LoadMouseCursor, _SC("LoadMouseCursor"));
 	cCon.ClassFunction(&ContextInterface::LoadDocument, _SC("LoadDocument"));
 	cCon.ClassFunction(&ContextInterface::CreateDocument, _SC("CreateDocument"));
 	cCon.ClassFunction(&ContextInterface::UnloadDocument, _SC("UnloadDocument"));
@@ -131,10 +133,8 @@ void ContextInterface::SetDimensions(const Rocket::Core::Vector2i& dim)
 	return m_pContext->SetDimensions(dim);
 }
 
-ElementDocumentWrapper ContextInterface::LoadDocument(const char* path)
+ElementDocumentWrapper ContextInterface::__returnElementDocument(Rocket::Core::ElementDocument* rocketDoc) const
 {
-	Rocket::Core::ElementDocument* rocketDoc = m_pContext->LoadDocument(path);
-
 	ElementDocumentWrapper elemDoc;
 
 	if (!rocketDoc)
@@ -145,6 +145,18 @@ ElementDocumentWrapper ContextInterface::LoadDocument(const char* path)
 	elemDoc.setElement(rocketDoc);
 
 	return elemDoc;
+}
+
+ElementDocumentWrapper ContextInterface::LoadMouseCursor(const char* path)
+{
+	Rocket::Core::ElementDocument* rocketDoc = m_pContext->LoadMouseCursor(path);
+	return __returnElementDocument(rocketDoc);
+}
+
+ElementDocumentWrapper ContextInterface::LoadDocument(const char* path)
+{
+	Rocket::Core::ElementDocument* rocketDoc = m_pContext->LoadDocument(path);
+	return __returnElementDocument(rocketDoc);
 }
 
 void ContextInterface::UnloadAllDocuments()

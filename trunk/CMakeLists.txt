@@ -91,6 +91,15 @@ set(SRCS
 	source/Core/ContextInterface.cpp
 	source/Core/ElementInterface.h
 	source/Core/ElementInterface.cpp
+	
+	source/Core/ElementWrapper.h
+	source/Core/ElementWrapper.cpp
+	
+	source/Core/ElementWrapper.h
+	source/Core/ElementWrapper.cpp
+	source/Core/ElementWrapperDerived.h
+	source/Core/ElementWrapperDerived.cpp
+	
 	source/Core/EventInterface.h
 	source/Core/EventInterface.cpp
 	
