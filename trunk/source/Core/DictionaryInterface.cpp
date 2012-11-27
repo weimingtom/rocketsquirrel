@@ -82,8 +82,7 @@ SQInteger DictionaryInterface::__GetItem(HSQUIRRELVM vm)
 
 	if (!vari)
 	{
-		sh.ThrowNull();
-		return 0;
+		return sh.ThrowNull();
 	}
 
 	return sqb::Push(vm, (*vari));

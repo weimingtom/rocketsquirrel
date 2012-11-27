@@ -67,7 +67,117 @@ Rocket::Core::ElementDocument* ElementDocumentWrapper::doc()
 	return (Rocket::Core::ElementDocument*)m_pElement;
 }
 
+void ElementDocumentWrapper::PullToFront()
+{
+	doc()->PullToFront();
+}
 
+void ElementDocumentWrapper::PushToBack()
+{
+	doc()->PushToBack();
+}
+
+void ElementDocumentWrapper::Close()
+{
+	doc()->Close();
+}
+
+ElementWrapper ElementDocumentWrapper::CreateElement(const char* name)
+{
+	Rocket::Core::Element* rocketElem = doc()->CreateElement(name);
+
+	ROCKETSQUIRREL_ASSERT(rocketElem != 0x0);
+
+	return __returnWrapper(rocketElem);
+}
+
+ElementTextWrapper ElementDocumentWrapper::CreateTextNode(const char* text)
+{
+	Rocket::Core::ElementText* rocketElem = doc()->CreateTextNode(text);
+
+	ROCKETSQUIRREL_ASSERT(rocketElem != 0x0);
+
+	ElementTextWrapper wrapper;
+
+	//Why is giving a type error? it's a derived from Element isn't it?
+	wrapper.setElement((Rocket::Core::Element*)rocketElem);
+
+	return wrapper;
+
+
+}
+
+ContextInterface ElementDocumentWrapper::GetContext()
+{
+	ContextInterface context;
+	//context.
+	return context;
+}
+
+void ElementDocumentWrapper::SetTitle(const char* title)
+{
+	Rocket::Core::String strTitle(title);
+	doc()->SetTitle(strTitle);
+}
+
+const char* ElementDocumentWrapper::GetTitle()
+{
+	return doc()->GetTitle().CString();
+}
+
+void ElementDocumentWrapper::Bind(HSQUIRRELVM vm)
+{
+	/*Define the element document*/
+	sqb::ClassDefinition<ElementDocumentWrapper, ElementWrapper> cEDoc(vm, -1, _SC("ElementDocument"));
+	
+	cEDoc.Constructor(&NoConstructable);
+	cEDoc.ClassFunction(&ElementDocumentWrapper::PullToFront, _SC("PullToFront"));
+	cEDoc.ClassFunction(&ElementDocumentWrapper::PushToBack, _SC("PushToBack"));
+	cEDoc.ClassFunction(&ElementDocumentWrapper::Close, _SC("Close"));
+	cEDoc.ClassFunction(&ElementDocumentWrapper::CreateElement, _SC("CreateElement"));
+	cEDoc.ClassFunction(&ElementDocumentWrapper::CreateTextNode, _SC("CreateTextNode"));
+	cEDoc.ClassFunction(&ElementDocumentWrapper::GetTitle, _SC("GetTitle"));
+	cEDoc.ClassFunction(&ElementDocumentWrapper::SetTitle, _SC("SetTitle"));
+	cEDoc.ClassFunction(&ElementDocumentWrapper::GetContext, _SC("GetContext"));
+	cEDoc.ClassFunction(&ElementDocumentWrapper::Hide, _SC("Hide"));
+	cEDoc.ClassFunction<void (ElementDocumentWrapper::*)()>(&ElementDocumentWrapper::Show, _SC("Show"));
+	cEDoc.ClassFunction<void (ElementDocumentWrapper::*)(int)>(&ElementDocumentWrapper::Show, _SC("ShowFocus"));
+	
+	cEDoc.EnumEntry(ElementDocument::NONE, "NONE");
+	cEDoc.EnumEntry(ElementDocument::FOCUS, "FOCUS");
+	cEDoc.EnumEntry(ElementDocument::MODAL, "MODAL");
+}
+
+////////////////////////////////////////////////////////////////////
+
+Rocket::Core::ElementText* ElementTextWrapper::text()
+{
+	return (Rocket::Core::ElementText*)m_pElement;
+}
+
+void ElementTextWrapper::SetText(const char* text)
+{
+	//TODO fix UTF8 convertion
+	Rocket::Core::WString wstr(text);
+	this->text()->SetText(wstr);
+}
+
+const char* ElementTextWrapper::GetText()
+{
+	//TODO fix UTF8 convertion
+	text()->GetText().ToUTF8(mCacheText);
+	return mCacheText.CString();
+}
+
+void ElementTextWrapper::Bind(HSQUIRRELVM vm)
+{
+	/*Define the element text*/
+	sqb::ClassDefinition<ElementTextWrapper, ElementWrapper> cEText(vm, -1, _SC("ElementText"));
+
+	cEText.Constructor(&NoConstructable);
+	cEText.ClassFunction(&ElementTextWrapper::SetText, _SC("SetText"));
+	cEText.ClassFunction(&ElementTextWrapper::GetText, _SC("GetText"));
+}
 
 
 
