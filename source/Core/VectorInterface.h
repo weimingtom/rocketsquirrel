@@ -3,7 +3,7 @@
  *
  * For the latest information, see http://code.google.com/p/rocketsquirrel/
  *
- * Copyright (c) 2012 Kuko
+ * Copyright (c) 2012 Luis Jimenez
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
