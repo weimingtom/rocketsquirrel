@@ -8,7 +8,7 @@ print(doc.GetId());
 
 local content = doc.GetElementById("content");
 
-content.SetClass("hideclass", true);
+content.SetClass("hideclass", false);
 
 
 local handle = doc.GetElementById("handle");
@@ -61,7 +61,7 @@ print("\n" + handle.GetClassNames() + "\n");
 
 print("\n" + handle.GetAddress(true) + "\n");
 
-content.AppendChild(handle);
+//ontent.AppendChild(handle);
 
 local next = content.GetNextSibling();
 
@@ -96,4 +96,18 @@ for (local i = 0; i < elements.len(); i+=1)
 {
 	print(" -> " + elements[i].GetId() + "\n");
 }
+
+content.style["padding"] = "2";
+content.style["margin"] = "20";
+print("\n Padding Top = " + content.style["padding-top"]);
+
+local text = doc.CreateTextNode("mytextnode");
+
+text.SetText("My Text");
+
+handle.AppendChild(text);
+
+handle.SetInnerRML("<span>Inner <b>RML 2</b></span>");
+
+print("\n" + text.GetText() + "\n");
 

@@ -100,6 +100,9 @@ set(SRCS
 	source/Core/ElementWrapperDerived.h
 	source/Core/ElementWrapperDerived.cpp
 	
+	source/Core/ElementStyleProxy.h
+	source/Core/ElementStyleProxy.cpp
+	
 	source/Core/EventInterface.h
 	source/Core/EventInterface.cpp
 	

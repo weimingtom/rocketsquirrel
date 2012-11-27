@@ -30,12 +30,36 @@
 
 
 #include "ElementWrapper.h"
+#include <Rocket/Core/ElementText.h>
+#include "ContextInterface.h"
+
 
 
 namespace Rocket {
 namespace Core {
 namespace Squirrel {
 
+
+
+class ContextInterface;
+
+
+
+/*! Wrapper for Rocket::Core::ElementText */
+class ElementTextWrapper : public ElementWrapper
+{
+protected:
+	Rocket::Core::ElementText* text();
+
+	mutable Rocket::Core::String mCacheText;
+
+public:
+
+	void SetText(const char* text);
+	const char* GetText();
+
+	static void Bind(HSQUIRRELVM vm);
+};
 
 
 
@@ -51,6 +75,22 @@ public:
 	void Show(int flags);
 	void Show();
 	void Hide();
+
+	void PullToFront();
+	void PushToBack();
+
+	void Close();
+
+	ElementWrapper CreateElement(const char* name);
+	ElementTextWrapper CreateTextNode(const char* text);
+
+	ContextInterface GetContext();
+
+	void SetTitle(const char* title);
+	const char* GetTitle();
+
+	static void Bind(HSQUIRRELVM vm);
+
 };
 
 
@@ -64,6 +104,7 @@ public:
 
 
 SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::ElementDocumentWrapper);
+SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::ElementTextWrapper);
 
 
 

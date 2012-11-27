@@ -52,6 +52,10 @@ SQRESULT CompileNutFile(HSQUIRRELVM v, const char *filename);
 SQInteger PrintRuntimeError(HSQUIRRELVM v);
 void PrintCallStack(HSQUIRRELVM v);
 
+/*!
+ * This throws an squirrel exception
+ */
+SQInteger NoConstructable(HSQUIRRELVM vm);
 
 /*!
  * Utility class to compare classes tag ids to filter out types 

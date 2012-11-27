@@ -33,6 +33,7 @@
 #include <squirrel.h>
 #include <sqbind/SquirrelBind.h>
 #include "VectorInterface.h"
+#include "ElementStyleProxy.h"
 
 
 
@@ -132,7 +133,11 @@ public:
 
 	ElementWrapper GetParentNode() const;
 
+	ElementWrapperList GetChildren() const;
+
 	VectorInterface<ElementWrapperList> GetElementsByTagName(const char* tag) const;
+
+	ElementStyleProxy style;
 
 	void SetId(const char* id);
 	const char* GetId() const;
@@ -143,6 +148,8 @@ public:
 
 	//bool operator== (ElementWrapper& other);
 	bool operator== (const ElementWrapper& other) const;
+
+	static void Bind(HSQUIRRELVM vm);
 };
 
 

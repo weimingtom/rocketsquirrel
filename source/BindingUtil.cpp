@@ -101,6 +101,11 @@ SQRESULT CompileNutFile(HSQUIRRELVM v, const char *filename)
 }
 
 
+SQInteger NoConstructable(HSQUIRRELVM vm)
+{
+	sqb::StackHandler sh(vm);
+	return sh.ThrowError("This class cannot be instanced directly.");
+}
 
 
 void PrintCallStack(HSQUIRRELVM v)

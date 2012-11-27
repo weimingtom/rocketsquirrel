@@ -25,13 +25,15 @@
  *
  */
 
-#ifndef __ROCKETSQUIRREL_ELEMENTINTERFACE_INCLUDED
-#define __ROCKETSQUIRREL_ELEMENTINTERFACE_INCLUDED
+#ifndef __ROCKETSQUIRREL_ELEMENTSTYLEPROXY_INCLUDED
+#define __ROCKETSQUIRREL_ELEMENTSTYLEPROXY_INCLUDED
 
 
-#include <Rocket/Core/ElementDocument.h>
+#include <Rocket/Core/Element.h>
 #include <squirrel.h>
 #include <sqbind/SquirrelBind.h>
+#include "VectorInterface.h"
+
 
 
 namespace Rocket {
@@ -40,24 +42,28 @@ namespace Squirrel {
 
 
 
-
-
-class ElementInterface
+class ElementStyleProxy
 {
-private:
-
-
+protected:
+	Rocket::Core::String mCache;
+	Rocket::Core::Element* m_pElement;
 
 public:
 
-	ElementInterface();
+	ElementStyleProxy(const ElementStyleProxy& other);
+	ElementStyleProxy(Rocket::Core::Element* pElement);
+	ElementStyleProxy();
+	~ElementStyleProxy();
 
-	//Binding function
+	void SetElement(Rocket::Core::Element* pElement);
+
+	ElementStyleProxy& operator= (const ElementStyleProxy& other);
+
+	SQInteger SetAttr(HSQUIRRELVM vm);
+
+	SQInteger GetAttr(HSQUIRRELVM vm);
+
 	static void Bind(HSQUIRRELVM vm);
-
-	static void Register(HSQUIRRELVM vm);
-
-	static void InitialiseRocketInterface();
 };
 
 
@@ -71,6 +77,7 @@ public:
 }
 
 
+SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::ElementStyleProxy);
 
 
 #endif
