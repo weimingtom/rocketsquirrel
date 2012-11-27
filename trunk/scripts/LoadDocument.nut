@@ -22,6 +22,33 @@ print("\nGetClient__ = " +
 	handle.GetClientHeight() + " \n"
 );
 
+function printOffsets(element)
+{
+	print("\nOffsets = " + 
+		element.GetOffsetLeft() + " " +
+		element.GetOffsetTop() + " " +
+		element.GetOffsetWidth() + " " +
+		element.GetOffsetHeight() + " \n"
+	);
+}
+
+printOffsets(handle);
+printOffsets(handle.GetOffsetParent());
+
+print("\nScroll = " + 
+	handle.GetScrollLeft() + " " +
+	handle.GetScrollTop() + " " +
+	handle.GetScrollWidth() + " " +
+	handle.GetScrollHeight() + " \n"
+);
+
+print("\nOwnerDocument = " + handle.GetOwnerDocument().GetId() + "\n");
+print("\nNextSiblidng = " + handle.GetNextSibling().GetId() + "\n");
+print("\nPreviousSiblidng = " + handle.GetPreviousSibling().GetId() + "\n");
+
+print("\nGetParentNode Address = " + handle.GetParentNode().GetAddress(true) + "\n");
+print("\nGetParentNode Address = " + doc.GetParentNode().GetParentNode().GetAddress(true) + "\n");
+
 //if the element is not found then returns itself
 if (handle.GetId() == doc.GetId())
 {
@@ -36,10 +63,37 @@ print("\n" + handle.GetAddress(true) + "\n");
 
 content.AppendChild(handle);
 
-print(doc.RemoveChild(content));
-//print(doc.ReplaceChild(content, doc));
+local next = content.GetNextSibling();
 
 
-doc = context.LoadDocument("./");
 
-print(doc.GetTagName());
+function compare(a,b)
+{
+	if (a.Equals(b))
+	{
+		print("\nEqual = true");
+	}
+	else
+	{
+		print("\nEqual = false");
+	}
+}
+
+
+compare(next, handle);
+compare(handle, handle);
+
+handle.SetAttribute("id", Rocket.Variant("newhandle"));
+print(handle.GetAttribute("id"));
+
+print("\n" + handle.GetInnerRML() + "\n");
+handle.SetInnerRML("Inner RML");
+
+
+local elements = doc.GetElementsByTagName("div");
+
+for (local i = 0; i < elements.len(); i+=1)
+{
+	print(" -> " + elements[i].GetId() + "\n");
+}
+

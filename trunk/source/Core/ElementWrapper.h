@@ -32,6 +32,8 @@
 #include <Rocket/Core/Element.h>
 #include <squirrel.h>
 #include <sqbind/SquirrelBind.h>
+#include "VectorInterface.h"
+
 
 
 namespace Rocket {
@@ -39,6 +41,13 @@ namespace Core {
 namespace Squirrel {
 
 
+class ElementDocumentWrapper;
+class VariantInterface;
+class ElementWrapper;
+
+
+
+typedef std::vector<ElementWrapper> ElementWrapperList;
 
 
 
@@ -49,6 +58,9 @@ protected:
 
 	mutable Rocket::Core::String mCacheAddress;
 	mutable Rocket::Core::String mCacheClassNames;
+	mutable Rocket::Core::String mCacheInnerRML;
+
+	ElementWrapper __returnWrapper(Rocket::Core::Element* element) const;
 
 public:
 
@@ -79,6 +91,9 @@ public:
 	void InsertBefore(const ElementWrapper& element, const ElementWrapper& adjacentelement);
 	void AppendChild(const ElementWrapper& element);
 
+	ElementWrapper GetFirstChild() const;
+	ElementWrapper GetLastChild() const;
+
 	float GetAbsoluteLeft() const;
 	float GetAbsoluteTop() const;
 
@@ -93,6 +108,32 @@ public:
 	float GetOffsetWidth() const;
 	float GetOffsetHeight() const;
 
+	void SetScrollLeft(float val);
+	void SetScrollTop(float val);
+	float GetScrollLeft() const;
+	float GetScrollTop() const;
+	float GetScrollWidth() const;
+	float GetScrollHeight() const;
+
+	const char* GetInnerRML() const;
+	void SetInnerRML(const char* rml);
+
+	void SetAttribute(const char* name, const VariantInterface& value);
+	VariantInterface GetAttribute(const char* name) const;
+	bool HasAttribute(const char* name);
+	void RemoveAttribute(const char* name);
+
+	void ScrollIntoView(bool alingtop);
+
+	ElementDocumentWrapper GetOwnerDocument();
+
+	ElementWrapper GetNextSibling() const;
+	ElementWrapper GetPreviousSibling() const;
+
+	ElementWrapper GetParentNode() const;
+
+	VectorInterface<ElementWrapperList> GetElementsByTagName(const char* tag) const;
+
 	void SetId(const char* id);
 	const char* GetId() const;
 
@@ -100,7 +141,8 @@ public:
 
 	ElementWrapper& operator= (const ElementWrapper& other);
 
-	bool operator== (const ElementWrapper& other);
+	//bool operator== (ElementWrapper& other);
+	bool operator== (const ElementWrapper& other) const;
 };
 
 
@@ -115,7 +157,7 @@ public:
 
 
 SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::ElementWrapper);
-
+SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::VectorInterface<Rocket::Core::Squirrel::ElementWrapperList>);
 
 
 #endif
