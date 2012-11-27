@@ -40,12 +40,15 @@ namespace Squirrel {
 
 
 
-
+VariantInterface::VariantInterface(const Rocket::Core::Variant& variant) :
+	Rocket::Core::Variant(variant)
+{
+}
 
 
 VariantInterface::VariantInterface()
 {
-	Set("NULL");
+	Set("");
 }
 
 VariantInterface::~VariantInterface()

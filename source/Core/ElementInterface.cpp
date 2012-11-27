@@ -34,6 +34,8 @@
 #include "../NamespaceHelper.h"
 #include "ElementWrapper.h"
 #include "ElementWrapperDerived.h"
+#include "VariantInterface.h"
+#include "VectorInterface.h"
 
 
 namespace Rocket {
@@ -55,15 +57,26 @@ SQInteger ElementInterface::NoConstructable(HSQUIRRELVM vm)
 	return sh.ThrowError("This class cannot be instanced directly.");
 }
 
-
 void ElementInterface::Bind(HSQUIRRELVM vm)
 {
+	//ElementList
+	sqb::ClassDefinition<VectorInterface<ElementWrapperList>> cVec(vm, -1, _SC("ElementList"));
+
+	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::Contains, _SC("Contains"));
+	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::SetItem, _SC("_set"));
+	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::GetItem, _SC("_get"));
+	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::PushBack, _SC("append"));
+	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::PushBack, _SC("push"));
+	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::Size, _SC("len"));
+	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::DelItem, _SC("remove"));
+
+
 	/*Define the base Element class*/
 	sqb::ClassDefinition<ElementWrapper> cE(vm, -1, _SC("Element"));
 	
 	cE.Constructor(&ElementInterface::NoConstructable);
 
-	cE.ClassFunction(&ElementWrapper::operator==, _SC("_cmp"));
+	cE.ClassFunction(&ElementWrapper::operator==, _SC("Equals"));
 	cE.ClassFunction(&ElementWrapper::GetTagName, _SC("GetTagName"));
 	cE.ClassFunction(&ElementWrapper::Blur, _SC("Blur"));
 	cE.ClassFunction(&ElementWrapper::Click, _SC("Click"));
@@ -73,6 +86,7 @@ void ElementInterface::Bind(HSQUIRRELVM vm)
 	cE.ClassFunction(&ElementWrapper::SetPseudoClass, _SC("SetPseudoClass"));
 	cE.ClassFunction(&ElementWrapper::IsPseudoClassSet, _SC("IsPseudoClassSet"));
 	cE.ClassFunction(&ElementWrapper::GetElementById, _SC("GetElementById"));
+	cE.ClassFunction(&ElementWrapper::GetElementsByTagName, _SC("GetElementsByTagName"));
 	cE.ClassFunction(&ElementWrapper::HasChildNodes, _SC("HasChildNodes"));
 	cE.ClassFunction(&ElementWrapper::RemoveChild, _SC("RemoveChild"));
 	cE.ClassFunction(&ElementWrapper::ReplaceChild, _SC("ReplaceChild"));
@@ -81,12 +95,17 @@ void ElementInterface::Bind(HSQUIRRELVM vm)
 	cE.ClassFunction(&ElementWrapper::GetAddress, _SC("GetAddress"));
 	cE.ClassFunction(&ElementWrapper::SetClassNames, _SC("SetClassNames"));
 	cE.ClassFunction(&ElementWrapper::GetClassNames, _SC("GetClassNames"));
+	cE.ClassFunction(&ElementWrapper::GetParentNode, _SC("GetParentNode"));
+	cE.ClassFunction(&ElementWrapper::GetAttribute, _SC("GetAttribute"));
+	cE.ClassFunction(&ElementWrapper::SetAttribute, _SC("SetAttribute"));
+	cE.ClassFunction(&ElementWrapper::HasAttribute, _SC("HasAttribute"));
+	cE.ClassFunction(&ElementWrapper::RemoveAttribute, _SC("RemoveAttribute"));
+	cE.ClassFunction(&ElementWrapper::ScrollIntoView, _SC("ScrollIntoView"));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
-	//cE.ClassFunction(&ElementWrapper::, _SC(""));
-	//cE.ClassFunction(&ElementWrapper::, _SC(""));
-	//cE.ClassFunction(&ElementWrapper::, _SC(""));
+	cE.ClassFunction(&ElementWrapper::GetInnerRML, _SC("GetInnerRML"));
+	cE.ClassFunction(&ElementWrapper::SetInnerRML, _SC("SetInnerRML"));
 	cE.ClassFunction(&ElementWrapper::GetAbsoluteLeft, _SC("GetAbsoluteLeft"));
 	cE.ClassFunction(&ElementWrapper::GetAbsoluteTop, _SC("GetAbsoluteTop"));
 	cE.ClassFunction(&ElementWrapper::GetClientLeft, _SC("GetClientLeft"));
@@ -98,6 +117,17 @@ void ElementInterface::Bind(HSQUIRRELVM vm)
 	cE.ClassFunction(&ElementWrapper::GetOffsetParent, _SC("GetOffsetParent"));
 	cE.ClassFunction(&ElementWrapper::GetOffsetTop, _SC("GetOffsetTop"));
 	cE.ClassFunction(&ElementWrapper::GetOffsetWidth, _SC("GetOffsetWidth"));
+	cE.ClassFunction(&ElementWrapper::SetScrollLeft, _SC("SetScrollLeft"));
+	cE.ClassFunction(&ElementWrapper::SetScrollTop, _SC("SetScrollTop"));
+	cE.ClassFunction(&ElementWrapper::GetScrollLeft, _SC("GetScrollLeft"));
+	cE.ClassFunction(&ElementWrapper::GetScrollTop, _SC("GetScrollTop"));
+	cE.ClassFunction(&ElementWrapper::GetScrollWidth, _SC("GetScrollWidth"));
+	cE.ClassFunction(&ElementWrapper::GetScrollHeight, _SC("GetScrollHeight"));
+	cE.ClassFunction(&ElementWrapper::GetNextSibling, _SC("GetNextSibling"));
+	cE.ClassFunction(&ElementWrapper::GetPreviousSibling, _SC("GetPreviousSibling"));
+	cE.ClassFunction(&ElementWrapper::GetOwnerDocument, _SC("GetOwnerDocument"));
+	cE.ClassFunction(&ElementWrapper::GetFirstChild, _SC("GetFirstChild"));
+	cE.ClassFunction(&ElementWrapper::GetLastChild, _SC("GetLastChild"));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
 	//cE.ClassFunction(&ElementWrapper::, _SC(""));
@@ -110,31 +140,15 @@ void ElementInterface::Bind(HSQUIRRELVM vm)
 
 
 
-
-
 	/*
 	.def("AddEventListener", AddEventListener)
 	.def("AddEventListener", AddEventListenerDefault)
+
 	.def("DispatchEvent", &ElementInterface::DispatchEvent)
-	.def("GetAttribute", python::make_function(&ElementInterface::GetAttribute, python::return_value_policy< python::return_by_value >()))
 	.def("GetElementsByTagName", &ElementInterface::GetElementsByTagName)
-	.def("HasAttribute", &Element::HasAttribute)
-	.def("RemoveAttribute", &Element::RemoveAttribute)
-	.def("ScrollIntoView", &Element::ScrollIntoView)
-	.def("SetAttribute", &ElementInterface::SetAttribute)
+
 	.add_property("attributes", &ElementInterface::GetAttributes)
 	.add_property("child_nodes", &ElementInterface::GetChildren)
-	.add_property("first_child", python::make_function(&Element::GetFirstChild, python::return_value_policy< python::return_by_value >()))
-	.add_property("inner_rml", &ElementInterface::GetInnerRML, &Element::SetInnerRML)
-	.add_property("last_child", python::make_function(&Element::GetLastChild, python::return_value_policy< python::return_by_value >()))
-	.add_property("next_sibling", python::make_function(&Element::GetNextSibling, python::return_value_policy< python::return_by_value >()))
-	.add_property("owner_document", python::make_function(&Element::GetOwnerDocument, python::return_value_policy< python::return_by_value >()))
-	.add_property("parent_node", python::make_function(&Element::GetParentNode, python::return_value_policy< python::return_by_value >()))
-	.add_property("previous_sibling", python::make_function(&Element::GetPreviousSibling, python::return_value_policy< python::return_by_value >()))
-	.add_property("scroll_height", &Element::GetScrollHeight)
-	.add_property("scroll_left", &Element::GetScrollLeft, &Element::SetScrollLeft)
-	.add_property("scroll_top", &Element::GetScrollTop, &Element::SetScrollTop)
-	.add_property("scroll_width", &Element::GetScrollWidth)
 	.add_property("style", &ElementInterface::GetStyle)*/
 
 	/*Define the element document*/

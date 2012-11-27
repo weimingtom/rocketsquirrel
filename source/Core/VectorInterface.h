@@ -51,6 +51,11 @@ private:
 
 public:
 
+	Container& GetContainer()
+	{
+		return container;
+	}
+
 	VectorInterface()
 	{
 	}

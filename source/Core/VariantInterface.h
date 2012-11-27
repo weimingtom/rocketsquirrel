@@ -53,6 +53,7 @@ protected:
 
 public:
 
+	VariantInterface(const Rocket::Core::Variant& variant);
 	VariantInterface();
 	~VariantInterface();
 
