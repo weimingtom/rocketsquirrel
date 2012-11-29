@@ -30,10 +30,10 @@
 
 
 
-#include <Rocket/Core/ContextInstancer.h>
 #include <Rocket/Core/String.h>
+#include <Rocket/Core/ContextInstancer.h>
 #include <squirrel.h>
-#include <hash_map>
+#include <unordered_map>
 
 
 
@@ -54,7 +54,7 @@ private:
 	static ContextInstancer* s_pInstance;
 
 protected:
-	typedef std::hash_map<const char*, Rocket::Core::Context*> ContextMap;
+	typedef std::unordered_map<const char*, Rocket::Core::Context*> ContextMap;
 
 	ContextMap mContexts;
 public:

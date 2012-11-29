@@ -150,7 +150,7 @@ void VariantInterface::Bind(HSQUIRRELVM vm)
 
 	cVar.ClassFunction(&VariantInterface::toString, _SC("_tostring"));
 	cVar.ClassFunction(&VariantInterface::toFloat, _SC("tofloat"));
-	cVar.ClassFunction(&VariantInterface::toInteger, _SC("tointeger"));
+	//cVar.ClassFunction(&VariantInterface::toInteger, _SC("tointeger"));
 	cVar.ClassFunction(&VariantInterface::toVector2f, _SC("toVector2f"));
 	cVar.ClassFunction(&VariantInterface::toVector2i, _SC("toVector2i"));
 
