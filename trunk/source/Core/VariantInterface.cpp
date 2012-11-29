@@ -127,9 +127,9 @@ float VariantInterface::toFloat()
 	return Get<float>();
 }
 
-SQInteger VariantInterface::toInteger()
+int32_t VariantInterface::toInteger()
 {
-	return Get<SQInteger>();
+	return Get<int32_t>();
 }
 
 Rocket::Core::Vector2f VariantInterface::toVector2f()
@@ -150,7 +150,7 @@ void VariantInterface::Bind(HSQUIRRELVM vm)
 
 	cVar.ClassFunction(&VariantInterface::toString, _SC("_tostring"));
 	cVar.ClassFunction(&VariantInterface::toFloat, _SC("tofloat"));
-	//cVar.ClassFunction(&VariantInterface::toInteger, _SC("tointeger"));
+	cVar.ClassFunction(&VariantInterface::toInteger, _SC("tointeger"));
 	cVar.ClassFunction(&VariantInterface::toVector2f, _SC("toVector2f"));
 	cVar.ClassFunction(&VariantInterface::toVector2i, _SC("toVector2i"));
 
