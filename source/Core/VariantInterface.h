@@ -59,7 +59,7 @@ public:
 
 	const char* toString();
 	float toFloat();
-	SQInteger toInteger();
+	int32_t toInteger();
 	Rocket::Core::Vector2f toVector2f();
 	Rocket::Core::Vector2i toVector2i();
 
