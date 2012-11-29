@@ -45,7 +45,7 @@ namespace Squirrel {
 }*/
 	
 ScriptInterface::ScriptInterface() :
-	mAttachErrorCallbacks(true),
+	mAttachSquirrelFunctions(true),
 	mUseNamespace(true)
 {
 
@@ -89,7 +89,7 @@ bool ScriptInterface::Initialize()
 {
 	mVM = OpenVM();
 
-	if (mAttachErrorCallbacks)
+	if (mAttachSquirrelFunctions)
 	{
 		sq_setcompilererrorhandler(mVM, &CompileErrorFunc);
 		sq_setprintfunc(mVM, &PrintFunc, &PrintErrorFunc);
@@ -99,6 +99,8 @@ bool ScriptInterface::Initialize()
 		sq_seterrorhandler(mVM);
 		sq_poptop(mVM);
 	}
+
+	BindIntoSquirrelVM(mVM);
 
 	return OnInitialization();
 }
@@ -115,6 +117,25 @@ bool ScriptInterface::isUsingNamespace() const
 HSQUIRRELVM ScriptInterface::getSquirrelVM() const
 {
 	return mVM;
+}
+
+void ScriptInterface::BindIntoSquirrelVM(HSQUIRRELVM vm) const
+{
+	Rocket::Core::Log::Message(Rocket::Core::Log::LT_INFO, "Binding libRocket into Squirrel VM ($d)", vm);
+	for (size_t i = 0; i < mBindingFunctions.size(); i++)
+	{
+		mBindingFunctions[i](mVM);
+	}
+}
+
+void ScriptInterface::AddBindFunction(ScriptBindFunction function)
+{
+	mBindingFunctions.push_back(function);
+}
+
+void ScriptInterface::RemoveBindFunction(ScriptBindFunction function)
+{
+	//TODO
 }
 
 

@@ -102,6 +102,10 @@ SQInteger ContextInterface::constructor(HSQUIRRELVM v)
 
 void ContextInterface::Bind(HSQUIRRELVM vm)
 {
+	sq_pushroottable(vm);
+	NamespaceHelper::switchTo(vm, "Rocket");
+
+
 	sqb::ClassDefinition<ContextInterface> cCon(vm, -1, _SC("Context"));
 
 	cCon.Constructor(&ContextInterface::constructor, sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC("xsx")));
@@ -116,14 +120,7 @@ void ContextInterface::Bind(HSQUIRRELVM vm)
 	cCon.ClassFunction(&ContextInterface::CreateDocument, _SC("CreateDocument"));
 	cCon.ClassFunction(&ContextInterface::UnloadDocument, _SC("UnloadDocument"));
 	cCon.ClassFunction(&ContextInterface::UnloadAllDocuments, _SC("UnloadAllDocuments"));
-}
 
-void ContextInterface::Register(HSQUIRRELVM vm)
-{
-	sq_pushroottable(vm);
-	NamespaceHelper::switchTo(vm, "Rocket");
-
-	Bind(vm);
 
 	sq_poptop(vm);
 }

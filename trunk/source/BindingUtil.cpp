@@ -150,6 +150,8 @@ void PrintCallStack(HSQUIRRELVM v)
 			pf(v,_SC("*FUNCTION [%s()] %s line [%d]\n"),fn,src,si.line);
 			level++;
 		}
+
+		return;
 		level=0;
 		pf(v,_SC("\nLOCALS\n"));
 

@@ -44,7 +44,7 @@ namespace Squirrel {
 
 
 
-void RegisterSquirrelInterfaces(HSQUIRRELVM vm);
+void BindSquirrelInterfaces(HSQUIRRELVM vm);
 
 
 

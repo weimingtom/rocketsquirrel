@@ -56,6 +56,10 @@ ElementInterface::ElementInterface()
 
 void ElementInterface::Bind(HSQUIRRELVM vm)
 {
+	sq_pushroottable(vm);
+	NamespaceHelper::switchTo(vm, "Rocket");
+
+
 	ElementStyleProxy::Bind(vm);
 
 
@@ -81,14 +85,6 @@ void ElementInterface::Bind(HSQUIRRELVM vm)
 	.def("AddEventListener", AddEventListener)
 	.def("AddEventListener", AddEventListenerDefault)
 	.def("DispatchEvent", &ElementInterface::DispatchEvent)*/
-}
-
-void ElementInterface::Register(HSQUIRRELVM vm)
-{
-	sq_pushroottable(vm);
-	NamespaceHelper::switchTo(vm, "Rocket");
-
-	Bind(vm);
 
 	sq_poptop(vm);
 }
