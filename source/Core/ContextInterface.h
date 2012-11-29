@@ -81,8 +81,6 @@ public:
 	static SQInteger constructor(HSQUIRRELVM v);
 
 	static void Bind(HSQUIRRELVM vm);
-	//just to be consistent
-	static void Register(HSQUIRRELVM vm);
 
 	static void InitialiseRocketInterface();
 };

@@ -55,7 +55,7 @@ public:
 
 	virtual bool OnInitialization()
 	{
-		mAttachErrorCallbacks = true;
+		mAttachSquirrelFunctions = true;
 		mUseNamespace = true;
 
 		return true;
@@ -79,6 +79,10 @@ Module::Module(ScriptInterface* pScriptInterface) :
 	{
 		m_pScriptInterface = new DefaultScriptInterface();
 	}
+
+	getScriptInterface().AddBindFunction(&BindSquirrelInterfaces);
+	getScriptInterface().AddBindFunction(&ContextInterface::Bind);
+	getScriptInterface().AddBindFunction(&ElementInterface::Bind);
 }
 
 Module::~Module()
@@ -102,12 +106,6 @@ void Module::OnInitialise()
 	bool result = getScriptInterface().Initialize();
 
 	ROCKETSQUIRREL_ASSERT(result);
-
-	//Register Core interfaces
-	RegisterSquirrelInterfaces(getScriptInterface().getSquirrelVM());
-	ContextInterface::Register(getScriptInterface().getSquirrelVM());
-	ElementInterface::Register(getScriptInterface().getSquirrelVM());
-
 
 	ElementInterface::InitialiseRocketInterface();
 	ContextInterface::InitialiseRocketInterface();

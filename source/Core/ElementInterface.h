@@ -55,8 +55,6 @@ public:
 	//Binding function
 	static void Bind(HSQUIRRELVM vm);
 
-	static void Register(HSQUIRRELVM vm);
-
 	static void InitialiseRocketInterface();
 };
 

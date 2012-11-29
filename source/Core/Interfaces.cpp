@@ -247,7 +247,7 @@ static SQInteger StringConstructor(HSQUIRRELVM v)
 	return sqb::ClassDefinition<Rocket::Core::String>::DefaultConstructor(v);
 }
 
-void RegisterSquirrelInterfaces(HSQUIRRELVM vm)
+void BindSquirrelInterfaces(HSQUIRRELVM vm)
 {
 
 	//Namespace Rocket
@@ -355,7 +355,7 @@ void RegisterSquirrelInterfaces(HSQUIRRELVM vm)
 
 
 	//LogType
-	sqb::ClassDefinition<Rocket::Core::Log> cLT(vm, -1, _SC("LogType")); //TODO create a need class? is it needed?
+	sqb::ClassDefinition<Rocket::Core::Log> cLT(vm, -1, _SC("LogType")); //TODO create a class? is it needed?
 	cLT.EnumEntry(Rocket::Core::Log::LT_ALWAYS, "always");
 	cLT.EnumEntry(Rocket::Core::Log::LT_ERROR, "error");
 	cLT.EnumEntry(Rocket::Core::Log::LT_WARNING, "warning");

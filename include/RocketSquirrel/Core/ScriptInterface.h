@@ -30,6 +30,7 @@
 
 #include <squirrel.h>
 #include <RocketSquirrel.h>
+#include <vector>
 
 namespace Rocket {
 namespace Core {
@@ -37,13 +38,20 @@ namespace Squirrel {
 
 
 
+typedef void (*ScriptBindFunction)(HSQUIRRELVM vm);
+
 
 class ROCKETSQUIRRELDLL_API ScriptInterface
 {
+private:
+
+	/*! List of the functions needed to bind RocketSquirrel into a VM*/
+	std::vector<ScriptBindFunction> mBindingFunctions;
+
 protected:
 
 	HSQUIRRELVM mVM;
-	bool mAttachErrorCallbacks;
+	bool mAttachSquirrelFunctions;
 	bool mUseNamespace;
 
 public:
@@ -54,14 +62,14 @@ public:
 	/*!
 	 * Should return a valid Squirrel VM doesn't matter if
 	 * it's freshly created or previously created by your own code
-	 * RocketSquirrel will bind the interfaces into that
+	 * RocketSquirrel will bind the interfaces into that VM
 	 *
 	 * If you dont replace this method then a default VM will be created
 	 */
 	virtual HSQUIRRELVM OpenVM();
 
 	/*!
-	 * Called on Destroy it expects to call sq_close on the Virutal Machine
+	 * Called on Destroy, it expects to call sq_close on the Virtual Machine
 	 * But you dont have to close if you still needing it, by default it calls sq_close(mVM);
 	 */
 	virtual void CloseVM();
@@ -85,15 +93,34 @@ public:
 	 * Reports a compilation error
 	 * You're supoused to call this from your C++ squirrel compilation error function
 	 * to enable logging/diplaying of errors
+	 * By default if mAttachSquirrelFunctions is true this will be called internally
 	 */
 	virtual void ReportCompilationError(const SQChar* desc, const SQChar* source, SQInteger line, SQInteger column);
 
+	/*!
+	 * Call this from your C++ squirrel print error function
+	 * By default if mAttachSquirrelFunctions is true this will be called internally
+	 */
 	virtual void PrintError(const Rocket::Core::String& text);
+
+	/*!
+	 * Call this from your C++ squirrel print function
+	 * By default if mAttachSquirrelFunctions is true this will be called internally
+	 */
 	virtual void Print(const Rocket::Core::String& text);
 
+	/*!
+	 * Bindes all the interfaces into the selected VM (no the internal mVM)
+	 * This is called internally (BindVM(mVM)) on initialization
+	 * but it could be usefull if you want to bind other VM
+	 */
+	void BindIntoSquirrelVM(HSQUIRRELVM vm) const;
 
 	bool isUsingNamespace() const;
 	HSQUIRRELVM getSquirrelVM() const;
+
+	void AddBindFunction(ScriptBindFunction function);
+	void RemoveBindFunction(ScriptBindFunction function);
 
 	bool Initialize();
 	void Destroy();
