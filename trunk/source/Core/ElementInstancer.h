@@ -25,16 +25,45 @@
  *
  */
 
+#ifndef __ROCKETSQUIRREL_ELEMENTINSTANCER_INCLUDED
+#define __ROCKETSQUIRREL_ELEMENTINSTANCER_INCLUDED
 
-#ifndef __ROCKETSQUIRREL_INCLUDED
-#define __ROCKETSQUIRREL_INCLUDED
 
-#include <assert.h>
+#include <Rocket/Core/ElementInstancer.h>
+#include <squirrel.h>
+#include <sqbind/SquirrelBind.h>
 
-#define ROCKETSQUIRRELDLL_API
 
-#include <RocketSquirrel/Core/Module.h>
-#include <RocketSquirrel/Core/ScriptInterface.h>
+namespace Rocket {
+namespace Core {
+namespace Squirrel {
+
+
+
+
+
+
+
+class ElementInstancer : public Rocket::Core::ElementInstancer
+{
+public:
+	ElementInstancer();
+	virtual ~ElementInstancer();
+
+	virtual Element* InstanceElement(Element* parent, const Rocket::Core::String& tag, const Rocket::Core::XMLAttributes& attributes);
+
+	virtual void ReleaseElement(Element* element);
+
+	virtual void Release();
+};
+
+
+
+
+
+}
+}
+}
 
 
 

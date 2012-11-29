@@ -42,7 +42,7 @@ namespace Squirrel {
 
 
 
-
+void PrintErrorFunc(HSQUIRRELVM v,const SQChar *s,...);
 void PrintFunc(HSQUIRRELVM v,const SQChar *s,...);
 void CompileErrorFunc(HSQUIRRELVM v, const SQChar* desc, const SQChar* source, SQInteger line, SQInteger column);
 

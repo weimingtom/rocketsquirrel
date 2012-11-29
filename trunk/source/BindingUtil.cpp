@@ -33,6 +33,9 @@
 #include <fstream>
 #include "Debug.h"
 
+#include "RocketSquirrel.h"
+#include "RocketSquirrel/Core/ScriptInterface.h"
+
 #ifdef _WINDOWS
 #include <Windows.h>
 #endif
@@ -48,6 +51,22 @@ namespace Squirrel {
 
 
 
+void PrintErrorFunc(HSQUIRRELVM v,const SQChar *s,...)
+{
+	va_list vl;
+	va_start(vl, s);
+
+	vfprintf(stdout, s, vl);
+
+	char text[1024];
+
+	vsnprintf(text, 1024, s, vl);
+
+	Module::instance().getScriptInterface().PrintError(text);
+
+	va_end(vl);
+}
+
 void PrintFunc(HSQUIRRELVM v,const SQChar *s,...)
 {
 	va_list vl;
@@ -55,12 +74,12 @@ void PrintFunc(HSQUIRRELVM v,const SQChar *s,...)
 
 	vfprintf(stdout, s, vl);
 
-#ifdef _WINDOWS
 	char text[1024];
 
 	vsnprintf(text, 1024, s, vl);
-	OutputDebugStringA(text);
-#endif
+
+	Module::instance().getScriptInterface().Print(text);
+
 	va_end(vl);
 }
 
@@ -69,6 +88,8 @@ void CompileErrorFunc(HSQUIRRELVM v, const SQChar* desc, const SQChar* source, S
 {
 	std::cout << "Source: " << source << " Line: " << line << std::endl;
 	std::cout << std::endl << desc << std::endl;
+
+	Module::instance().getScriptInterface().ReportCompilationError(desc, source, line, column);
 
 #ifdef _WINDOWS
 	OutputDebugString(desc);
@@ -215,6 +236,7 @@ SQInteger PrintRuntimeError(HSQUIRRELVM v)
 			PrintCallStack(v);
 		}
 	}
+
 	return 0;
 }
 

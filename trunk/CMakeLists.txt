@@ -65,6 +65,8 @@ endif()
 
 set(HDRS
 	include/RocketSquirrel.h
+	include/RocketSquirrel/Core/ScriptInterface.h
+	include/RocketSquirrel/Core/Module.h
 )
  
 set(SRCS
@@ -76,6 +78,9 @@ set(SRCS
 	source/NamespaceHelper.cpp
 	
 	#Core
+	source/Core/ScriptInterface.cpp
+	source/Core/Module.cpp
+	
 	source/Core/Interfaces.h
 	source/Core/Interfaces.cpp
 	source/Core/DictionaryInterface.h
@@ -100,11 +105,19 @@ set(SRCS
 	source/Core/ElementWrapperDerived.h
 	source/Core/ElementWrapperDerived.cpp
 	
+	source/Core/ElementInstancer.h
+	source/Core/ElementInstancer.cpp
+	
+	source/Core/ElementDocument.h
+	source/Core/ElementDocument.cpp
+	
 	source/Core/ElementStyleProxy.h
 	source/Core/ElementStyleProxy.cpp
 	
 	source/Core/EventInterface.h
 	source/Core/EventInterface.cpp
+	source/Core/EventWrapper.h
+	source/Core/EventWrapper.cpp
 	
 	source/Debug.h
 )

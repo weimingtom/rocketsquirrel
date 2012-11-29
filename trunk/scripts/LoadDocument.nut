@@ -110,4 +110,3 @@ handle.AppendChild(text);
 handle.SetInnerRML("<span>Inner <b>RML 2</b></span>");
 
 print("\n" + text.GetText() + "\n");
-

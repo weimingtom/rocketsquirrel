@@ -25,17 +25,50 @@
  *
  */
 
+#include "ElementInstancer.h"
+#include "ElementDocument.h"
 
-#ifndef __ROCKETSQUIRREL_INCLUDED
-#define __ROCKETSQUIRREL_INCLUDED
 
-#include <assert.h>
-
-#define ROCKETSQUIRRELDLL_API
-
-#include <RocketSquirrel/Core/Module.h>
-#include <RocketSquirrel/Core/ScriptInterface.h>
+namespace Rocket {
+namespace Core {
+namespace Squirrel {
 
 
 
-#endif
+
+
+
+
+ElementInstancer::ElementInstancer()
+{
+}
+
+ElementInstancer::~ElementInstancer()
+{
+}
+
+Element* ElementInstancer::InstanceElement(Element* parent, const Rocket::Core::String& tag, const Rocket::Core::XMLAttributes& attributes)
+{
+	ElementDocument* doc = new ElementDocument(tag);
+
+	return doc;
+}
+
+void ElementInstancer::ReleaseElement(Element* element)
+{
+
+}
+
+void ElementInstancer::Release()
+{
+	delete this;
+}
+
+
+
+
+
+
+}
+}
+}

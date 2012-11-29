@@ -32,6 +32,7 @@
 #include <Rocket/Core/Variant.h>
 #include <squirrel.h>
 #include <sqbind/SquirrelBind.h>
+#include "../Debug.h"
 
 
 namespace Rocket {
@@ -96,18 +97,25 @@ public:
 		container.erase(container.begin() + index);
 	}
 
-	inline typename Container::value_type& GetItem(int index)
+	inline SQInteger GetItem(HSQUIRRELVM vm)
 	{
+		sqb::StackHandler sh(vm);
+
+		ROCKETSQUIRREL_ASSERT(sh.GetParamCount() >= 2);
+		ROCKETSQUIRREL_ASSERT(sh.IsNumber(2));
+
+		SQInteger index = sh.GetInteger(2);
+
 		if (index < 0)
 			index = container.size() + index;
 
 		if (index >= (int)container.size())
 		{
 			//error here
-			return container[0]; //TODO make native function
+			return sh.ThrowNull();
 		}
 
-		return container[index];
+		return sh.Return<typename Container::value_type>(container[index]);
 	}
 
 	inline bool Contains(const typename Container::value_type& value)
