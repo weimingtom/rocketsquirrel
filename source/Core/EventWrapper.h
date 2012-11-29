@@ -25,17 +25,58 @@
  *
  */
 
+#ifndef __ROCKETSQUIRREL_ELEMENTWRAPPER_INCLUDED
+#define __ROCKETSQUIRREL_ELEMENTWRAPPER_INCLUDED
 
-#ifndef __ROCKETSQUIRREL_INCLUDED
-#define __ROCKETSQUIRREL_INCLUDED
 
-#include <assert.h>
+#include <Rocket/Core/Element.h>
+#include <squirrel.h>
+#include <sqbind/SquirrelBind.h>
+#include "VectorInterface.h"
+#include "ElementStyleProxy.h"
 
-#define ROCKETSQUIRRELDLL_API
 
-#include <RocketSquirrel/Core/Module.h>
-#include <RocketSquirrel/Core/ScriptInterface.h>
 
+namespace Rocket {
+namespace Core {
+namespace Squirrel {
+
+
+class ElementDocumentWrapper;
+class VariantInterface;
+class ElementWrapper;
+
+
+
+typedef std::vector<ElementWrapper> ElementWrapperList;
+
+
+
+class EventWrapper
+{
+protected:
+	Rocket::Core::Event* m_pEvent;
+
+public:
+
+	EventWrapper();
+	virtual ~EventWrapper();
+
+	static void Bind(HSQUIRRELVM vm);
+};
+
+
+
+
+
+
+
+}
+}
+}
+
+
+SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::EventWrapper);
 
 
 #endif

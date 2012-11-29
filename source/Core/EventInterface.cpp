@@ -24,3 +24,43 @@
  * THE SOFTWARE.
  *
  */
+
+#include "EventInterface.h"
+
+
+
+namespace Rocket {
+namespace Core {
+namespace Squirrel {
+
+
+
+
+
+
+EventInterface::EventInterface()
+{
+}
+
+//Binding function
+void EventInterface::Bind(HSQUIRRELVM vm)
+{
+}
+
+void EventInterface::Register(HSQUIRRELVM vm)
+{
+}
+
+void EventInterface::InitialiseRocketInterface()
+{
+}
+
+
+
+
+
+
+
+}
+}
+}

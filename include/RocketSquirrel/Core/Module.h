@@ -26,15 +26,65 @@
  */
 
 
-#ifndef __ROCKETSQUIRREL_INCLUDED
-#define __ROCKETSQUIRREL_INCLUDED
+#ifndef __ROCKETSQUIRREL_MODULE_INCLUDED
+#define __ROCKETSQUIRREL_MODULE_INCLUDED
 
-#include <assert.h>
 
-#define ROCKETSQUIRRELDLL_API
 
-#include <RocketSquirrel/Core/Module.h>
-#include <RocketSquirrel/Core/ScriptInterface.h>
+#include "Rocket/Core.h"
+#include "Rocket/Core/Plugin.h"
+#include <squirrel.h>
+#include "RocketSquirrel.h"
+
+
+
+namespace Rocket {
+namespace Core {
+namespace Squirrel {
+
+
+class ScriptInterface;
+
+
+
+class ROCKETSQUIRRELDLL_API Module : public Rocket::Core::Plugin
+{
+private:
+
+	void OnInitialise();
+	void OnShutdown();
+
+	static Module* s_pInstance;
+	bool mInitialized;
+
+	ScriptInterface* m_pScriptInterface;
+
+public:
+
+	/*! Module entry point
+	 * @param pScriptInterface ScriptInterface (similar to Rocket Interfaces) to customize
+	 * as your needs. if NULL then it will be created internally
+	 */
+	Module(ScriptInterface* pScriptInterface = 0x0);
+	~Module();
+
+	/*! Gets the instance (itself)*/
+	static Module& instance();
+
+	/*! Gets the ScriptInterface */
+	ScriptInterface& getScriptInterface() const;
+};
+
+
+
+
+
+
+
+
+}
+}
+}
 
 
 

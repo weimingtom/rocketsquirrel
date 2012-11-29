@@ -25,16 +25,61 @@
  *
  */
 
+#ifndef __ROCKETSQUIRREL_ELEMENTDOCUMENT_INCLUDED
+#define __ROCKETSQUIRREL_ELEMENTDOCUMENT_INCLUDED
 
-#ifndef __ROCKETSQUIRREL_INCLUDED
-#define __ROCKETSQUIRREL_INCLUDED
 
-#include <assert.h>
+#include <Rocket/Core/ElementDocument.h>
+#include <squirrel.h>
+#include <sqbind/SquirrelBind.h>
 
-#define ROCKETSQUIRRELDLL_API
 
-#include <RocketSquirrel/Core/Module.h>
-#include <RocketSquirrel/Core/ScriptInterface.h>
+namespace Rocket {
+namespace Core {
+namespace Squirrel {
+
+
+
+
+
+
+
+
+class ElementDocument : public Rocket::Core::ElementDocument
+{
+public:
+
+	class ScriptInterface
+	{
+	public:
+		virtual void LoadScript(ElementDocument* document, Rocket::Core::Stream* stream, const Rocket::Core::String& source_name) = 0;
+	};
+
+private:
+
+	ScriptInterface* m_pScriptInterface;
+
+public:
+
+	ElementDocument(const String& tag, ScriptInterface* pScriptInterface = 0x0);
+	virtual ~ElementDocument();
+
+
+	void LoadScript(Rocket::Core::Stream* stream, const Rocket::Core::String& source_name);
+
+};
+
+
+
+
+
+
+
+}
+}
+}
+
+
 
 
 

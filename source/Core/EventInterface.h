@@ -24,3 +24,53 @@
  * THE SOFTWARE.
  *
  */
+
+#ifndef __ROCKETSQUIRREL_EVENTINTERFACE_INCLUDED
+#define __ROCKETSQUIRREL_EVENTINTERFACE_INCLUDED
+
+
+#include <Rocket/Core/Event.h>
+#include <squirrel.h>
+#include <sqbind/SquirrelBind.h>
+
+
+namespace Rocket {
+namespace Core {
+namespace Squirrel {
+
+
+
+
+
+class EventInterface
+{
+private:
+
+
+
+public:
+
+	EventInterface();
+
+	//Binding function
+	static void Bind(HSQUIRRELVM vm);
+
+	static void Register(HSQUIRRELVM vm);
+
+	static void InitialiseRocketInterface();
+};
+
+
+
+
+
+
+
+}
+}
+}
+
+
+
+
+#endif

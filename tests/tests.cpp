@@ -5,6 +5,7 @@
 #include "../source/Debug.h"
 #include "ShellRenderInterfaceOpenGL.h"
 #include "Shell.h"
+#include "RocketSquirrel/Core/ScriptInterface.h"
 
 
 static HSQUIRRELVM vm = 0;
@@ -34,7 +35,7 @@ void DevelopingTests()
 	using Rocket::Core::String;
 	using Rocket::Core::StringList;
 
-	vm = Rocket::Core::Squirrel::Module::instance().getSquirrelVM();
+	vm = Rocket::Core::Squirrel::Module::instance().getScriptInterface().getSquirrelVM();
 
 	StringList tests;
 	tests.push_back("Interfaces.nut");

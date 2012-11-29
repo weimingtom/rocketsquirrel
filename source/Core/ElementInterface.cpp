@@ -37,6 +37,8 @@
 #include "VariantInterface.h"
 #include "VectorInterface.h"
 #include "ElementStyleProxy.h"
+#include "ElementInstancer.h"
+#include <Rocket/Core/Factory.h>
 
 
 namespace Rocket {
@@ -62,7 +64,7 @@ void ElementInterface::Bind(HSQUIRRELVM vm)
 
 	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::Contains, _SC("Contains"));
 	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::SetItem, _SC("_set"));
-	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::GetItem, _SC("_get"));
+	cVec.NativeClassFunction(&VectorInterface<ElementWrapperList>::GetItem, _SC("_get"));
 	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::PushBack, _SC("append"));
 	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::PushBack, _SC("push"));
 	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::Size, _SC("len"));
@@ -93,7 +95,7 @@ void ElementInterface::Register(HSQUIRRELVM vm)
 
 void ElementInterface::InitialiseRocketInterface()
 {
-
+	Rocket::Core::Factory::RegisterElementInstancer("body", new ElementInstancer());
 }
 
 
