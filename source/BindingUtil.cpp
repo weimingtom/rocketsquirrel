@@ -49,6 +49,7 @@ namespace Squirrel {
 
 
 
+static char buffer[1024];
 
 
 void PrintErrorFunc(HSQUIRRELVM v,const SQChar *s,...)
@@ -56,31 +57,24 @@ void PrintErrorFunc(HSQUIRRELVM v,const SQChar *s,...)
 	va_list vl;
 	va_start(vl, s);
 
-	vfprintf(stdout, s, vl);
-
-	char text[1024];
-
-	vsnprintf(text, 1024, s, vl);
-
-	Module::instance().getScriptInterface().PrintError(text);
+	vsnprintf(buffer, 1024, s, vl);
 
 	va_end(vl);
+	
+	Module::instance().getScriptInterface().Print(buffer);
 }
 
 void PrintFunc(HSQUIRRELVM v,const SQChar *s,...)
 {
+	
 	va_list vl;
 	va_start(vl, s);
 
-	vfprintf(stdout, s, vl);
-
-	char text[1024];
-
-	vsnprintf(text, 1024, s, vl);
-
-	Module::instance().getScriptInterface().Print(text);
+	vsnprintf(buffer, 1024, s, vl);
 
 	va_end(vl);
+	
+	Module::instance().getScriptInterface().Print(buffer);
 }
 
 
