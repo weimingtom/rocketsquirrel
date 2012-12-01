@@ -76,37 +76,20 @@ void ElementDocument::LoadScript(Rocket::Core::Stream* stream, const Rocket::Cor
 
 		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
 
+
+		GlobalUtility gutil(vm, this);
+
+		gutil.Set();
+
 		sq_pushroottable(vm);
-
-		//some variables
-		Rocket::Core::String docVarName("document");
-
-		//Create the wrapper for this document
-		ElementDocumentWrapper wrapper;
-		wrapper.setElement(this);
-
-		//Add the global slot document
-		sq_pushstring(vm, docVarName.CString(), -1);
-		sqr = sqb::Push<ElementDocumentWrapper>(vm, wrapper);
-
-		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
-
-		sqr = sq_newslot(vm, -3, false);
-
-		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
 
 		sqr = sq_call(vm, 1, false, true);
 
 		//ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
 
-		//Delete the slot document
-		sq_pushroottable(vm);
-		sq_pushstring(vm, docVarName.CString(), -1);
-		sqr = sq_deleteslot(vm, -2, false);
-
-		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
-
 		sq_poptop(vm);
+
+		gutil.Restore();
 	}
 }
 

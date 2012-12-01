@@ -37,6 +37,12 @@
 
 namespace Rocket {
 namespace Core {
+
+class Element;
+class ElementDocument;
+class Event;
+
+
 namespace Squirrel {
 
 
@@ -133,6 +139,38 @@ inline T* NewInstance(HSQUIRRELVM vm)
 	return (T*)instance;
 }
 
+
+/*!
+ * Utility class to bind the most common globals 
+ * like "self", "document" and "event"
+ */
+class GlobalUtility 
+{
+protected:
+	Rocket::Core::ElementDocument* m_pDoc;
+	Rocket::Core::Element* m_pSelf; 
+	Rocket::Core::Event* m_pEvt;
+
+	bool mDocSet, mSelfSet, mEvtSet;
+	HSQUIRRELVM mVM;
+
+	void deleteSlot(const char* name) const;
+
+public:
+
+	GlobalUtility(HSQUIRRELVM vm, Rocket::Core::ElementDocument* doc, Rocket::Core::Element* self = 0x0, Rocket::Core::Event* evt = 0x0);
+
+	/*
+	 * First saves the state of the current globals then
+	 * sets the values into the root table (global)
+	 */
+	void Set();
+
+	/*!
+	 * Restores the global states (if they're already set)
+	 */
+	void Restore();
+};
 
 
 

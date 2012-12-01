@@ -25,9 +25,9 @@
  *
  */
 
-#include "EventInterface.h"
-#include <Rocket/Core/Factory.h>
 #include "EventListenerInstancer.h"
+#include <Rocket/Core/EventListener.h>
+#include "EventListener.h"
 
 
 namespace Rocket {
@@ -36,30 +36,17 @@ namespace Squirrel {
 
 
 
-
-
-
-EventInterface::EventInterface()
+Rocket::Core::EventListener* EventListenerInstancer::InstanceEventListener(const Rocket::Core::String& value)
 {
+	EventListener* evtLis = new EventListener(value);
+
+	return evtLis;
 }
 
-//Binding function
-void EventInterface::Bind(HSQUIRRELVM vm)
+void EventListenerInstancer::Release()
 {
+	delete this;
 }
-
-void EventInterface::Register(HSQUIRRELVM vm)
-{
-}
-
-void EventInterface::InitialiseRocketInterface()
-{
-
-	Rocket::Core::Factory::RegisterEventListenerInstancer(new EventListenerInstancer());
-
-}
-
-
 
 
 

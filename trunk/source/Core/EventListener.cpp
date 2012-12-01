@@ -25,9 +25,14 @@
  *
  */
 
-#include "EventInterface.h"
-#include <Rocket/Core/Factory.h>
-#include "EventListenerInstancer.h"
+#include "EventListener.h"
+#include <squirrel.h>
+#include <sqbind/SquirrelBind.h>
+#include "RocketSquirrel/Core/Module.h"
+#include "ElementDocument.h"
+#include "ElementWrapper.h"
+#include "ElementWrapperDerived.h"
+#include "../BindingUtil.h"
 
 
 namespace Rocket {
@@ -39,27 +44,61 @@ namespace Squirrel {
 
 
 
-EventInterface::EventInterface()
+
+EventListener::EventListener(const Rocket::Core::String& code, Rocket::Core::Element* context) :
+	mSourceCode(code),
+	m_pElement(0x0)
 {
 }
 
-//Binding function
-void EventInterface::Bind(HSQUIRRELVM vm)
+EventListener::~EventListener()
 {
+	return;
 }
 
-void EventInterface::Register(HSQUIRRELVM vm)
+void EventListener::ProcessEvent(Rocket::Core::Event& event)
 {
+	HSQUIRRELVM vm = Module::instance().getScriptInterface().getSquirrelVM();
+
+
+	//Todo precompile this
+	SQRESULT sqr;
+	sqr = sq_compilebuffer(vm, mSourceCode.CString(), mSourceCode.Length(), "(inline)", true);
+
+	if (SQ_SUCCEEDED(sqr))
+	{
+
+		GlobalUtility gutil(vm, m_pElement->GetOwnerDocument(), m_pElement, 0);
+
+		gutil.Set();
+
+		sq_pushroottable(vm);
+
+		sqr = sq_call(vm, 1, false, true);
+		if (SQ_SUCCEEDED(sqr))
+		{
+			//???
+		}
+
+		sq_poptop(vm);
+
+		gutil.Restore();
+
+	}
 }
 
-void EventInterface::InitialiseRocketInterface()
+void EventListener::OnAttach(Rocket::Core::Element* element)
 {
-
-	Rocket::Core::Factory::RegisterEventListenerInstancer(new EventListenerInstancer());
-
+	if (element)
+	{
+		m_pElement = element;
+	}
 }
 
-
+void EventListener::OnDetach(Rocket::Core::Element* element)
+{
+	m_pElement = 0x0;
+}
 
 
 
