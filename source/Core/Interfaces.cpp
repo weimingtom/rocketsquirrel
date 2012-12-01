@@ -277,7 +277,7 @@ void BindSquirrelInterfaces(HSQUIRRELVM vm)
 
 	cVec.ClassFunction(&VectorInterface<Rocket::Core::StringList>::Contains, _SC("Contains"));
 	cVec.ClassFunction(&VectorInterface<Rocket::Core::StringList>::SetItem, _SC("_set"));
-	cVec.NativeClassFunction(&VectorInterface<Rocket::Core::StringList>::GetItem, _SC("_get"));
+	cVec.NativeClassFunction(&VectorInterface<Rocket::Core::StringList>::GetItem, _SC("_get"), sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC("xi")));
 	cVec.ClassFunction(&VectorInterface<Rocket::Core::StringList>::PushBack, _SC("append"));
 	cVec.ClassFunction(&VectorInterface<Rocket::Core::StringList>::PushBack, _SC("push"));
 	cVec.ClassFunction(&VectorInterface<Rocket::Core::StringList>::Size, _SC("len"));

@@ -118,6 +118,13 @@ set(SRCS
 	source/Core/EventInterface.cpp
 	source/Core/EventWrapper.h
 	source/Core/EventWrapper.cpp
+	source/Core/EventInstancer.h
+	source/Core/EventInstancer.cpp
+	source/Core/EventListener.h
+	source/Core/EventListener.cpp
+	source/Core/EventListenerInstancer.h
+	source/Core/EventListenerInstancer.cpp
+	
 	
 	source/Debug.h
 )

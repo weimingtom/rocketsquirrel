@@ -35,6 +35,7 @@
 #include "Interfaces.h"
 #include "ElementInterface.h"
 #include "RocketSquirrel/Core/ScriptInterface.h"
+#include "EventInterface.h"
 
 
 
@@ -81,6 +82,7 @@ Module::Module(ScriptInterface* pScriptInterface) :
 	}
 
 	getScriptInterface().AddBindFunction(&BindSquirrelInterfaces);
+	getScriptInterface().AddBindFunction(&EventInterface::Bind);
 	getScriptInterface().AddBindFunction(&ContextInterface::Bind);
 	getScriptInterface().AddBindFunction(&ElementInterface::Bind);
 }
@@ -107,6 +109,7 @@ void Module::OnInitialise()
 
 	ROCKETSQUIRREL_ASSERT(result);
 
+	EventInterface::InitialiseRocketInterface();
 	ElementInterface::InitialiseRocketInterface();
 	ContextInterface::InitialiseRocketInterface();
 

@@ -36,6 +36,12 @@
 #include "RocketSquirrel.h"
 #include "RocketSquirrel/Core/ScriptInterface.h"
 
+#include "RocketSquirrel/Core/Module.h"
+#include "Core/ElementDocument.h"
+#include "Core/ElementWrapper.h"
+#include "Core/ElementWrapperDerived.h"
+
+
 #ifdef _WINDOWS
 #include <Windows.h>
 #endif
@@ -61,7 +67,7 @@ void PrintErrorFunc(HSQUIRRELVM v,const SQChar *s,...)
 
 	va_end(vl);
 	
-	Module::instance().getScriptInterface().Print(buffer);
+	Module::instance().getScriptInterface().PrintError(buffer);
 }
 
 void PrintFunc(HSQUIRRELVM v,const SQChar *s,...)
@@ -264,6 +270,93 @@ void TypeTagUtility::getTypeTagAt(SQInteger idx)
 
 	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
 }
+
+
+
+GlobalUtility::GlobalUtility(HSQUIRRELVM vm, Rocket::Core::ElementDocument* doc, Rocket::Core::Element* self, Rocket::Core::Event* evt) :
+	m_pDoc(doc),
+	m_pSelf(self),
+	m_pEvt(evt),
+	mDocSet(false),
+	mSelfSet(false), 
+	mEvtSet(false),
+	mVM(vm)
+{
+}
+
+void GlobalUtility::Set()
+{
+	sq_pushroottable(mVM);
+	SQRESULT sqr;
+	
+	if (m_pDoc)
+	{
+		ElementDocumentWrapper wrapper;
+		wrapper.setElement(m_pDoc);
+
+		//Add the global slot document
+		sq_pushstring(mVM, "document", -1);
+		sqr = sqb::Push<ElementDocumentWrapper>(mVM, wrapper);
+
+		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+		sqr = sq_newslot(mVM, -3, false);
+
+		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+		mDocSet = true;
+	}
+
+	if (m_pSelf)
+	{
+		ElementWrapper wrapper;
+		wrapper.setElement(m_pSelf);
+
+		//Add the global slot self
+		sq_pushstring(mVM, "self", -1);
+		sqr = sqb::Push<ElementWrapper>(mVM, wrapper);
+
+		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+		sqr = sq_newslot(mVM, -3, false);
+
+		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+		mSelfSet = true;
+	}
+	
+	//TODO event
+
+	sq_poptop(mVM);
+}
+
+void GlobalUtility::deleteSlot(const char* name) const
+{
+	SQRESULT sqr;
+	sq_pushroottable(mVM);
+	sq_pushstring(mVM, name, -1);
+	sqr = sq_deleteslot(mVM, -2, false);
+
+	sq_poptop(mVM);
+	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+}
+
+void GlobalUtility::Restore()
+{
+	if (mDocSet)
+	{
+		deleteSlot("document");
+		mDocSet = false;
+	}
+
+	if (mSelfSet)
+	{
+		deleteSlot("self");
+		mSelfSet = false;
+	}
+
+}
+
 
 
 

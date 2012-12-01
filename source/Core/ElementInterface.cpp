@@ -68,7 +68,7 @@ void ElementInterface::Bind(HSQUIRRELVM vm)
 
 	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::Contains, _SC("Contains"));
 	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::SetItem, _SC("_set"));
-	cVec.NativeClassFunction(&VectorInterface<ElementWrapperList>::GetItem, _SC("_get"));
+	cVec.NativeClassFunction(&VectorInterface<ElementWrapperList>::GetItem, _SC("_get"), sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC("xi")));
 	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::PushBack, _SC("append"));
 	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::PushBack, _SC("push"));
 	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::Size, _SC("len"));
