@@ -93,7 +93,7 @@ SQInteger ContextInterface::constructor(HSQUIRRELVM v)
 		return sh.ThrowError(_SC("Couldn't create the Context with name '%s'"), name.CString());
 	}
 
-	sContexts.insert(ContextMap::_Val_type(name.CString(), pRocketContext));
+	sContexts.insert(ContextMap::value_type(name.CString(), pRocketContext));
 
 	ContextInterface* pContext = NewInstance<ContextInterface>(v);
 
