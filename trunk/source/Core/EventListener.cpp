@@ -68,7 +68,7 @@ void EventListener::ProcessEvent(Rocket::Core::Event& event)
 	if (SQ_SUCCEEDED(sqr))
 	{
 
-		GlobalUtility gutil(vm, m_pElement->GetOwnerDocument(), m_pElement, 0);
+		GlobalUtility gutil(vm, m_pElement->GetOwnerDocument(), m_pElement, &event);
 
 		gutil.Set();
 

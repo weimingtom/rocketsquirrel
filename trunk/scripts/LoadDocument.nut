@@ -2,7 +2,7 @@ local doc = context.LoadDocument("./assets/demo.rml");
 
 doc.ShowFocus(Rocket.ElementDocument.FOCUS);
 
-doc.SetId("demodoc");
+/*doc.SetId("demodoc");
 
 print(doc.GetId());
 
@@ -109,4 +109,4 @@ handle.AppendChild(text);
 
 handle.SetInnerRML("<span>Inner <b>RML 2</b></span>");
 
-print("\n" + text.GetText() + "\n");
+print("\n" + text.GetText() + "\n");*/

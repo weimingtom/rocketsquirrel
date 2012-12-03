@@ -50,13 +50,13 @@ ElementInstancer::~ElementInstancer()
 Element* ElementInstancer::InstanceElement(Element* parent, const Rocket::Core::String& tag, const Rocket::Core::XMLAttributes& attributes)
 {
 	ElementDocument* doc = new ElementDocument(tag);
-
+	
 	return doc;
 }
 
 void ElementInstancer::ReleaseElement(Element* element)
 {
-
+	delete element;
 }
 
 void ElementInstancer::Release()

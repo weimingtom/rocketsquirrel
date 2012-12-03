@@ -49,14 +49,8 @@ namespace Squirrel {
 
 class ContextInstancer : public Rocket::Core::ContextInstancer
 {
-private:
-
-	static ContextInstancer* s_pInstance;
-
 protected:
-	typedef std::unordered_map<const char*, Rocket::Core::Context*> ContextMap;
 
-	ContextMap mContexts;
 public:
 	ContextInstancer();
 	virtual ~ContextInstancer();
@@ -66,8 +60,6 @@ public:
 	virtual void ReleaseContext(Rocket::Core::Context* context);
 
 	virtual void Release();
-
-	static ContextInstancer& instance();
 };
 
 

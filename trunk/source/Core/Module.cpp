@@ -81,6 +81,7 @@ Module::Module(ScriptInterface* pScriptInterface) :
 		m_pScriptInterface = new DefaultScriptInterface();
 	}
 
+	getScriptInterface().AddBindFunction(&BindKeyMap);
 	getScriptInterface().AddBindFunction(&BindSquirrelInterfaces);
 	getScriptInterface().AddBindFunction(&EventInterface::Bind);
 	getScriptInterface().AddBindFunction(&ContextInterface::Bind);
@@ -93,6 +94,7 @@ Module::~Module()
 	{
 		m_pScriptInterface->Release();
 	}
+	s_pInstance = 0x0;
 }
 
 Module& Module::instance()
@@ -129,6 +131,11 @@ ScriptInterface& Module::getScriptInterface() const
 {
 	ROCKETSQUIRREL_ASSERT(m_pScriptInterface != 0x0);
 	return *m_pScriptInterface;
+}
+
+bool Module::isInit() const
+{
+	return mInitialized;
 }
 
 

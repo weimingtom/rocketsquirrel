@@ -37,5 +37,20 @@
 #include <RocketSquirrel/Core/ScriptInterface.h>
 
 
+namespace Rocket {
+namespace Core {
+namespace Squirrel {
+/*! 
+ * We need to call this to unreference contexts 
+ * created by squirrel, if you have a better idea
+ * please let me know on google code.
+ */
+void CollectGarbage();
+
+
+}
+}
+}
+
 
 #endif

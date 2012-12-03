@@ -59,12 +59,11 @@ public:
 
 	void DelItem(const char* key);
 
-	static SQInteger __GetItem(HSQUIRRELVM vm);
-
-	VariantInterface* GetItem(const char* key);
+	SQInteger GetItem(HSQUIRRELVM vm);
 
 	bool Contains(const char* key);
 
+	Rocket::Core::Dictionary& GetRocketDictionary();
 
 	//Binding function
 	static void Bind(HSQUIRRELVM vm);

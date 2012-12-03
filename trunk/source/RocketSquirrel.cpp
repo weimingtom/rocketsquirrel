@@ -24,3 +24,33 @@
  * THE SOFTWARE.
  *
  */
+
+#include "RocketSquirrel.h"
+#include "Core/ContextInterface.h"
+#include "RocketSquirrel/Core/Module.h"
+#include "Debug.h"
+
+namespace Rocket {
+namespace Core {
+namespace Squirrel {
+
+
+
+
+void CollectGarbage()
+{
+	//Trugger assert if it's not instanced and inistialized
+	ROCKETSQUIRREL_ASSERT(Module::instance().isInit() == true);
+
+	/* !Remove the contexts reference created by squirrel scripts
+	 * We do this so it's safe to create contexts within 
+	 * squirrel at the cost of having to do garbage collection */
+	ContextInterface::RemoveReferences();
+}
+
+
+
+
+}
+}
+}

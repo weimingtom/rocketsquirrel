@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef __ROCKETSQUIRREL_ELEMENTWRAPPER_INCLUDED
-#define __ROCKETSQUIRREL_ELEMENTWRAPPER_INCLUDED
+#ifndef __ROCKETSQUIRREL_EVENTWRAPPER_INCLUDED
+#define __ROCKETSQUIRREL_EVENTWRAPPER_INCLUDED
 
 
 #include <Rocket/Core/Element.h>
@@ -42,13 +42,9 @@ namespace Core {
 namespace Squirrel {
 
 
-class ElementDocumentWrapper;
-class VariantInterface;
+
 class ElementWrapper;
-
-
-
-typedef std::vector<ElementWrapper> ElementWrapperList;
+class DictionaryInterface;
 
 
 
@@ -59,8 +55,18 @@ protected:
 
 public:
 
+	EventWrapper(const EventWrapper& other);
 	EventWrapper();
+	EventWrapper(Rocket::Core::Event* evt);
 	virtual ~EventWrapper();
+
+	const char* GetType() const;
+	ElementWrapper GetTargetElement() const;
+	ElementWrapper GetCurrentElement() const;
+	DictionaryInterface GetParameters() const;
+	void StopPropagation();
+
+	EventWrapper& operator= (const EventWrapper& other);
 
 	static void Bind(HSQUIRRELVM vm);
 };

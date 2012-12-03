@@ -71,6 +71,9 @@ public:
 	/*! Gets the instance (itself)*/
 	static Module& instance();
 
+	/*! returns mInitialized */
+	bool isInit() const;
+
 	/*! Gets the ScriptInterface */
 	ScriptInterface& getScriptInterface() const;
 };

@@ -40,6 +40,7 @@
 #include "Core/ElementDocument.h"
 #include "Core/ElementWrapper.h"
 #include "Core/ElementWrapperDerived.h"
+#include "Core/EventWrapper.h"
 
 
 #ifdef _WINDOWS
@@ -324,8 +325,23 @@ void GlobalUtility::Set()
 
 		mSelfSet = true;
 	}
-	
-	//TODO event
+
+	if (m_pEvt)
+	{
+		EventWrapper wrapper(m_pEvt);
+
+		//Add the global slot event
+		sq_pushstring(mVM, "event", -1);
+		sqr = sqb::Push<EventWrapper>(mVM, wrapper);
+
+		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+		sqr = sq_newslot(mVM, -3, false);
+
+		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+		mEvtSet = true;
+	}
 
 	sq_poptop(mVM);
 }
@@ -353,6 +369,12 @@ void GlobalUtility::Restore()
 	{
 		deleteSlot("self");
 		mSelfSet = false;
+	}
+
+	if (mEvtSet)
+	{
+		deleteSlot("event");
+		mEvtSet = false;
 	}
 
 }
