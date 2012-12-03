@@ -49,7 +49,7 @@ namespace Squirrel {
 
 
 
-
+ContextInterface::ContextMap ContextInterface::sContexts;
 
 
 ContextInterface::ContextInterface()
@@ -92,6 +92,8 @@ SQInteger ContextInterface::constructor(HSQUIRRELVM v)
 	{
 		return sh.ThrowError(_SC("Couldn't create the Context with name '%s'"), name.CString());
 	}
+
+	sContexts.insert(ContextMap::_Val_type(name.CString(), pRocketContext));
 
 	ContextInterface* pContext = NewInstance<ContextInterface>(v);
 
@@ -203,6 +205,16 @@ ElementDocumentWrapper ContextInterface::CreateDocument(const char* tag)
 	return elemDoc;
 }
 
+void ContextInterface::RemoveReferences()
+{
+	ContextMap::iterator it = sContexts.begin();
+
+	while (it != sContexts.end())
+	{
+		it->second->RemoveReference();
+		it++;
+	}
+}
 
 
 

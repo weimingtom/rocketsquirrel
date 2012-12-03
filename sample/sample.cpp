@@ -87,6 +87,8 @@ int main()
 	//Main Loop
 	Shell::EventLoop(GameLoop);
 
+	Rocket::Core::Squirrel::CollectGarbage();
+
 	// Shutdown Rocket.
 	context->RemoveReference();
 	Rocket::Core::Shutdown();

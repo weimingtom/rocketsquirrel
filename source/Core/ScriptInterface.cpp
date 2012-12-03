@@ -27,6 +27,7 @@
 
 #include "RocketSquirrel/Core/ScriptInterface.h"
 #include "../BindingUtil.h"
+#include "../NamespaceHelper.h"
 #include <Rocket/Core.h>
 
 
@@ -62,6 +63,7 @@ HSQUIRRELVM ScriptInterface::OpenVM()
 
 void ScriptInterface::CloseVM()
 {
+	sq_collectgarbage(mVM);
 	sq_close(mVM);
 }
 
@@ -121,7 +123,11 @@ HSQUIRRELVM ScriptInterface::getSquirrelVM() const
 
 void ScriptInterface::BindIntoSquirrelVM(HSQUIRRELVM vm) const
 {
-	Rocket::Core::Log::Message(Rocket::Core::Log::LT_INFO, "Binding libRocket into Squirrel VM ($d)", vm);
+	sq_pushroottable(vm);
+	NamespaceHelper::create(vm, "Rocket");
+	sq_poptop(vm);
+
+	Rocket::Core::Log::Message(Rocket::Core::Log::LT_INFO, "Binding libRocket into Squirrel VM (%d)", vm);
 	for (size_t i = 0; i < mBindingFunctions.size(); i++)
 	{
 		mBindingFunctions[i](mVM);

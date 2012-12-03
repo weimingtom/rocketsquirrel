@@ -45,6 +45,7 @@ namespace Squirrel {
 
 
 void BindSquirrelInterfaces(HSQUIRRELVM vm);
+void BindKeyMap(HSQUIRRELVM vm);
 
 
 
@@ -75,6 +76,7 @@ SQBIND_DECLARE_CLASS(Rocket::Core::Log);
 
 //SQBIND_DECLARE_ENUM(Rocket::Core::Log::Type);
 SQBIND_DECLARE_CLASS(Rocket::Core::Log::Type);
+
 
 
 #endif

@@ -36,6 +36,9 @@
 
 #include "ElementWrapperDerived.h"
 #include "ElementStyleProxy.h"
+#include <Rocket/Core/Factory.h>
+#include "EventListener.h"
+#include "DictionaryInterface.h"
 
 
 namespace Rocket {
@@ -416,6 +419,18 @@ ElementWrapperList ElementWrapper::GetChildren() const
 	return ElementWrapperList();
 }
 
+void ElementWrapper::AddEventListener(const char* evt, const char* code, bool inCapturePhase)
+{
+	Rocket::Core::EventListener* listener = Rocket::Core::Factory::InstanceEventListener(code);
+
+	m_pElement->AddEventListener(evt, listener, inCapturePhase);
+}
+
+void ElementWrapper::DispatchEvent(const char* evt, DictionaryInterface& dict, bool interruptible)
+{
+	m_pElement->DispatchEvent(evt, dict.GetRocketDictionary(), interruptible);
+}
+
 void ElementWrapper::Bind(HSQUIRRELVM vm)
 {
 	/*Define the base Element class*/
@@ -424,6 +439,8 @@ void ElementWrapper::Bind(HSQUIRRELVM vm)
 	cE.Constructor(&NoConstructable);
 
 	cE.Variable(&ElementWrapper::style, _SC("style"));
+	cE.ClassFunction(&ElementWrapper::AddEventListener, _SC("AddEventListener"));
+	cE.ClassFunction(&ElementWrapper::DispatchEvent, _SC("DispatchEvent"));
 	cE.ClassFunction(&ElementWrapper::operator==, _SC("Equals"));
 	cE.ClassFunction(&ElementWrapper::GetTagName, _SC("GetTagName"));
 	cE.ClassFunction(&ElementWrapper::Blur, _SC("Blur"));

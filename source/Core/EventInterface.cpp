@@ -28,6 +28,8 @@
 #include "EventInterface.h"
 #include <Rocket/Core/Factory.h>
 #include "EventListenerInstancer.h"
+#include "EventWrapper.h"
+#include "../NamespaceHelper.h"
 
 
 namespace Rocket {
@@ -46,6 +48,14 @@ EventInterface::EventInterface()
 //Binding function
 void EventInterface::Bind(HSQUIRRELVM vm)
 {
+	sq_pushroottable(vm);
+	NamespaceHelper::switchTo(vm, "Rocket");
+
+	EventWrapper::Bind(vm);
+
+	sq_poptop(vm);
+	return;
+
 }
 
 void EventInterface::Register(HSQUIRRELVM vm)

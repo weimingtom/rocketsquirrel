@@ -65,7 +65,12 @@ void DictionaryInterface::DelItem(const char* key)
 	}
 }
 
-SQInteger DictionaryInterface::__GetItem(HSQUIRRELVM vm)
+Rocket::Core::Dictionary& DictionaryInterface::GetRocketDictionary()
+{
+	return dict;
+}
+
+SQInteger DictionaryInterface::GetItem(HSQUIRRELVM vm)
 {
 	sqb::StackHandler sh(vm);
 
@@ -78,24 +83,16 @@ SQInteger DictionaryInterface::__GetItem(HSQUIRRELVM vm)
 	const SQChar* key = sqb::Get(sqb::TypeWrapper<const SQChar*>(), vm, 2);
 	ROCKETSQUIRREL_ASSERT(key);
 
-	VariantInterface* vari = instance->GetItem(key);
+	Rocket::Core::Variant* rocketVari = dict.Get(key);
 
-	if (!vari)
+	if (!rocketVari)
 	{
 		return sh.ThrowNull();
 	}
 
-	return sqb::Push(vm, (*vari));
-}
+	VariantInterface vari((*rocketVari));
 
-VariantInterface* DictionaryInterface::GetItem(const char* key)
-{
-	VariantInterface* variant = (VariantInterface*)dict.Get(key);
-	if (!variant)
-	{
-		return 0x0;
-	}
-	return variant;
+	return sqb::Push(vm, vari);
 }
 
 bool DictionaryInterface::Contains(const char* key)
@@ -110,7 +107,7 @@ void DictionaryInterface::Bind(HSQUIRRELVM vm)
 	cDic.ClassFunction(&DictionaryInterface::Size, _SC("len"));
 	cDic.ClassFunction(&DictionaryInterface::SetItem, _SC("_set"));
 	cDic.ClassFunction(&DictionaryInterface::DelItem, _SC("remove"));
-	cDic.NativeFunction(&DictionaryInterface::__GetItem, _SC("_get"), sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("xs")));
+	cDic.NativeClassFunction(&DictionaryInterface::GetItem, _SC("_get"), sqb::FunctionOptions().ParamCheckCount(-1).TypeMask(_SC("xs")));
 	cDic.ClassFunction(&DictionaryInterface::Contains, _SC("Contains"));
 }
 

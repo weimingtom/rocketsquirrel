@@ -51,7 +51,7 @@ int main()
 		return -1;
 	}
 
-	Rocket::Debugger::Initialise(context);
+	//Rocket::Debugger::Initialise(context);
 
 	Input::SetContext(context);
 
@@ -62,6 +62,8 @@ int main()
 	ExecuteScript("LoadDocument.nut");
 
 	Shell::EventLoop(GameLoop);
+
+	Rocket::Core::Squirrel::CollectGarbage();
 
 	Rocket::Core::Shutdown();
 

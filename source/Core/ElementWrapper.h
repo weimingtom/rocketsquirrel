@@ -45,6 +45,7 @@ namespace Squirrel {
 class ElementDocumentWrapper;
 class VariantInterface;
 class ElementWrapper;
+class DictionaryInterface;
 
 
 
@@ -141,6 +142,9 @@ public:
 
 	void SetId(const char* id);
 	const char* GetId() const;
+
+	void AddEventListener(const char* evt, const char* code, bool inCapturePhase);
+	void DispatchEvent(const char* evt, DictionaryInterface& dict, bool interruptible);
 
 	ElementWrapper GetElementById(const char* id) const;
 

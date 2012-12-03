@@ -1,4 +1,4 @@
-print("\n\n :: Element Tests :: \n\n");
+/*print("\n\n :: Element Tests :: \n\n");
 
 try 
 {
@@ -23,6 +23,6 @@ print("is pseudoclass set: " + doc.IsPseudoClassSet("mypseudoclass") + "\n");
 context.UnloadDocument(doc);
 context.UnloadAllDocuments();
 
-print("\nUnloaded Document tag: " + doc.GetTagName() + "\n");
+print("\nUnloaded Document tag: " + doc.GetTagName() + "\n");*/
 
 

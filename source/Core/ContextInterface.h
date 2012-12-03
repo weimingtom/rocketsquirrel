@@ -55,6 +55,10 @@ protected:
 
 	ElementDocumentWrapper __returnElementDocument(Rocket::Core::ElementDocument* rocketDoc) const;
 
+	typedef std::unordered_map<const char*, Rocket::Core::Context*> ContextMap;
+
+	static ContextMap sContexts;
+
 public:
 
 	ContextInterface();
@@ -83,6 +87,9 @@ public:
 	static void Bind(HSQUIRRELVM vm);
 
 	static void InitialiseRocketInterface();
+
+	/*! aka Collect Garbage */
+	static void RemoveReferences();
 };
 
 
