@@ -25,74 +25,42 @@
  *
  */
 
-#ifndef __ROCKETSQUIRREL_ELEMENTWRAPPERDERIVED_INCLUDED
-#define __ROCKETSQUIRREL_ELEMENTWRAPPERDERIVED_INCLUDED
+
+#ifndef __ROCKETSQUIRREL_CONTROLS_MODULE_INCLUDED
+#define __ROCKETSQUIRREL_CONTROLS_MODULE_INCLUDED
 
 
-#include "ElementWrapper.h"
-#include <Rocket/Core/ElementText.h>
-#include "ContextInterface.h"
+
+#include "Rocket/Core.h"
+#include "Rocket/Core/Plugin.h"
+#include <squirrel.h>
+#include "RocketSquirrel.h"
 
 
 
 namespace Rocket {
-namespace Core {
+namespace Controls {
 namespace Squirrel {
 
 
-
-class ContextInterface;
-
+class ScriptInterface;
 
 
-/*! Wrapper for Rocket::Core::ElementText */
-class ElementTextWrapper : public ElementWrapper
+
+class ROCKETSQUIRRELDLL_API Module : public Rocket::Core::Plugin
 {
-protected:
-	Rocket::Core::ElementText* text();
+private:
 
-	mutable Rocket::Core::String mCacheText;
+	Rocket::Core::Squirrel::Module& mCore;
+
+	void OnInitialise();
+	void OnShutdown();
 
 public:
 
-	void SetText(const char* text);
-	const char* GetText();
-
-	static void Bind(HSQUIRRELVM vm);
-	static SQInteger Cast(HSQUIRRELVM vm);
-};
-
-
-
-
-/*! Wrapper for Rocket::Core::ElementDocument */
-class ElementDocumentWrapper : public ElementWrapper
-{
-protected:
-
-	Rocket::Core::ElementDocument* doc();
-
-public:
-	void Show(int flags);
-	void Show();
-	void Hide();
-
-	void PullToFront();
-	void PushToBack();
-
-	void Close();
-
-	ElementWrapper CreateElement(const char* name);
-	ElementTextWrapper CreateTextNode(const char* text);
-
-	ContextInterface GetContext();
-
-	void SetTitle(const char* title);
-	const char* GetTitle();
-
-	static void Bind(HSQUIRRELVM vm);
-	static SQInteger Cast(HSQUIRRELVM vm);
-
+	/*! This has to be created and registered after Core::Squirrel::Module */
+	Module();
+	~Module();
 };
 
 
@@ -100,13 +68,11 @@ public:
 
 
 
-}
-}
-}
 
 
-SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::ElementDocumentWrapper);
-SQBIND_DECLARE_CLASS(Rocket::Core::Squirrel::ElementTextWrapper);
+}
+}
+}
 
 
 

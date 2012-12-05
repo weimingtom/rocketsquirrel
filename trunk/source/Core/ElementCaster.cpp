@@ -25,14 +25,9 @@
  *
  */
 
-#include "ElementDocument.h"
-#include "../BindingUtil.h"
-#include <squirrel.h>
-#include "RocketSquirrel.h"
-#include "ElementWrapperDerived.h"
+#include "ElementCaster.h"
+#include "../NamespaceHelper.h"
 #include "../Debug.h"
-#include "RocketSquirrel/Core/ScriptInterface.h"
-#include <Rocket/Core/FileInterface.h>
 
 
 namespace Rocket {
@@ -43,56 +38,51 @@ namespace Squirrel {
 
 
 
-ElementDocument::ElementDocument(const String& tag, ScriptInterface* pScriptInterface) :
-	Rocket::Core::ElementDocument(tag),
-	m_pScriptInterface(pScriptInterface)
-{
 
+
+
+void ElementCaster::Bind(HSQUIRRELVM vm)
+{
+	sq_pushroottable(vm);
+	NamespaceHelper::switchTo(vm, "Rocket");
+
+	sq_pushstring(vm, _SC("ElementAs"), -1);
+	sq_newtable(vm);
+	SQRESULT sqr = sq_newslot(vm, -3, SQTrue);
+	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+
+	sq_poptop(vm);
 }
 
-ElementDocument::~ElementDocument()
+SQInteger ElementCaster::ThrowErrorUnknown(HSQUIRRELVM vm)
 {
+	sqb::StackHandler sh(vm);
+
+	return sh.ThrowError("ElementAs: Unknown error while casting an element");
 }
 
-
-void ElementDocument::LoadScript(Rocket::Core::Stream* stream, const Rocket::Core::String& source_name) 
+SQInteger ElementCaster::ThrowErrorNotElement(HSQUIRRELVM vm)
 {
-	if (m_pScriptInterface)
-	{
-		m_pScriptInterface->LoadScript(this, stream, source_name);
-	}
-	else
-	{
-		Rocket::Core::String buffer;
-		stream->Read(buffer, stream->Length());
+	sqb::StackHandler sh(vm);
 
-		Rocket::Core::String moduleName = Rocket::Core::String(source_name).Replace("/", "_");
-		moduleName = moduleName.Replace("\\", "_");
-		moduleName = moduleName.Replace(".nut", "");
-
-		HSQUIRRELVM vm = Module::instance().getScriptInterface().getSquirrelVM();
-
-		SQRESULT sqr;
-		sqr = sq_compilebuffer(vm, buffer.CString(), buffer.Length(), source_name.CString(), true);
-
-		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
-
-
-		GlobalUtility gutil(vm, this);
-
-		gutil.Set();
-
-		sq_pushroottable(vm);
-
-		sqr = sq_call(vm, 1, false, true);
-
-		//ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
-
-		sq_poptop(vm);
-
-		gutil.Restore();
-	}
+	return sh.ThrowError("ElementAs: Cannot cast non-element instances");
 }
+
+SQInteger ElementCaster::ThrowErrorCastFailed(HSQUIRRELVM vm, const char* targetClass)
+{
+	sqb::StackHandler sh(vm);
+
+	return sh.ThrowError("ElementAs: Failed to cast as '%s'!", targetClass);
+}
+
+void ElementCaster::SwitchTo(HSQUIRRELVM vm)
+{
+	sq_pushstring(vm, _SC("ElementAs"), -1);
+	SQRESULT sqr = sq_get(vm, -2);
+	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+}
+
 
 
 

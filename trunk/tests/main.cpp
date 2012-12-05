@@ -9,6 +9,7 @@
 
 #include "Rocket/Core.h"
 #include "Rocket/Debugger.h"
+#include "RocketSquirrel/Controls/Module.h"
 #include "../source/Debug.h"
 
 #include <sqbind/SquirrelBind.h>
@@ -36,6 +37,7 @@ int main()
 	Rocket::Core::SetSystemInterface(&system_interface);
 
 	Rocket::Core::RegisterPlugin(new Rocket::Core::Squirrel::Module());
+	Rocket::Core::RegisterPlugin(new Rocket::Controls::Squirrel::Module());
 
 	Rocket::Core::Initialise();
 

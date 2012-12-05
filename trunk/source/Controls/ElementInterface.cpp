@@ -26,23 +26,15 @@
  */
 
 #include "ElementInterface.h"
-#include "VariantInterface.h"
 
 #include <sqbind/SquirrelBind.h>
 #include "../Debug.h"
 #include "../BindingUtil.h"
 #include "../NamespaceHelper.h"
-#include "ElementWrapper.h"
-#include "ElementWrapperDerived.h"
-#include "VariantInterface.h"
-#include "VectorInterface.h"
-#include "ElementStyleProxy.h"
-#include "ElementInstancer.h"
-#include <Rocket/Core/Factory.h>
 
 
 namespace Rocket {
-namespace Core {
+namespace Controls {
 namespace Squirrel {
 
 
@@ -56,37 +48,20 @@ ElementInterface::ElementInterface()
 
 void ElementInterface::Bind(HSQUIRRELVM vm)
 {
+	using Rocket::Core::Squirrel::NamespaceHelper;
+
 	sq_pushroottable(vm);
 	NamespaceHelper::switchTo(vm, "Rocket");
 
 
-	ElementStyleProxy::Bind(vm);
-
-
-	//ElementList
-	sqb::ClassDefinition<VectorInterface<ElementWrapperList>> cVec(vm, -1, _SC("ElementList"));
-
-	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::Contains, _SC("Contains"));
-	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::SetItem, _SC("_set"));
-	cVec.NativeClassFunction(&VectorInterface<ElementWrapperList>::GetItem, _SC("_get"), sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC("xi")));
-	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::PushBack, _SC("append"));
-	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::PushBack, _SC("push"));
-	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::Size, _SC("len"));
-	cVec.ClassFunction(&VectorInterface<ElementWrapperList>::DelItem, _SC("remove"));
 
 	sq_poptop(vm);
-
-	ElementWrapper::Bind(vm);
-	ElementDocumentWrapper::Bind(vm);
-	ElementTextWrapper::Bind(vm);
-
-	//hmm can't access ElementTextDefault, ElementImage and ElementHandle
 }
 
-void ElementInterface::InitialiseRocketInterface()
+/*void ElementInterface::InitialiseRocketInterface()
 {
 	Rocket::Core::Factory::RegisterElementInstancer("body", new ElementInstancer());
-}
+}*/
 
 
 

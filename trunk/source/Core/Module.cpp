@@ -36,6 +36,7 @@
 #include "ElementInterface.h"
 #include "RocketSquirrel/Core/ScriptInterface.h"
 #include "EventInterface.h"
+#include "ElementCaster.h"
 
 
 
@@ -81,11 +82,14 @@ Module::Module(ScriptInterface* pScriptInterface) :
 		m_pScriptInterface = new DefaultScriptInterface();
 	}
 
+
 	getScriptInterface().AddBindFunction(&BindKeyMap);
 	getScriptInterface().AddBindFunction(&BindSquirrelInterfaces);
 	getScriptInterface().AddBindFunction(&EventInterface::Bind);
 	getScriptInterface().AddBindFunction(&ContextInterface::Bind);
+	getScriptInterface().AddBindFunction(&ElementCaster::Bind);
 	getScriptInterface().AddBindFunction(&ElementInterface::Bind);
+
 }
 
 Module::~Module()

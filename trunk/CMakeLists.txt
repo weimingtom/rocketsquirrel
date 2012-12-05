@@ -67,6 +67,7 @@ set(HDRS
 	include/RocketSquirrel.h
 	include/RocketSquirrel/Core/ScriptInterface.h
 	include/RocketSquirrel/Core/Module.h
+	include/RocketSquirrel/Controls/Module.h
 )
  
 set(SRCS
@@ -97,6 +98,9 @@ set(SRCS
 	source/Core/ElementInterface.h
 	source/Core/ElementInterface.cpp
 	
+	source/Core/ElementCaster.h
+	source/Core/ElementCaster.cpp
+	
 	source/Core/ElementWrapper.h
 	source/Core/ElementWrapper.cpp
 	
@@ -125,6 +129,10 @@ set(SRCS
 	source/Core/EventListenerInstancer.h
 	source/Core/EventListenerInstancer.cpp
 	
+	#Controls
+	source/Controls/Module.cpp
+	source/Controls/ElementInterface.h
+	source/Controls/ElementInterface.cpp
 	
 	source/Debug.h
 )
