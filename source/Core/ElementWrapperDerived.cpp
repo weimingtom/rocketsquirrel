@@ -28,6 +28,7 @@
 #include "ElementWrapperDerived.h"
 #include "ElementInterface.h"
 #include "VariantInterface.h"
+#include "ElementCaster.h"
 
 #include <sqbind/SquirrelBind.h>
 #include "../Debug.h"
@@ -127,6 +128,9 @@ const char* ElementDocumentWrapper::GetTitle()
 
 void ElementDocumentWrapper::Bind(HSQUIRRELVM vm)
 {
+	sq_pushroottable(vm);
+	NamespaceHelper::switchTo(vm, "Rocket");
+
 	/*Define the element document*/
 	sqb::ClassDefinition<ElementDocumentWrapper, ElementWrapper> cEDoc(vm, -1, _SC("ElementDocument"));
 	
@@ -146,7 +150,19 @@ void ElementDocumentWrapper::Bind(HSQUIRRELVM vm)
 	cEDoc.EnumEntry(ElementDocument::NONE, "NONE");
 	cEDoc.EnumEntry(ElementDocument::FOCUS, "FOCUS");
 	cEDoc.EnumEntry(ElementDocument::MODAL, "MODAL");
+
+	ElementCaster::SwitchTo(vm);
+
+	bool r = sqb::Bind::BindNativeFunction(vm, -1, &ElementDocumentWrapper::Cast, _SC("Document"), sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC(".x")));
+
+	sq_poptop(vm);
 }
+
+SQInteger ElementDocumentWrapper::Cast(HSQUIRRELVM vm)
+{
+	return ElementCaster::CastFunction<Rocket::Core::ElementDocument, ElementDocumentWrapper>(vm, "Document");
+}
+
 
 ////////////////////////////////////////////////////////////////////
 
@@ -171,12 +187,27 @@ const char* ElementTextWrapper::GetText()
 
 void ElementTextWrapper::Bind(HSQUIRRELVM vm)
 {
+	sq_pushroottable(vm);
+	NamespaceHelper::switchTo(vm, "Rocket");
+
+
 	/*Define the element text*/
 	sqb::ClassDefinition<ElementTextWrapper, ElementWrapper> cEText(vm, -1, _SC("ElementText"));
 
 	cEText.Constructor(&NoConstructable);
 	cEText.ClassFunction(&ElementTextWrapper::SetText, _SC("SetText"));
 	cEText.ClassFunction(&ElementTextWrapper::GetText, _SC("GetText"));
+
+	ElementCaster::SwitchTo(vm);
+
+	sqb::Bind::BindNativeFunction(vm, -1, &ElementTextWrapper::Cast, _SC("Text"), sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC(".x")));
+	
+	sq_poptop(vm);
+}
+
+SQInteger ElementTextWrapper::Cast(HSQUIRRELVM vm)
+{
+	return ElementCaster::CastFunction<Rocket::Core::ElementText, ElementTextWrapper>(vm, "Text");
 }
 
 

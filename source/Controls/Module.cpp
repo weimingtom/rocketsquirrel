@@ -25,74 +25,45 @@
  *
  */
 
-#include "ElementDocument.h"
+#include "RocketSquirrel/Controls/Module.h"
+#include "RocketSquirrel/Core/Module.h"
+#include <Rocket/Core.h>
 #include "../BindingUtil.h"
-#include <squirrel.h>
-#include "RocketSquirrel.h"
-#include "ElementWrapperDerived.h"
+
+#include "Config.h"
 #include "../Debug.h"
-#include "RocketSquirrel/Core/ScriptInterface.h"
-#include <Rocket/Core/FileInterface.h>
+#include "ElementInterface.h"
 
 
 namespace Rocket {
-namespace Core {
+namespace Controls {
 namespace Squirrel {
 
 
 
 
 
-ElementDocument::ElementDocument(const String& tag, ScriptInterface* pScriptInterface) :
-	Rocket::Core::ElementDocument(tag),
-	m_pScriptInterface(pScriptInterface)
+Module::Module() :
+	mCore(Rocket::Core::Squirrel::Module::instance())
 {
-
+	mCore.getScriptInterface().AddBindFunction(&ElementInterface::Bind);
 }
 
-ElementDocument::~ElementDocument()
+Module::~Module()
+{
+}
+
+void Module::OnInitialise()
+{
+}
+
+void Module::OnShutdown()
 {
 }
 
 
-void ElementDocument::LoadScript(Rocket::Core::Stream* stream, const Rocket::Core::String& source_name) 
-{
-	if (m_pScriptInterface)
-	{
-		m_pScriptInterface->LoadScript(this, stream, source_name);
-	}
-	else
-	{
-		Rocket::Core::String buffer;
-		stream->Read(buffer, stream->Length());
+		
 
-		Rocket::Core::String moduleName = Rocket::Core::String(source_name).Replace("/", "_");
-		moduleName = moduleName.Replace("\\", "_");
-		moduleName = moduleName.Replace(".nut", "");
-
-		HSQUIRRELVM vm = Module::instance().getScriptInterface().getSquirrelVM();
-
-		SQRESULT sqr;
-		sqr = sq_compilebuffer(vm, buffer.CString(), buffer.Length(), source_name.CString(), true);
-
-		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
-
-
-		GlobalUtility gutil(vm, this);
-
-		gutil.Set();
-
-		sq_pushroottable(vm);
-
-		sqr = sq_call(vm, 1, false, true);
-
-		//ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
-
-		sq_poptop(vm);
-
-		gutil.Restore();
-	}
-}
 
 
 

@@ -433,6 +433,9 @@ void ElementWrapper::DispatchEvent(const char* evt, DictionaryInterface& dict, b
 
 void ElementWrapper::Bind(HSQUIRRELVM vm)
 {
+	sq_pushroottable(vm);
+	NamespaceHelper::switchTo(vm, "Rocket");
+
 	/*Define the base Element class*/
 	sqb::ClassDefinition<ElementWrapper> cE(vm, -1, _SC("Element"));
 	
@@ -492,6 +495,8 @@ void ElementWrapper::Bind(HSQUIRRELVM vm)
 	cE.ClassFunction(&ElementWrapper::GetLastChild, _SC("GetLastChild"));
 	cE.ClassFunction(&ElementWrapper::GetId, _SC("GetId"));
 	cE.ClassFunction(&ElementWrapper::SetId, _SC("SetId"));
+
+	sq_poptop(vm);
 }
 
 

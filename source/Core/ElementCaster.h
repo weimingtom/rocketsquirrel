@@ -25,14 +25,15 @@
  *
  */
 
-#include "ElementDocument.h"
-#include "../BindingUtil.h"
+#ifndef __ROCKETSQUIRREL_ELEMENTCASTER_INCLUDED
+#define __ROCKETSQUIRREL_ELEMENTCASTER_INCLUDED
+
+
+#include <Rocket/Core/Element.h>
 #include <squirrel.h>
-#include "RocketSquirrel.h"
-#include "ElementWrapperDerived.h"
-#include "../Debug.h"
-#include "RocketSquirrel/Core/ScriptInterface.h"
-#include <Rocket/Core/FileInterface.h>
+#include <sqbind/SquirrelBind.h>
+#include <map>
+
 
 
 namespace Rocket {
@@ -40,59 +41,60 @@ namespace Core {
 namespace Squirrel {
 
 
+class ElementDocumentWrapper;
+class ElementWrapper;
 
 
 
-ElementDocument::ElementDocument(const String& tag, ScriptInterface* pScriptInterface) :
-	Rocket::Core::ElementDocument(tag),
-	m_pScriptInterface(pScriptInterface)
+typedef std::vector<ElementWrapper> ElementWrapperList;
+
+
+
+class ElementCaster
 {
+protected:
 
-}
+public:
 
-ElementDocument::~ElementDocument()
-{
-}
+	static void Bind(HSQUIRRELVM vm);
+	static SQInteger ThrowErrorUnknown(HSQUIRRELVM vm);
+	static SQInteger ThrowErrorNotElement(HSQUIRRELVM vm);
+	static SQInteger ThrowErrorCastFailed(HSQUIRRELVM vm, const char* targetClass);
 
+	static void SwitchTo(HSQUIRRELVM vm);
 
-void ElementDocument::LoadScript(Rocket::Core::Stream* stream, const Rocket::Core::String& source_name) 
-{
-	if (m_pScriptInterface)
+	/*! T stands for type W for wrapper */
+	template<typename T, typename W>
+	inline static SQInteger CastFunction(HSQUIRRELVM vm, const char* name)
 	{
-		m_pScriptInterface->LoadScript(this, stream, source_name);
+		sqb::StackHandler sh(vm);
+
+		ROCKETSQUIRREL_ASSERT(sh.GetParamCount() >= 2);
+		ROCKETSQUIRREL_ASSERT(sh.IsInstance(2));
+
+		if (!sh.IsInstanceOfType<ElementWrapper>(2))
+		{
+			return ElementCaster::ThrowErrorNotElement(vm);
+		}
+
+		T* obj = dynamic_cast<T*>(sh.GetInstanceAsType<ElementWrapper>(2)->getElement());
+
+		if (obj)
+		{
+			W wrapper;
+			wrapper.setElement(obj);
+			return sqb::Push<W>(vm, wrapper);
+		}
+		else
+		{
+			return ElementCaster::ThrowErrorCastFailed(vm, name);
+		}
+
+		return ElementCaster::ThrowErrorUnknown(vm);
 	}
-	else
-	{
-		Rocket::Core::String buffer;
-		stream->Read(buffer, stream->Length());
-
-		Rocket::Core::String moduleName = Rocket::Core::String(source_name).Replace("/", "_");
-		moduleName = moduleName.Replace("\\", "_");
-		moduleName = moduleName.Replace(".nut", "");
-
-		HSQUIRRELVM vm = Module::instance().getScriptInterface().getSquirrelVM();
-
-		SQRESULT sqr;
-		sqr = sq_compilebuffer(vm, buffer.CString(), buffer.Length(), source_name.CString(), true);
-
-		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+};
 
 
-		GlobalUtility gutil(vm, this);
-
-		gutil.Set();
-
-		sq_pushroottable(vm);
-
-		sqr = sq_call(vm, 1, false, true);
-
-		//ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
-
-		sq_poptop(vm);
-
-		gutil.Restore();
-	}
-}
 
 
 
@@ -101,3 +103,7 @@ void ElementDocument::LoadScript(Rocket::Core::Stream* stream, const Rocket::Cor
 }
 }
 }
+
+
+
+#endif
