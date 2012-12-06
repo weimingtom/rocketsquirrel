@@ -1,4 +1,4 @@
-local doc = context.LoadDocument("./assets/demo.rml");
+local doc = context.LoadDocument(ASSETS_DIR + "/demo.rml");
 
 doc.ShowFocus(Rocket.ElementDocument.FOCUS);
 

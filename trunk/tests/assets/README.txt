@@ -1,0 +1,1 @@
+This assets files are taken from libRocket (see libRocket copyright/license notice for more info)
