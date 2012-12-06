@@ -6,6 +6,7 @@
 #include "ShellRenderInterfaceOpenGL.h"
 #include "Shell.h"
 #include "RocketSquirrel/Core/ScriptInterface.h"
+#include <sqbind/SquirrelBind.h>
 
 
 static HSQUIRRELVM vm = 0;
@@ -13,7 +14,7 @@ static HSQUIRRELVM vm = 0;
 void ExecuteScript(const char* script)
 {
 	using Rocket::Core::String;
-	static String scriptsDir(String(ROCKETSQUIRREL_SCRIPTS) + "/");
+	static String scriptsDir(String(ROCKETSQUIRREL_TESTS_SCRIPTS) + "/");
 
 	SQRESULT sqr;
 
@@ -36,6 +37,15 @@ void DevelopingTests()
 	using Rocket::Core::StringList;
 
 	vm = Rocket::Core::Squirrel::Module::instance().getScriptInterface().getSquirrelVM();
+
+	sq_pushconsttable(vm);
+
+
+	sq_pushstring(vm, _SC("ASSETS_DIR"), -1);
+	sq_pushstring(vm, _SC(ROCKETSQUIRREL_TESTS_ASSETS), -1);
+	sq_createslot(vm, -3);
+
+	sq_poptop(vm);
 
 	StringList tests;
 	tests.push_back("Interfaces.nut");

@@ -12,6 +12,7 @@
 #include <Rocket/Debugger.h>
 #include "RocketSquirrel/Controls/Module.h"
 #include "../source/Debug.h"
+#include "Config.h"
 
 #include <sqbind/SquirrelBind.h>
 
@@ -60,7 +61,10 @@ int main()
 
 	Input::SetContext(context);
 
-	Shell::LoadFonts("./assets/");
+	Rocket::Core::String assetsDir(ROCKETSQUIRREL_TESTS_ASSETS);
+	assetsDir += "/";
+
+	Shell::LoadFonts(assetsDir.CString());
 
 
 	//Execute the script that will create the testing GUI
