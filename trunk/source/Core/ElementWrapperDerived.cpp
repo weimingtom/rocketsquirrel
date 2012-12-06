@@ -64,7 +64,9 @@ void ElementDocumentWrapper::Hide()
 Rocket::Core::ElementDocument* ElementDocumentWrapper::doc()
 {
 	ROCKETSQUIRREL_ASSERT(m_pElement);
-	//TODO find out if theres any Type property or method
+	
+	ROCKETSQUIRREL_ASSERT(dynamic_cast<Rocket::Core::ElementDocument*>(m_pElement));
+
 	return (Rocket::Core::ElementDocument*)m_pElement;
 }
 
@@ -168,6 +170,8 @@ SQInteger ElementDocumentWrapper::Cast(HSQUIRRELVM vm)
 
 Rocket::Core::ElementText* ElementTextWrapper::text()
 {
+	ROCKETSQUIRREL_ASSERT(m_pElement);
+	ROCKETSQUIRREL_ASSERT(dynamic_cast<Rocket::Core::ElementText*>(m_pElement));
 	return (Rocket::Core::ElementText*)m_pElement;
 }
 

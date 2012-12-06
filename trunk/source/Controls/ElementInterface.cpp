@@ -31,6 +31,7 @@
 #include "../Debug.h"
 #include "../BindingUtil.h"
 #include "../NamespaceHelper.h"
+#include "ElementWrapperDerived.h"
 
 
 namespace Rocket {
@@ -48,14 +49,9 @@ ElementInterface::ElementInterface()
 
 void ElementInterface::Bind(HSQUIRRELVM vm)
 {
-	using Rocket::Core::Squirrel::NamespaceHelper;
-
-	sq_pushroottable(vm);
-	NamespaceHelper::switchTo(vm, "Rocket");
-
-
-
-	sq_poptop(vm);
+	ElementFormWrapper::Bind(vm);
+	ElementFormControlWrapper::Bind(vm);
+	ElementFormControlInputWrapper::Bind(vm);
 }
 
 /*void ElementInterface::InitialiseRocketInterface()
