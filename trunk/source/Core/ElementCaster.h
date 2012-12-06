@@ -32,6 +32,7 @@
 #include <Rocket/Core/Element.h>
 #include <squirrel.h>
 #include <sqbind/SquirrelBind.h>
+#include "ElementWrapper.h"
 #include <map>
 
 
