@@ -133,6 +133,8 @@ set(SRCS
 	source/Controls/Module.cpp
 	source/Controls/ElementInterface.h
 	source/Controls/ElementInterface.cpp
+	source/Controls/ElementWrapperDerived.h
+	source/Controls/ElementWrapperDerived.cpp
 	
 	source/Debug.h
 )

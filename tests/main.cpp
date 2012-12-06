@@ -7,8 +7,9 @@
 #include "ShellRenderInterfaceOpenGL.h"
 #include "ShellSystemInterface.h"
 
-#include "Rocket/Core.h"
-#include "Rocket/Debugger.h"
+#include <Rocket/Core.h>
+#include <Rocket/Controls/Controls.h>
+#include <Rocket/Debugger.h>
 #include "RocketSquirrel/Controls/Module.h"
 #include "../source/Debug.h"
 
@@ -41,6 +42,8 @@ int main()
 
 	Rocket::Core::Initialise();
 
+	Rocket::Controls::Initialise();
+
 	DevelopingTests();
 
 
@@ -53,7 +56,7 @@ int main()
 		return -1;
 	}
 
-	//Rocket::Debugger::Initialise(context);
+	Rocket::Debugger::Initialise(context);
 
 	Input::SetContext(context);
 
