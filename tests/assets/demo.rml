@@ -52,6 +52,7 @@
 				input.SetDisabled(true);
 				input.GetChecked();
 				input.SetMaxLength(10);
+				input.SetValue("My Value");
 				
 				input.SetDisabled(false);
 				
@@ -97,6 +98,7 @@
 				
 				Rocket.ElementAs.Text(buttons[0]);
 			}
+			
 		</script>
 		
 	</head>

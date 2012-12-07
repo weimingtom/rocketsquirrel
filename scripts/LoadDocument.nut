@@ -10,9 +10,6 @@ local content = doc.GetElementById("content");
 
 content.SetClass("hideclass", false);
 
-local inexistent = doc.GetElementById("inexisten");
-
-print(inexistent);
 
 local handle = doc.GetElementById("handle");
 
@@ -46,11 +43,11 @@ print("\nScroll = " +
 );
 
 print("\nOwnerDocument = " + handle.GetOwnerDocument().GetId() + "\n");
-print("\nNextSiblidng = " + handle.GetNextSibling() + "\n");
-print("\nPreviousSiblidng = " + handle.GetPreviousSibling() + "\n");
+print("\nNextSiblidng = " + handle.GetNextSibling().GetId() + "\n");
+print("\nPreviousSiblidng = " + handle.GetPreviousSibling().GetId() + "\n");
 
 print("\nGetParentNode Address = " + handle.GetParentNode().GetAddress(true) + "\n");
-print("\nGetParentNode Address = " + doc.GetParentNode().GetParentNode() + "\n");
+print("\nGetParentNode Address = " + doc.GetParentNode().GetParentNode().GetAddress(true) + "\n");
 
 //if the element is not found then returns itself
 if (handle.GetId() == doc.GetId())
@@ -68,6 +65,23 @@ print("\n" + handle.GetAddress(true) + "\n");
 
 local next = content.GetNextSibling();
 
+
+
+function compare(a,b)
+{
+	if (a.Equals(b))
+	{
+		print("\nEqual = true");
+	}
+	else
+	{
+		print("\nEqual = false");
+	}
+}
+
+
+compare(next, handle);
+compare(handle, handle);
 
 handle.SetAttribute("id", Rocket.Variant("newhandle"));
 print(handle.GetAttribute("id"));

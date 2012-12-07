@@ -33,6 +33,7 @@
 #include "../Debug.h"
 #include "RocketSquirrel/Core/ScriptInterface.h"
 #include <Rocket/Core/FileInterface.h>
+#include "../SquirrelScript.h"
 
 
 namespace Rocket {
@@ -73,23 +74,15 @@ void ElementDocument::LoadScript(Rocket::Core::Stream* stream, const Rocket::Cor
 		HSQUIRRELVM vm = Module::instance().getScriptInterface().getSquirrelVM();
 
 		SQRESULT sqr;
-		sqr = sq_compilebuffer(vm, buffer.CString(), buffer.Length(), source_name.CString(), true);
+		
+		SquirrelScript script(buffer, source_name);
 
-		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
-
+		script.Compile(vm, false);
 
 		GlobalUtility gutil(vm, this);
 
 		gutil.Set();
-
-		sq_pushroottable(vm);
-
-		sqr = sq_call(vm, 1, false, true);
-
-		//ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
-
-		sq_poptop(vm);
-
+		script.Run(vm);
 		gutil.Restore();
 	}
 }

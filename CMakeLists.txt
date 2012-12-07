@@ -79,6 +79,8 @@ set(SRCS
 	source/BindingUtil.cpp
 	source/NamespaceHelper.h
 	source/NamespaceHelper.cpp
+	source/SquirrelScript.h
+	source/SquirrelScript.cpp
 	
 	#Core
 	source/Core/ScriptInterface.cpp

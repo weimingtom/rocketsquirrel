@@ -120,10 +120,24 @@ const char* ElementWrapper::GetId() const
 	return m_pElement->GetId().CString();
 }
 
-ElementWrapper ElementWrapper::GetElementById(const char* id) const
+SQInteger ElementWrapper::GetElementById(HSQUIRRELVM vm)
 {
+	sqb::StackHandler sh(vm);
+
+	ROCKETSQUIRREL_ASSERT(sh.GetParamCount() >= 2);
+	ROCKETSQUIRREL_ASSERT(sh.IsString(2));
+
+	Rocket::Core::String id;
+	id = sh.GetString(2);
+
 	Rocket::Core::Element* rocketElem = m_pElement->GetElementById(id);
-	return __returnWrapper(rocketElem);
+
+	if (rocketElem)
+	{
+		return sh.Return<ElementWrapper>(__returnWrapper(rocketElem));
+	}
+
+	return sh.Return(false);
 }
 
 VectorInterface<ElementWrapperList> ElementWrapper::GetElementsByTagName(const char* tag) const
@@ -161,16 +175,36 @@ void ElementWrapper::InsertBefore(const ElementWrapper& element, const ElementWr
 	m_pElement->InsertBefore(element.m_pElement, adjacentelement.m_pElement);
 }
 
-ElementWrapper ElementWrapper::GetFirstChild() const
+SQInteger ElementWrapper::GetFirstChild(HSQUIRRELVM vm)
 {
+	sqb::StackHandler sh(vm);
+
+	ROCKETSQUIRREL_ASSERT(sh.GetParamCount() >= 1);
+
 	Rocket::Core::Element* rocketElem = m_pElement->GetFirstChild();
-	return __returnWrapper(rocketElem);
+
+	if (rocketElem)
+	{
+		return sh.Return<ElementWrapper>(__returnWrapper(rocketElem));
+	}
+
+	return sh.Return(false);
 }
 
-ElementWrapper ElementWrapper::GetLastChild() const
+SQInteger ElementWrapper::GetLastChild(HSQUIRRELVM vm)
 {
+	sqb::StackHandler sh(vm);
+
+	ROCKETSQUIRREL_ASSERT(sh.GetParamCount() >= 1);
+
 	Rocket::Core::Element* rocketElem = m_pElement->GetLastChild();
-	return __returnWrapper(rocketElem);
+
+	if (rocketElem)
+	{
+		return sh.Return<ElementWrapper>(__returnWrapper(rocketElem));
+	}
+
+	return sh.Return(false);
 }
 
 void ElementWrapper::AppendChild(const ElementWrapper& element)
@@ -225,11 +259,20 @@ float ElementWrapper::GetClientHeight() const
 	return m_pElement->GetClientHeight();
 }
 
-ElementWrapper ElementWrapper::GetOffsetParent() const
+SQInteger ElementWrapper::GetOffsetParent(HSQUIRRELVM vm)
 {
+	sqb::StackHandler sh(vm);
+
+	ROCKETSQUIRREL_ASSERT(sh.GetParamCount() >= 1);
+
 	Rocket::Core::Element* rocketElem = m_pElement->GetOffsetParent();
-	ROCKETSQUIRREL_ASSERT(rocketElem != 0x0);
-	return __returnWrapper(rocketElem);
+
+	if (rocketElem)
+	{
+		return sh.Return<ElementWrapper>(__returnWrapper(rocketElem));
+	}
+
+	return sh.Return(false);
 }
 
 float ElementWrapper::GetOffsetLeft() const
@@ -282,10 +325,20 @@ float ElementWrapper::GetScrollHeight() const
 	return m_pElement->GetScrollHeight();
 }
 
-ElementWrapper ElementWrapper::GetParentNode() const
+SQInteger ElementWrapper::GetParentNode(HSQUIRRELVM vm)
 {
+	sqb::StackHandler sh(vm);
+
+	ROCKETSQUIRREL_ASSERT(sh.GetParamCount() >= 1);
+
 	Rocket::Core::Element* rocketElem = m_pElement->GetParentNode();
-	return __returnWrapper(rocketElem);
+
+	if (rocketElem)
+	{
+		return sh.Return<ElementWrapper>(__returnWrapper(rocketElem));
+	}
+
+	return sh.Return(false);
 }
 
 Rocket::Core::Element* ElementWrapper::getElement()
@@ -341,16 +394,36 @@ ElementDocumentWrapper ElementWrapper::GetOwnerDocument()
 	return wrapper;
 }
 
-ElementWrapper ElementWrapper::GetNextSibling() const
+SQInteger ElementWrapper::GetNextSibling(HSQUIRRELVM vm)
 {
+	sqb::StackHandler sh(vm);
+
+	ROCKETSQUIRREL_ASSERT(sh.GetParamCount() >= 1);
+
 	Rocket::Core::Element* rocketElem = m_pElement->GetNextSibling();
-	return __returnWrapper(rocketElem);
+
+	if (rocketElem)
+	{
+		return sh.Return<ElementWrapper>(__returnWrapper(rocketElem));
+	}
+
+	return sh.Return(false);
 }
 
-ElementWrapper ElementWrapper::GetPreviousSibling() const
+SQInteger ElementWrapper::GetPreviousSibling(HSQUIRRELVM vm)
 {
+	sqb::StackHandler sh(vm);
+
+	ROCKETSQUIRREL_ASSERT(sh.GetParamCount() >= 1);
+
 	Rocket::Core::Element* rocketElem = m_pElement->GetPreviousSibling();
-	return __returnWrapper(rocketElem);
+
+	if (rocketElem)
+	{
+		return sh.Return<ElementWrapper>(__returnWrapper(rocketElem));
+	}
+
+	return sh.Return(false);
 }
 
 ElementWrapper ElementWrapper::__returnWrapper(Rocket::Core::Element* element) const
@@ -441,6 +514,13 @@ void ElementWrapper::Bind(HSQUIRRELVM vm)
 	
 	cE.Constructor(&NoConstructable);
 
+	cE.NativeClassFunction(&ElementWrapper::GetElementById, _SC("GetElementById"), sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC("xs")));
+	cE.NativeClassFunction(&ElementWrapper::GetFirstChild, _SC("GetFirstChild"));
+	cE.NativeClassFunction(&ElementWrapper::GetLastChild, _SC("GetLastChild"));
+	cE.NativeClassFunction(&ElementWrapper::GetOffsetParent, _SC("GetOffsetParent"));
+	cE.NativeClassFunction(&ElementWrapper::GetNextSibling, _SC("GetNextSibling"));
+	cE.NativeClassFunction(&ElementWrapper::GetPreviousSibling, _SC("GetPreviousSibling"));
+	cE.NativeClassFunction(&ElementWrapper::GetParentNode, _SC("GetParentNode"));
 	cE.Variable(&ElementWrapper::style, _SC("style"));
 	cE.ClassFunction(&ElementWrapper::AddEventListener, _SC("AddEventListener"));
 	cE.ClassFunction(&ElementWrapper::DispatchEvent, _SC("DispatchEvent"));
@@ -453,7 +533,6 @@ void ElementWrapper::Bind(HSQUIRRELVM vm)
 	cE.ClassFunction(&ElementWrapper::SetClass, _SC("SetClass"));
 	cE.ClassFunction(&ElementWrapper::SetPseudoClass, _SC("SetPseudoClass"));
 	cE.ClassFunction(&ElementWrapper::IsPseudoClassSet, _SC("IsPseudoClassSet"));
-	cE.ClassFunction(&ElementWrapper::GetElementById, _SC("GetElementById"));
 	cE.ClassFunction(&ElementWrapper::GetElementsByTagName, _SC("GetElementsByTagName"));
 	cE.ClassFunction(&ElementWrapper::HasChildNodes, _SC("HasChildNodes"));
 	cE.ClassFunction(&ElementWrapper::RemoveChild, _SC("RemoveChild"));
@@ -463,7 +542,6 @@ void ElementWrapper::Bind(HSQUIRRELVM vm)
 	cE.ClassFunction(&ElementWrapper::GetAddress, _SC("GetAddress"));
 	cE.ClassFunction(&ElementWrapper::SetClassNames, _SC("SetClassNames"));
 	cE.ClassFunction(&ElementWrapper::GetClassNames, _SC("GetClassNames"));
-	cE.ClassFunction(&ElementWrapper::GetParentNode, _SC("GetParentNode"));
 	cE.ClassFunction(&ElementWrapper::GetAttribute, _SC("GetAttribute"));
 	cE.ClassFunction(&ElementWrapper::SetAttribute, _SC("SetAttribute"));
 	cE.ClassFunction(&ElementWrapper::HasAttribute, _SC("HasAttribute"));
@@ -479,7 +557,6 @@ void ElementWrapper::Bind(HSQUIRRELVM vm)
 	cE.ClassFunction(&ElementWrapper::GetClientWidth, _SC("GetClientWidth"));
 	cE.ClassFunction(&ElementWrapper::GetOffsetHeight, _SC("GetOffsetHeight"));
 	cE.ClassFunction(&ElementWrapper::GetOffsetLeft, _SC("GetOffsetLeft"));
-	cE.ClassFunction(&ElementWrapper::GetOffsetParent, _SC("GetOffsetParent"));
 	cE.ClassFunction(&ElementWrapper::GetOffsetTop, _SC("GetOffsetTop"));
 	cE.ClassFunction(&ElementWrapper::GetOffsetWidth, _SC("GetOffsetWidth"));
 	cE.ClassFunction(&ElementWrapper::SetScrollLeft, _SC("SetScrollLeft"));
@@ -488,11 +565,7 @@ void ElementWrapper::Bind(HSQUIRRELVM vm)
 	cE.ClassFunction(&ElementWrapper::GetScrollTop, _SC("GetScrollTop"));
 	cE.ClassFunction(&ElementWrapper::GetScrollWidth, _SC("GetScrollWidth"));
 	cE.ClassFunction(&ElementWrapper::GetScrollHeight, _SC("GetScrollHeight"));
-	cE.ClassFunction(&ElementWrapper::GetNextSibling, _SC("GetNextSibling"));
-	cE.ClassFunction(&ElementWrapper::GetPreviousSibling, _SC("GetPreviousSibling"));
 	cE.ClassFunction(&ElementWrapper::GetOwnerDocument, _SC("GetOwnerDocument"));
-	cE.ClassFunction(&ElementWrapper::GetFirstChild, _SC("GetFirstChild"));
-	cE.ClassFunction(&ElementWrapper::GetLastChild, _SC("GetLastChild"));
 	cE.ClassFunction(&ElementWrapper::GetId, _SC("GetId"));
 	cE.ClassFunction(&ElementWrapper::SetId, _SC("SetId"));
 
