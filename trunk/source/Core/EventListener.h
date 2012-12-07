@@ -31,6 +31,7 @@
 
 #include <Rocket/Core/EventListener.h>
 #include <Rocket/Core/Element.h>
+#include "../SquirrelScript.h"
 
 
 namespace Rocket {
@@ -39,7 +40,7 @@ namespace Squirrel {
 
 
 
-
+class SquirrelScript;
 
 
 
@@ -47,7 +48,7 @@ class EventListener : public Rocket::Core::EventListener
 {
 protected:
 
-	const Rocket::Core::String mSourceCode;
+	SquirrelScript mScript;
 
 	Rocket::Core::Element* m_pElement;
 

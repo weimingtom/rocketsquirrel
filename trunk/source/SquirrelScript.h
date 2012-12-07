@@ -25,16 +25,13 @@
  *
  */
 
-#ifndef __ROCKETSQUIRREL_ELEMENTDOCUMENT_INCLUDED
-#define __ROCKETSQUIRREL_ELEMENTDOCUMENT_INCLUDED
+#ifndef __ROCKETSQUIRREL_SQUIRRELSCRIPT_INCLUDED
+#define __ROCKETSQUIRREL_SQUIRRELSCRIPT_INCLUDED
 
 
-#include <Rocket/Core/ElementDocument.h>
 #include <squirrel.h>
 #include <sqbind/SquirrelBind.h>
-#include <streambuf>
-
-
+#include <Rocket/Core/String.h>
 
 
 namespace Rocket {
@@ -43,30 +40,37 @@ namespace Squirrel {
 
 
 
-class SquirrelScript;
-
-
-
-class ElementDocument : public Rocket::Core::ElementDocument
+class SquirrelScript
 {
-public:
-
-	class ScriptInterface
-	{
-	public:
-		virtual void LoadScript(ElementDocument* document, Rocket::Core::Stream* stream, const Rocket::Core::String& source_name) = 0;
-	};
-
 private:
 
-	ScriptInterface* m_pScriptInterface;
+	Rocket::Core::String mCode;
+	Rocket::Core::String mSourceName;
+	std::vector<char> mBytecode;
+	SQInteger mReadIndex;
+	
+	bool mCompiled;
+	bool mCacheBytecode;
 
 public:
 
-	ElementDocument(const String& tag, ScriptInterface* pScriptInterface = 0x0);
-	virtual ~ElementDocument();
+	SquirrelScript();
+	SquirrelScript(const Rocket::Core::String& code, const Rocket::Core::String& sourcename);
 
-	void LoadScript(Rocket::Core::Stream* stream, const Rocket::Core::String& source_name);
+	static SQInteger WriteFunc(SQUserPointer script, SQUserPointer buffer, SQInteger size);
+	static SQInteger ReadFunc(SQUserPointer script, SQUserPointer buffer, SQInteger size);
+
+	void Compile(HSQUIRRELVM vm, bool cacheBytecode = true);
+
+	bool IsCompiled() const;
+
+	void Run(HSQUIRRELVM vm);
+
+	void SetSourceCode(const Rocket::Core::String& code);
+	const Rocket::Core::String& GetSourceCode() const;
+
+	void SetSourceName(const Rocket::Core::String& name);
+	const Rocket::Core::String& GetSourceName() const;
 
 };
 
@@ -74,14 +78,9 @@ public:
 
 
 
-
-
 }
 }
 }
-
-
-
 
 
 #endif

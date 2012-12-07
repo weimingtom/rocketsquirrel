@@ -93,8 +93,8 @@ public:
 	void InsertBefore(const ElementWrapper& element, const ElementWrapper& adjacentelement);
 	void AppendChild(const ElementWrapper& element);
 
-	ElementWrapper GetFirstChild() const;
-	ElementWrapper GetLastChild() const;
+	SQInteger GetFirstChild(HSQUIRRELVM vm);
+	SQInteger GetLastChild(HSQUIRRELVM vm);
 
 	float GetAbsoluteLeft() const;
 	float GetAbsoluteTop() const;
@@ -104,7 +104,7 @@ public:
 	float GetClientWidth() const;
 	float GetClientHeight() const;
 
-	ElementWrapper GetOffsetParent() const;
+	SQInteger GetOffsetParent(HSQUIRRELVM vm);
 	float GetOffsetLeft() const;
 	float GetOffsetTop() const;
 	float GetOffsetWidth() const;
@@ -129,10 +129,10 @@ public:
 
 	ElementDocumentWrapper GetOwnerDocument();
 
-	ElementWrapper GetNextSibling() const;
-	ElementWrapper GetPreviousSibling() const;
+	SQInteger GetNextSibling(HSQUIRRELVM vm);
+	SQInteger GetPreviousSibling(HSQUIRRELVM vm);
 
-	ElementWrapper GetParentNode() const;
+	SQInteger GetParentNode(HSQUIRRELVM vm);
 
 	ElementWrapperList GetChildren() const;
 
@@ -146,7 +146,7 @@ public:
 	void AddEventListener(const char* evt, const char* code, bool inCapturePhase);
 	void DispatchEvent(const char* evt, DictionaryInterface& dict, bool interruptible);
 
-	ElementWrapper GetElementById(const char* id) const;
+	SQInteger GetElementById(HSQUIRRELVM vm);
 
 	ElementWrapper& operator= (const ElementWrapper& other);
 

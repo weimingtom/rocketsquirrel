@@ -302,7 +302,7 @@ void BindSquirrelInterfaces(HSQUIRRELVM vm)
 	cV2f.ClassFunction(&Rocket::Core::Vector2f::operator/, _SC("_div"));
 	cV2f.ClassFunction(&Rocket::Core::Vector2f::operator+, _SC("_add"));
 	cV2f.ClassFunction<Rocket::Core::Vector2f (Rocket::Core::Vector2f::*)(const Rocket::Core::Vector2f&) const>(&Rocket::Core::Vector2f::operator-, _SC("_sub"));
-	cV2f.ClassFunction(&Rocket::Core::Vector2f::operator==, _SC("_cmp"));
+	cV2f.ClassFunction(&Rocket::Core::Vector2f::operator==, _SC("Equal"));
 	cV2f.ClassFunction(&Rocket::Core::Vector2f::DotProduct, _SC("DotProduct"));
 	cV2f.ClassFunction(&Rocket::Core::Vector2f::Rotate, _SC("Rotate"));
 	cV2f.ClassFunction(&Rocket::Core::Vector2f::Normalise, _SC("Normalise"));
@@ -320,7 +320,7 @@ void BindSquirrelInterfaces(HSQUIRRELVM vm)
 	cV2i.ClassFunction(&Rocket::Core::Vector2i::operator/, _SC("_div"));
 	cV2i.ClassFunction(&Rocket::Core::Vector2i::operator+, _SC("_add"));
 	cV2i.ClassFunction<Rocket::Core::Vector2i (Rocket::Core::Vector2i::*)(const Rocket::Core::Vector2i&) const>(&Rocket::Core::Vector2i::operator-, _SC("_sub"));
-	cV2i.ClassFunction(&Rocket::Core::Vector2i::operator==, _SC("_cmp"));
+	cV2i.ClassFunction(&Rocket::Core::Vector2i::operator==, _SC("Equal"));
 
 
 	//Colourf
@@ -332,7 +332,7 @@ void BindSquirrelInterfaces(HSQUIRRELVM vm)
 	cCf.Variable(&Rocket::Core::Colourf::green, _SC("green"));
 	cCf.Variable(&Rocket::Core::Colourf::blue, _SC("blue"));
 	cCf.Variable(&Rocket::Core::Colourf::alpha, _SC("alpha"));
-	cCf.ClassFunction(&Rocket::Core::Colourf::operator==, _SC("_cmp"));
+	cCf.ClassFunction(&Rocket::Core::Colourf::operator==, _SC("Equal"));
 
 
 
@@ -345,7 +345,7 @@ void BindSquirrelInterfaces(HSQUIRRELVM vm)
 	cCb.Variable(&Rocket::Core::Colourb::green, _SC("green"));
 	cCb.Variable(&Rocket::Core::Colourb::blue, _SC("blue"));
 	cCb.Variable(&Rocket::Core::Colourb::alpha, _SC("alpha"));
-	cCb.ClassFunction(&Rocket::Core::Colourb::operator==, _SC("_cmp"));
+	cCb.ClassFunction(&Rocket::Core::Colourb::operator==, _SC("Equal"));
 	cCb.ClassFunction(&Rocket::Core::Colourb::operator+, _SC("_add"));
 	cCb.ClassFunction<Rocket::Core::Colourb (Rocket::Core::Colourb::*)(float) const>(&Rocket::Core::Colourb::operator*, _SC("_mul"));
 
@@ -363,7 +363,7 @@ void BindSquirrelInterfaces(HSQUIRRELVM vm)
 
 
 	//LogType
-	sqb::ClassDefinition<Rocket::Core::Log> cLT(vm, -1, _SC("LogType")); //TODO create a class? is it needed?
+	sqb::ClassDefinition<Rocket::Core::Log> cLT(vm, -1, _SC("LogType"));
 	cLT.EnumEntry(Rocket::Core::Log::LT_ALWAYS, "always");
 	cLT.EnumEntry(Rocket::Core::Log::LT_ERROR, "error");
 	cLT.EnumEntry(Rocket::Core::Log::LT_WARNING, "warning");

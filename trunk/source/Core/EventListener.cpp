@@ -46,9 +46,9 @@ namespace Squirrel {
 
 
 EventListener::EventListener(const Rocket::Core::String& code, Rocket::Core::Element* context) :
-	mSourceCode(code),
 	m_pElement(0x0)
 {
+	mScript.SetSourceCode(code);
 }
 
 EventListener::~EventListener()
@@ -60,31 +60,18 @@ void EventListener::ProcessEvent(Rocket::Core::Event& event)
 {
 	HSQUIRRELVM vm = Module::instance().getScriptInterface().getSquirrelVM();
 
-
-	//Todo precompile this
-	SQRESULT sqr;
-	sqr = sq_compilebuffer(vm, mSourceCode.CString(), mSourceCode.Length(), "(inline)", true);
-
-	if (SQ_SUCCEEDED(sqr))
+	if (!mScript.IsCompiled())
 	{
-
-		GlobalUtility gutil(vm, m_pElement->GetOwnerDocument(), m_pElement, &event);
-
-		gutil.Set();
-
-		sq_pushroottable(vm);
-
-		sqr = sq_call(vm, 1, false, true);
-		if (SQ_SUCCEEDED(sqr))
-		{
-			//???
-		}
-
-		sq_poptop(vm);
-
-		gutil.Restore();
-
+		mScript.Compile(vm, true);
 	}
+
+	GlobalUtility gutil(vm, m_pElement->GetOwnerDocument(), m_pElement, &event);
+
+	gutil.Set();
+
+	mScript.Run(vm);
+
+	gutil.Restore();
 }
 
 void EventListener::OnAttach(Rocket::Core::Element* element)
@@ -92,6 +79,7 @@ void EventListener::OnAttach(Rocket::Core::Element* element)
 	if (element)
 	{
 		m_pElement = element;
+		mScript.SetSourceName(m_pElement->GetAddress());
 	}
 }
 
