@@ -238,13 +238,14 @@ class World
 	game = null;
 	div = null;
 	characters = [];
+	scrollRatio = 1000.0;
 	
 	constructor(game)
 	{
 		this.game = game;
 		this.div = this.game.gfx.GetElementById("background");
 		
-		this.div.AddEventListener("mousemove", "game.world.test();", true);
+		//this.div.AddEventListener("mousemove", "game.world.test();", true);
 	}
 	
 	function test()
@@ -259,6 +260,36 @@ class World
 	{
 		this.characters.push({ obj = character, follow = follow });
 		this.div.AppendChild(character.div);
+	}
+	
+	function Tick(delta)
+	{
+		for (local i = 0; i < characters.len(); i++)
+		{
+			if (characters[i].follow)
+			{
+				local left = this.div.style.left.tointeger();
+			
+				if (characters[i].obj.div.GetAbsoluteLeft() <= 324)
+				{
+					left += scrollRatio * delta;
+					if (left >= 0)
+					{
+						left = 0;
+					}
+						
+					this.div.style.left = left.tointeger();
+				}
+				else
+				if (characters[i].obj.div.GetAbsoluteLeft() >= 700)
+				{
+					left -= scrollRatio * delta;
+					if (left >= -896)
+						this.div.style.left = left.tointeger();
+				}
+				break;
+			}
+		}
 	}
 };
 
@@ -317,8 +348,6 @@ class SampleGame
 	//Methods
 	function Tick(delta)
 	{
-		//world.Tick();
-		
 		switch (state)
 		{
 			case GameState.STATE_INTRO_CREDITS:
@@ -331,6 +360,7 @@ class SampleGame
 				break;
 			case GameState.STATE_PLAYING:
 				playerCharacter.Tick(delta);
+				world.Tick(delta);
 				break;
 		}
 		
