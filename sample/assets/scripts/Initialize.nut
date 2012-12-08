@@ -14,9 +14,9 @@ class Character
 	
 	delta = 0.0;
 	
-	aceleration = 1000.0;
-	deaceleration = 500.0;
-	maxSpeed = 400.0;
+	aceleration = 400.0;
+	deaceleration = 200.0;
+	maxSpeed = 200.0;
 	
 	lastClass = "";
 	
@@ -84,8 +84,8 @@ class Character
 	{
 		position += velocity * delta;
 	
-		this.div.style.bottom = position.y.tostring();
-		this.div.style.left = position.x.tostring();
+		this.div.style.bottom = position.y.tointeger();
+		this.div.style.left = position.x.tointeger();
 	}
 	
 	function stepSprite(a, b, c)
@@ -262,12 +262,55 @@ class World
 	}
 };
 
+class IntroCredits
+{
+	
+	credits = null;
+	switcher = null;
+	switcherAlpha = 255;
+	time = 0;
+	
+	constructor(game)
+	{
+		switcher = game.gfx.GetElementById("switcher");
+		credits = game.gfx.GetElementById("credits");
+		
+		time = GetElapsedTime() + 3;
+	}
+	
+	function Tick(delta)
+	{
+		switcherAlpha -= 200.5 * delta;
+		if (switcherAlpha <= 0)
+		{
+			switcherAlpha = 0;
+		}
+	
+		switcher.style.background_color = "rgba(0,0,0," + switcherAlpha + ")";
+		
+		if (time <= GetElapsedTime())
+		{
+			this.credits.style.display = "none";
+			this.switcher.style.display = "none";
+			return false;
+		}
+		
+		return true;
+	}
+
+}
+
+enum GameState { STATE_INTRO_CREDITS, STATE_PLAYING };
+
 class SampleGame
 {
 	//Members
 	context = null;
 	world = null;
 	gfx = null;
+	introCredits = null;
+	
+	state = GameState.STATE_INTRO_CREDITS;
 	
 	playerCharacter = null;
 	
@@ -275,8 +318,22 @@ class SampleGame
 	function Tick(delta)
 	{
 		//world.Tick();
-		playerCharacter.Tick(delta);
-	
+		
+		switch (state)
+		{
+			case GameState.STATE_INTRO_CREDITS:
+				
+				if (!introCredits.Tick(delta))
+				{
+					state = GameState.STATE_PLAYING;
+				}
+				
+				break;
+			case GameState.STATE_PLAYING:
+				playerCharacter.Tick(delta);
+				break;
+		}
+		
 		this.context.Update();
 		this.context.Render();
 	}
@@ -290,6 +347,8 @@ class SampleGame
 		this.world = World(this);
 		
 		this.gfx.Show();
+		
+		this.introCredits = IntroCredits(this);
 		
 		//Now lets add a character into the world (background)
 		
