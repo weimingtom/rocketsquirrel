@@ -67,11 +67,17 @@ void EventListener::ProcessEvent(Rocket::Core::Event& event)
 
 	GlobalUtility gutil(vm, m_pElement->GetOwnerDocument(), m_pElement, &event);
 
+	SQInteger i = sq_gettop(vm);
+
 	gutil.Set();
 
 	mScript.Run(vm);
 
 	gutil.Restore();
+
+	sq_pop(vm, i);
+
+	return;
 }
 
 void EventListener::OnAttach(Rocket::Core::Element* element)

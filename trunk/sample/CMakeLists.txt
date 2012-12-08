@@ -3,6 +3,8 @@ project (Sample)
 
 INCLUDE(../CMake/subproject.cmake)
 
-set(sources sample.cpp)
+set(sources sample.cpp SquirrelGame.h)
+
+include_directories(${ROCKETSQUIRREL_CONFIG_DIR})
 
 ROCKETSQUIRREL_EXECUTABLE(Sample)

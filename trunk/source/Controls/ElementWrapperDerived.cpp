@@ -285,6 +285,172 @@ SQInteger ElementFormControlInputWrapper::Cast(HSQUIRRELVM vm)
 }
 
 
+/////////////////////////////////////////////////////////
+
+
+Rocket::Controls::ElementFormControlTextArea* ElementFormControlTextAreaWrapper::formControlTextArea()
+{
+	ROCKETSQUIRREL_ASSERT(m_pElement);
+
+	ROCKETSQUIRREL_ASSERT(dynamic_cast<Rocket::Controls::ElementFormControlTextArea*>(m_pElement));
+
+	return (Rocket::Controls::ElementFormControlTextArea*)m_pElement;
+}
+
+int ElementFormControlTextAreaWrapper::GetMaxLength()
+{
+	return m_pElement->GetAttribute<int>("maxlength", -1);
+}
+
+void ElementFormControlTextAreaWrapper::SetMaxLength(int max_length)
+{
+	m_pElement->SetAttribute("maxlength", max_length);
+}
+
+void ElementFormControlTextAreaWrapper::SetNumColumns(int numColumns)
+{
+	formControlTextArea()->SetNumColumns(numColumns);
+}
+
+int ElementFormControlTextAreaWrapper::GetNumColumns()
+{
+	return formControlTextArea()->GetNumColumns();
+}
+
+void ElementFormControlTextAreaWrapper::SetNumRows(int numRows)
+{
+	formControlTextArea()->SetNumRows(numRows);
+}
+
+int ElementFormControlTextAreaWrapper::GetNumRows()
+{
+	return formControlTextArea()->GetNumRows();
+}
+
+void ElementFormControlTextAreaWrapper::SetWordWrap(bool wordWrap)
+{
+	formControlTextArea()->SetWordWrap(wordWrap);
+}
+
+bool ElementFormControlTextAreaWrapper::GetWordWrap()
+{
+	return formControlTextArea()->GetWordWrap();
+}
+
+void ElementFormControlTextAreaWrapper::Bind(HSQUIRRELVM vm)
+{
+	sq_pushroottable(vm);
+	NamespaceHelper::switchTo(vm, "Rocket");
+
+	sqb::ClassDefinition<ElementFormControlTextAreaWrapper, ElementFormControlWrapper> cETextArea(vm, -1, _SC("ElementFormControlTextArea"));
+	
+	cETextArea.Constructor(&NoConstructable);
+	cETextArea.ClassFunction(&ElementFormControlTextAreaWrapper::SetMaxLength, _SC("SetMaxLength"));
+	cETextArea.ClassFunction(&ElementFormControlTextAreaWrapper::GetMaxLength, _SC("GetMaxLength"));
+	cETextArea.ClassFunction(&ElementFormControlTextAreaWrapper::SetNumColumns, _SC("SetNumColumns"));
+	cETextArea.ClassFunction(&ElementFormControlTextAreaWrapper::GetNumColumns, _SC("GetNumColumns"));
+	cETextArea.ClassFunction(&ElementFormControlTextAreaWrapper::SetNumRows, _SC("SetNumRows"));
+	cETextArea.ClassFunction(&ElementFormControlTextAreaWrapper::GetNumRows, _SC("GetNumRows"));
+	cETextArea.ClassFunction(&ElementFormControlTextAreaWrapper::SetWordWrap, _SC("SetWordWrap"));
+	cETextArea.ClassFunction(&ElementFormControlTextAreaWrapper::GetWordWrap, _SC("GetWordWrap"));
+
+	ElementCaster::SwitchTo(vm);
+
+	bool r = sqb::Bind::BindNativeFunction(vm, -1, &ElementFormControlTextAreaWrapper::Cast, _SC("TextArea"), sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC(".x")));
+
+	sq_poptop(vm);
+}
+
+SQInteger ElementFormControlTextAreaWrapper::Cast(HSQUIRRELVM vm)
+{
+	return ElementCaster::CastFunction<Rocket::Controls::ElementFormControlTextArea, ElementFormControlTextAreaWrapper>(vm, "TextArea");
+}
+
+
+/////////////////////////////////////////////////////////
+
+
+Rocket::Controls::ElementFormControlSelect* ElementFormControlSelectWrapper::formControlSelect()
+{
+	ROCKETSQUIRREL_ASSERT(m_pElement);
+
+	ROCKETSQUIRREL_ASSERT(dynamic_cast<Rocket::Controls::ElementFormControlSelect*>(m_pElement));
+
+	return (Rocket::Controls::ElementFormControlSelect*)m_pElement;
+}
+
+SQInteger ElementFormControlSelectWrapper::Add(HSQUIRRELVM vm)
+{
+	sqb::StackHandler sh(vm);
+
+	SQInteger paramCount = sh.GetParamCount();
+
+	ROCKETSQUIRREL_ASSERT(paramCount >= 3);
+
+	Rocket::Core::String rml, value;
+	int before = -1;
+	bool selectable = true;
+
+	rml = sh.GetString(2);
+	value = sh.GetString(3);
+
+	if (paramCount >= 4 && sh.IsNumber(4))
+	{
+		before = sh.GetNumber<int>(4);
+	}
+
+	if (paramCount >= 5)
+	{
+		selectable = sh.GetBool(5);
+	}
+
+	formControlSelect()->Add(rml, value, before, selectable);
+
+	return sh.Return();
+}
+
+void ElementFormControlSelectWrapper::Remove(int index)
+{
+	formControlSelect()->Remove(index);
+}
+
+void ElementFormControlSelectWrapper::SetSelection(int selection)
+{
+	formControlSelect()->SetSelection(selection);
+}
+
+int ElementFormControlSelectWrapper::GetSelection()
+{
+	return formControlSelect()->GetSelection();
+}
+
+void ElementFormControlSelectWrapper::Bind(HSQUIRRELVM vm)
+{
+	sq_pushroottable(vm);
+	NamespaceHelper::switchTo(vm, "Rocket");
+
+	sqb::ClassDefinition<ElementFormControlSelectWrapper, ElementFormControlWrapper> cESelect(vm, -1, _SC("ElementFormControlSelect"));
+	
+	cESelect.Constructor(&NoConstructable);
+	cESelect.NativeClassFunction(&ElementFormControlSelectWrapper::Add, _SC("Add"), sqb::FunctionOptions().ParamCheckCount(-3).TypeMask(_SC("xssib")));
+	cESelect.ClassFunction(&ElementFormControlSelectWrapper::Remove, _SC("Remove"));
+	cESelect.ClassFunction(&ElementFormControlSelectWrapper::SetSelection, _SC("SetSelection"));
+	cESelect.ClassFunction(&ElementFormControlSelectWrapper::GetSelection, _SC("GetSelection"));
+
+	ElementCaster::SwitchTo(vm);
+
+	bool r = sqb::Bind::BindNativeFunction(vm, -1, &ElementFormControlSelectWrapper::Cast, _SC("Select"), sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC(".x")));
+
+	sq_poptop(vm);
+}
+
+SQInteger ElementFormControlSelectWrapper::Cast(HSQUIRRELVM vm)
+{
+	return ElementCaster::CastFunction<Rocket::Controls::ElementFormControlSelect, ElementFormControlSelectWrapper>(vm, "Select");
+}
+
+
+
 
 
 

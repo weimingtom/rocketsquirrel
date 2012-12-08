@@ -52,12 +52,9 @@ void ElementInterface::Bind(HSQUIRRELVM vm)
 	ElementFormWrapper::Bind(vm);
 	ElementFormControlWrapper::Bind(vm);
 	ElementFormControlInputWrapper::Bind(vm);
+	ElementFormControlTextAreaWrapper::Bind(vm);
+	ElementFormControlSelectWrapper::Bind(vm);
 }
-
-/*void ElementInterface::InitialiseRocketInterface()
-{
-	Rocket::Core::Factory::RegisterElementInstancer("body", new ElementInstancer());
-}*/
 
 
 

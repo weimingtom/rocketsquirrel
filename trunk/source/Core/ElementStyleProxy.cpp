@@ -91,18 +91,29 @@ SQInteger ElementStyleProxy::SetAttr(HSQUIRRELVM vm)
 
 	ROCKETSQUIRREL_ASSERT(sh.GetParamCount() >= 3);
 	ROCKETSQUIRREL_ASSERT(sh.IsString(2));
-	ROCKETSQUIRREL_ASSERT(sh.IsString(3));
 
 	Rocket::Core::String key = Rocket::Core::String(sh.GetString(2)).Replace("_", "-");
 
-	const char* value = sh.GetString(3);
+	Rocket::Core::String value;
+	
+	if (sh.IsString(3))
+	{
+		value = sh.GetString(3);
+	}
 
-	if (!m_pElement->SetProperty(key.CString(), value))
+	if (sh.IsNumber(3))
+	{
+		Rocket::Core::Variant vari;
+		vari.Set(sh.GetNumber<int>(3));
+		value = vari.Get<Rocket::Core::String>();
+	}
+
+	if (!m_pElement->SetProperty(key.CString(), value.CString()))
 	{
 		return sh.ThrowNull();
 	}
 
-	return 0;
+	return sh.Return();
 }
 	
 SQInteger ElementStyleProxy::GetAttr(HSQUIRRELVM vm)
@@ -115,6 +126,7 @@ SQInteger ElementStyleProxy::GetAttr(HSQUIRRELVM vm)
 	Rocket::Core::String key = Rocket::Core::String(sh.GetString(2)).Replace("_", "-");
 
 	const Rocket::Core::Property* property = m_pElement->GetProperty(key.CString());
+
 	if (!property)
 	{
 		return sh.ThrowNull();
@@ -122,7 +134,7 @@ SQInteger ElementStyleProxy::GetAttr(HSQUIRRELVM vm)
 
 	mCache = property->ToString();
 
-	return sqb::Push(vm, mCache.CString());
+	return sh.Return(mCache.CString());
 }
 
 void ElementStyleProxy::Bind(HSQUIRRELVM vm)
@@ -131,7 +143,7 @@ void ElementStyleProxy::Bind(HSQUIRRELVM vm)
 	
 	cE.Constructor(&NoConstructable);
 
-	cE.NativeClassFunction(&ElementStyleProxy::SetAttr, _SC("_set"), sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC("xss")));
+	cE.NativeClassFunction(&ElementStyleProxy::SetAttr, _SC("_set"), sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC("xss|i")));
 	cE.NativeClassFunction(&ElementStyleProxy::GetAttr, _SC("_get"), sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC("xs")));
 }
 
