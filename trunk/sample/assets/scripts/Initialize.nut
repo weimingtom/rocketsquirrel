@@ -3,31 +3,114 @@ class Character
 	div = null;
 	sprites = null;
 	
+	velocity = Rocket.Vector2f(0.0, 0.0);
+	position = Rocket.Vector2f(0.0, 0.0);
+	
+	moveUp = false;
+	moveLeft = false;
+	moveRight = false;
+	
+	delta = 0.0;
+	
+	aceleration = 1000.0;
+	deaceleration = 500.0;
+	maxSpeed = 400.0;
+	
+	sprites = {};
+	
+	function OnConstruct()
+	{
+	}
+	
+	function CreateDefaultSpriteDefinition()
+	{
+		return { set = false, offset = { x = 0.0, y = 0.0}};
+	}
+	
 	constructor(game)
 	{
 		this.div = game.gfx.CreateElement("div");
 		this.div.SetClass("character", true);
+		
+		
+		sprites.Front <- CreateDefaultSpriteDefinition();
+		sprites.FrontWalkingA <- CreateDefaultSpriteDefinition();
+		sprites.FrontWalkingB <- CreateDefaultSpriteDefinition();
+		
+		sprites.Left <- CreateDefaultSpriteDefinition();
+		sprites.LeftWalkingA <- CreateDefaultSpriteDefinition();
+		sprites.LeftWalkingB <- CreateDefaultSpriteDefinition();
+		
+		sprites.Back <- CreateDefaultSpriteDefinition();
+		sprites.BackWalkingA <- CreateDefaultSpriteDefinition();
+		sprites.BackWalkingB <- CreateDefaultSpriteDefinition();
+		
+		sprites.Right <- CreateDefaultSpriteDefinition();
+		sprites.RightWalkingA <- CreateDefaultSpriteDefinition();
+		sprites.RightWalkingB <- CreateDefaultSpriteDefinition();
+		
+		OnConstruct();
+	}
+	
+	function ApplyPosition()
+	{
+		position += velocity * delta;
+	
+		this.div.style.bottom = position.y.tostring();
+		this.div.style.left = position.x.tostring();
+	}
+	
+	function Tick(delta)
+	{
+		this.delta = delta;
+		
+		if (moveLeft || moveRight)
+		{
+			if (moveRight)
+			{
+				if (velocity.x <= maxSpeed)
+				{
+					velocity.x += aceleration * delta;
+				}
+			}
+			else if (moveLeft)
+			{
+				if (velocity.x >= -maxSpeed)
+				{
+					velocity.x += -aceleration * delta;
+				}
+	
+			}
+		}
+		else
+		{
+			if (velocity.x > 0.0)
+			{
+				velocity.x -= deaceleration * delta;
+			}
+			else if (velocity.x < 0.0)
+			{
+				velocity.x += deaceleration * delta;
+			}
+		}
+		
+		
+		ApplyPosition();
 	}
 }
 
 
 
 class PlayerCharacter extends Character
-{
-	velocity = Rocket.Vector2f(0.0, 0.0f);
-	
-	moveUp = false;
-	moveLeft = false;
-	moveRight = false;
-	
-	function Tick()
+{	
+	function OnConstruct()
 	{
-		
+		print("\nPlayerCharacter Created\n");
 	}
-	
+
 	function OnKeydown()
-	{	
-		switch(event.GetParameters().key_identifier)
+	{
+		switch(event.GetParameters().key_identifier.tointeger())
 		{
 			case Rocket.KeyIdentifier.LEFT:
 				moveLeft = true;
@@ -43,7 +126,7 @@ class PlayerCharacter extends Character
 	
 	function OnKeyup()
 	{
-		switch(event.GetParameters().key_identifier)
+		switch(event.GetParameters().key_identifier.tointeger())
 		{
 			case Rocket.KeyIdentifier.LEFT:
 				moveLeft = false;
@@ -97,10 +180,10 @@ class SampleGame
 	playerCharacter = null;
 	
 	//Methods
-	function Tick()
+	function Tick(delta)
 	{
 		//world.Tick();
-		playerCharacter.Tick();
+		playerCharacter.Tick(delta);
 	
 		this.context.Update();
 		this.context.Render();
@@ -122,7 +205,7 @@ class SampleGame
 		this.world.AddCharacter(this.playerCharacter, true);
 		
 		this.gfx.AddEventListener("keydown", "game.keydown();", true);
-		this.gfx.AddEventListener("keydown", "game.keyup();", true);
+		this.gfx.AddEventListener("keyup", "game.keyup();", true);
 		
 		print("\nSampleGame Initialized\n");
 	}
@@ -156,7 +239,7 @@ class SampleGame
 game <- SampleGame();
 game.initialize();
 
-Tick <- function()
+Tick <- function(delta)
 {
-	game.Tick();
+	game.Tick(delta);
 }
