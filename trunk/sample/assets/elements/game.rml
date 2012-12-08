@@ -69,9 +69,61 @@
 			.character
 			{
 				position: absolute;
-				width: 60px;
-				height: 100px;
-				background: white;
+				width: 64px;
+				height: 96px;
+				overflow: hidden;
+			}
+			
+			.character .sprite
+			{
+				position: absolute;
+				width: 958px;
+				height: 768px;
+				background-decorator: image;
+				background-image: sprites/characters.tga;
+			}
+			
+
+			.PlayerCharFront .sprite
+			{
+				left: -448px;
+				top: -384px;
+			}
+			
+			.PlayerCharLeft .sprite
+			{
+				left: -448px;
+				top: -480px;
+			}
+			
+			.PlayerCharLeftWalkA .sprite
+			{
+				left: -384px;
+				top: -480px;
+			}
+			
+			.PlayerCharLeftWalkB .sprite
+			{
+				left: -512px;
+				top: -480px;
+			}
+			
+			.PlayerCharRight .sprite
+			{
+				left: -448px;
+				top: -576px;
+			}
+			
+			.PlayerCharRightWalkA .sprite
+			{
+				left: -384px;
+				top: -576px;
+			}
+			
+			.PlayerCharRightWalkB .sprite
+			{
+				left: -512px;
+				top: -576px;
 			}
 		</style>
 	</head>
