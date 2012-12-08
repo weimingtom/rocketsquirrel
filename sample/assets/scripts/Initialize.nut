@@ -10,12 +10,20 @@ class Character
 	moveLeft = false;
 	moveRight = false;
 	
+	moving = false;
+	
 	delta = 0.0;
 	
 	aceleration = 1000.0;
 	deaceleration = 500.0;
 	maxSpeed = 400.0;
 	
+	lastClass = "";
+	
+	step = 0;
+	stepTime = 0;
+	
+	spriteDiv = null;
 	sprites = {};
 	
 	function OnConstruct()
@@ -24,7 +32,7 @@ class Character
 	
 	function CreateDefaultSpriteDefinition()
 	{
-		return { set = false, offset = { x = 0.0, y = 0.0}};
+		return { set = false, cssClass = "" };
 	}
 	
 	constructor(game)
@@ -32,6 +40,9 @@ class Character
 		this.div = game.gfx.CreateElement("div");
 		this.div.SetClass("character", true);
 		
+		this.spriteDiv = game.gfx.CreateElement("div");
+		this.spriteDiv.SetClass("sprite", true);
+		this.div.AppendChild(spriteDiv);
 		
 		sprites.Front <- CreateDefaultSpriteDefinition();
 		sprites.FrontWalkingA <- CreateDefaultSpriteDefinition();
@@ -52,6 +63,23 @@ class Character
 		OnConstruct();
 	}
 	
+	function OnInitialize()
+	{
+	}
+	
+	function Initialize()
+	{
+		this.div.SetClass(sprites.Front.cssClass, true);
+		this.lastClass = sprites.Front.cssClass;
+	}
+	
+	function SetSprite(spriteDef)
+	{
+		this.div.SetClass(lastClass, false);
+		lastClass = spriteDef.cssClass;
+		this.div.SetClass(spriteDef.cssClass, true);
+	}
+	
 	function ApplyPosition()
 	{
 		position += velocity * delta;
@@ -60,18 +88,51 @@ class Character
 		this.div.style.left = position.x.tostring();
 	}
 	
+	function stepSprite(a, b, c)
+	{
+		switch (step)
+		{
+			case 0: SetSprite(a); break;
+			case 1: SetSprite(b); break;
+			case 2: SetSprite(c); break;
+		}
+	}
+	
+	function GetCurrentVelocityX()
+	{
+		if (velocity.x < 0.0)
+		{
+			return -velocity.x;
+		}
+		return velocity.x;
+	}
+	
 	function Tick(delta)
 	{
 		this.delta = delta;
+	
+		local elapsed = GetElapsedTime();
+		if (stepTime <= elapsed)
+		{
+			step += 1;
+			if (step > 2)
+			{
+				step = 0;
+			}
+			
+			stepTime = elapsed + 0.2;
+		}
 		
 		if (moveLeft || moveRight)
 		{
+			moving = true;
 			if (moveRight)
 			{
 				if (velocity.x <= maxSpeed)
 				{
 					velocity.x += aceleration * delta;
 				}
+				stepSprite(sprites.Right, sprites.RightWalkingA, sprites.RightWalkingB);
 			}
 			else if (moveLeft)
 			{
@@ -79,23 +140,37 @@ class Character
 				{
 					velocity.x += -aceleration * delta;
 				}
-	
+				stepSprite(sprites.Left, sprites.LeftWalkingA, sprites.LeftWalkingB);
 			}
 		}
 		else
 		{
-			if (velocity.x > 0.0)
+			if (moving)
 			{
-				velocity.x -= deaceleration * delta;
-			}
-			else if (velocity.x < 0.0)
-			{
-				velocity.x += deaceleration * delta;
+				if (velocity.x > 0.0)
+				{
+					velocity.x -= deaceleration * delta;
+					stepSprite(sprites.Right, sprites.RightWalkingA, sprites.RightWalkingB);
+				}
+				else if (velocity.x < 0.0)
+				{
+					velocity.x += deaceleration * delta;
+					stepSprite(sprites.Left, sprites.LeftWalkingA, sprites.LeftWalkingB);
+				}
+				
+				if (velocity.x <= 1.0 && velocity.x >= -1.0)
+				{
+					moving = false;
+					SetSprite(sprites.Front);
+				}
 			}
 		}
 		
+		if (moving)
+		{
+			ApplyPosition();
+		}
 		
-		ApplyPosition();
 	}
 }
 
@@ -106,6 +181,23 @@ class PlayerCharacter extends Character
 	function OnConstruct()
 	{
 		print("\nPlayerCharacter Created\n");
+		
+		sprites.Front.set = true;
+		sprites.Front.cssClass = "PlayerCharFront";
+		
+		sprites.Left.set = true;
+		sprites.Left.cssClass = "PlayerCharLeft";
+		sprites.LeftWalkingA.set = true;
+		sprites.LeftWalkingA.cssClass = "PlayerCharLeftWalkA";
+		sprites.LeftWalkingB.set = true;
+		sprites.LeftWalkingB.cssClass = "PlayerCharLeftWalkB";
+		
+		sprites.Right.set = true;
+		sprites.Right.cssClass = "PlayerCharRight";
+		sprites.RightWalkingA.set = true;
+		sprites.RightWalkingA.cssClass = "PlayerCharRightWalkA";
+		sprites.RightWalkingB.set = true;
+		sprites.RightWalkingB.cssClass = "PlayerCharRightWalkB";
 	}
 
 	function OnKeydown()
@@ -113,7 +205,7 @@ class PlayerCharacter extends Character
 		switch(event.GetParameters().key_identifier.tointeger())
 		{
 			case Rocket.KeyIdentifier.LEFT:
-				moveLeft = true;
+				moveLeft = true;					
 				break;
 			case Rocket.KeyIdentifier.RIGHT:
 				moveRight = true;
@@ -202,6 +294,8 @@ class SampleGame
 		//Now lets add a character into the world (background)
 		
 		this.playerCharacter = PlayerCharacter(this);
+		this.playerCharacter.Initialize();
+		
 		this.world.AddCharacter(this.playerCharacter, true);
 		
 		this.gfx.AddEventListener("keydown", "game.keydown();", true);
