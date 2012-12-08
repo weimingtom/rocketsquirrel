@@ -96,20 +96,28 @@ private:
 	Rocket::Core::Context* context;
 
 	float delta;
+	float time;
 
 public:
 
 	/*AKA called once each loop in the game loop*/
 	void Tick()
 	{
+		float currentTime = Shell::GetElapsedTime();
+		delta = currentTime - time;
+		time = currentTime;
+
+		SQInteger i = sq_gettop(vm);
+
 		sq_pushroottable(vm);
 
 		sq_pushstring(vm, _SC("Tick"), -1);
 		sq_get(vm, -2);
 		sq_pushroottable(vm);
-		sq_call(vm, 1, false, true);
+		sq_pushfloat(vm, delta);
+		sq_call(vm, 2, false, true);
 
-		sq_poptop(vm);
+		sq_pop(vm, i);
 	}
 
 	void initialize()
@@ -142,6 +150,8 @@ public:
 
 		Rocket::Debugger::Initialise(context);
 		Input::SetContext(context);
+
+		time = Shell::GetElapsedTime();
 	}
 
 	void destroy()
