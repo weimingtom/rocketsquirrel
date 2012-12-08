@@ -66,7 +66,7 @@ SQInteger ContextInterface::constructor(HSQUIRRELVM v)
 	sqb::StackHandler sh(v);
 
 	Rocket::Core::String name;
-	Rocket::Core::Vector2i dim(800, 600);
+	Rocket::Core::Vector2i dim(100, 100);
 
 	SQInteger args = sh.GetParamCount();
 

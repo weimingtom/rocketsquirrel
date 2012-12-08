@@ -60,6 +60,23 @@
 				
 				form.AppendChild(input);
 				
+				///////////////////////
+				
+				local textarea = Rocket.ElementAs.TextArea(document.CreateElement("textarea"));
+				
+				form.AppendChild(textarea);
+				
+				
+				////////////////////
+				
+				local select = Rocket.ElementAs.Select(document.CreateElement("select"));
+				
+				select.Add("MyOption", "myvalue");
+				select.Add("MyOption2", "myvalue", -1, false);
+				select.SetSelection(1);
+				
+				form.AppendChild(select);
+				
 				container.AppendChild(form);
 				
 			}

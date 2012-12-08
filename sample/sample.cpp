@@ -10,22 +10,16 @@
 #include "Rocket/Core.h"
 #include "Rocket/Debugger.h"
 
-#include <sqbind/sqbBind.h>
-#include <sqbind/sqbBindMacros.h>
-#include <sqbind/sqbClassDefinition.h>
+#include "SquirrelGame.h"
 
 
-static Rocket::Core::Context* context = NULL;
-
-SQBIND_DECLARE_CLASS(Rocket::Core::Box);
-//SQBIND_DECLARE_CLASS(Rocket::Core::Vector2f);
+SquirrelGame game;
 
 void GameLoop()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	context->Update();
-	context->Render();
+	game.Tick();
 
 	Shell::FlipBuffers();
 }
@@ -60,37 +54,16 @@ int main()
 	///////////////////////////////////////////
 	Rocket::Core::Initialise();
 
-	/*Warning all scripting should be done after Rocket Core initialization*/
-	// Create the main Rocket context and set it on the shell's input layer.
-	context = Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(1024, 768));
-	if (context == NULL)
-	{
-		Rocket::Core::Shutdown();
-		Shell::Shutdown();
-		return -1;
-	}
-
-	Rocket::Debugger::Initialise(context);
-	Input::SetContext(context);
-
-	Shell::LoadFonts("./assets/");
-
-	// Load and show the demo document.
-	Rocket::Core::ElementDocument* document = context->LoadDocument("./assets/demo.rml");
-
-	if (document != NULL)
-	{
-		document->Show();
-		document->RemoveReference();
-	}
+	game.initialize();
 
 	//Main Loop
 	Shell::EventLoop(GameLoop);
 
+	game.destroy();
+
 	Rocket::Core::Squirrel::CollectGarbage();
 
 	// Shutdown Rocket.
-	context->RemoveReference();
 	Rocket::Core::Shutdown();
 
 	Shell::CloseWindow();

@@ -33,6 +33,8 @@
 #include <Rocket/Controls/ElementForm.h>
 #include <Rocket/Controls/ElementFormControl.h>
 #include <Rocket/Controls/ElementFormControlInput.h>
+#include <Rocket/Controls/ElementFormControlTextArea.h>
+#include <Rocket/Controls/ElementFormControlSelect.h>
 
 
 
@@ -113,6 +115,65 @@ public:
 	static SQInteger Cast(HSQUIRRELVM vm);
 };
 
+/*! Wrapper for Rocket::Controls::ElementFormControlTextArea */
+class ElementFormControlTextAreaWrapper : public ElementFormControlWrapper
+{
+protected:
+	Rocket::Controls::ElementFormControlTextArea* formControlTextArea();
+
+public:
+
+
+	int GetMaxLength();
+	void SetMaxLength(int maxLength);
+
+	void SetNumColumns(int numColumns);
+	int GetNumColumns();
+
+	void SetNumRows(int numRows);
+	int GetNumRows();
+
+	void SetWordWrap(bool wordWrap);
+	bool GetWordWrap();
+
+	static void Bind(HSQUIRRELVM vm);
+	static SQInteger Cast(HSQUIRRELVM vm);
+};
+
+/*! Wrapper for Rocket::Controls::ElementFormControlSelect */
+class ElementFormControlSelectWrapper : public ElementFormControlWrapper
+{
+protected:
+	Rocket::Controls::ElementFormControlSelect* formControlSelect();
+
+public:
+
+	SQInteger Add(HSQUIRRELVM vm);
+	void Remove(int index);
+	void SetSelection(int selection);
+	int GetSelection();
+
+	static void Bind(HSQUIRRELVM vm);
+	static SQInteger Cast(HSQUIRRELVM vm);
+};
+
+/*! Wrapper for Rocket::Controls::ElementFormControlDataSelect */
+/*class ElementFormControlDataSelectWrapper : public ElementFormControlSelectWrapper
+{
+protected:
+	Rocket::Controls::ElementFormControlSelect* formControlSelect();
+
+public:
+
+	SQInteger Add(HSQUIRRELVM vm);
+	void Remove(int index);
+	void SetSelection(int selection);
+	int GetSelection();
+
+	static void Bind(HSQUIRRELVM vm);
+	static SQInteger Cast(HSQUIRRELVM vm);
+};*/
+
 
 
 
@@ -126,6 +187,8 @@ public:
 SQBIND_DECLARE_CLASS(Rocket::Controls::Squirrel::ElementFormWrapper);
 SQBIND_DECLARE_CLASS(Rocket::Controls::Squirrel::ElementFormControlWrapper);
 SQBIND_DECLARE_CLASS(Rocket::Controls::Squirrel::ElementFormControlInputWrapper);
+SQBIND_DECLARE_CLASS(Rocket::Controls::Squirrel::ElementFormControlTextAreaWrapper);
+SQBIND_DECLARE_CLASS(Rocket::Controls::Squirrel::ElementFormControlSelectWrapper);
 
 
 

@@ -79,11 +79,15 @@ void ElementDocument::LoadScript(Rocket::Core::Stream* stream, const Rocket::Cor
 
 		script.Compile(vm, false);
 
+		SQInteger i = sq_gettop(vm);
+
 		GlobalUtility gutil(vm, this);
 
 		gutil.Set();
 		script.Run(vm);
 		gutil.Restore();
+
+		sq_pop(vm, i);
 	}
 }
 

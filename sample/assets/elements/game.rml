@@ -1,0 +1,83 @@
+<rml>
+	<head>
+		<title>Game</title>
+		<style>
+			div
+			{
+				display: block;
+			}
+
+			p
+			{
+				display: block;
+			}
+
+			h1
+			{
+				display: block;
+			}
+
+			em
+			{
+				font-style: italic;
+			}
+
+			strong
+			{
+				font-weight: bold;
+			}
+
+			datagrid
+			{
+				display: block;
+			}
+
+			select, dataselect, datacombo
+			{
+				text-align: left;
+			}
+
+			tabset tabs
+			{
+				display: block;
+			}
+
+
+		
+			body
+			{
+				font-family: Delicious;
+				font-weight: normal;
+				font-style: normal;
+				font-size: 14px;
+				color: white;
+			}
+		
+			div#background
+			{
+				width: 1920px;
+				height: 400px;
+				background-decorator: image;
+				background-image: background/background.tga;
+				margin: 0px;
+				padding: 0px;
+				display: block;
+				position: absolute;
+				top: 200px;
+			}
+			
+			.character
+			{
+				position: absolute;
+				width: 40px;
+				height: 60px;
+				background: white;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="background">
+		
+		</div>
+	</body>
+</rml>
