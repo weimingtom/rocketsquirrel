@@ -37,6 +37,23 @@
 #include "Config.h"
 #include "Shell.h"
 
+#define SAMPLE_STANDALONE 1;
+
+#ifdef _WIN32
+    #include <windows.h>
+
+    void sleep(unsigned milliseconds)
+    {
+        Sleep(milliseconds);
+    }
+#else
+    #include <unistd.h>
+
+    void sleep(unsigned milliseconds)
+    {
+        usleep(milliseconds * 1000); // takes microseconds
+    }
+#endif
 
 class SquirrelGame
 {
@@ -73,7 +90,11 @@ private:
 		static Rocket::Core::String fullPath;
 
 		fullPath.Clear();
+#ifdef SAMPLE_STANDALONE
+		fullPath += "./assets";
+#else
 		fullPath += ROCKETSQUIRREL_SAMPLE_ASSETS;
+#endif
 		fullPath += "/";
 		fullPath += path;
 
@@ -104,6 +125,14 @@ public:
 	void Tick()
 	{
 		float currentTime = Shell::GetElapsedTime();
+
+		if ((currentTime - time) < (1.0f / 60.0f))
+		{
+			return;
+		}
+
+		glClear(GL_COLOR_BUFFER_BIT);
+
 		delta = currentTime - time;
 		time = currentTime;
 
@@ -118,6 +147,8 @@ public:
 		sq_call(vm, 2, false, true);
 
 		sq_pop(vm, i);
+
+		Shell::FlipBuffers();
 	}
 
 	void initialize()

@@ -238,7 +238,7 @@ class World
 	game = null;
 	div = null;
 	characters = [];
-	scrollRatio = 1000.0;
+	scrollRatio = 190.0;
 	
 	constructor(game)
 	{
@@ -278,14 +278,14 @@ class World
 						left = 0;
 					}
 						
-					this.div.style.left = left.tointeger();
+					this.div.style.left = left;
 				}
 				else
 				if (characters[i].obj.div.GetAbsoluteLeft() >= 700)
 				{
 					left -= scrollRatio * delta;
 					if (left >= -896)
-						this.div.style.left = left.tointeger();
+						this.div.style.left = left;
 				}
 				break;
 			}

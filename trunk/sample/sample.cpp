@@ -17,11 +17,7 @@ SquirrelGame game;
 
 void GameLoop()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
-
 	game.Tick();
-
-	Shell::FlipBuffers();
 }
 
 
