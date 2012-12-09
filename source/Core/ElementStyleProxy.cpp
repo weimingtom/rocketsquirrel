@@ -104,7 +104,7 @@ SQInteger ElementStyleProxy::SetAttr(HSQUIRRELVM vm)
 	if (sh.IsNumber(3))
 	{
 		Rocket::Core::Variant vari;
-		vari.Set(sh.GetNumber<int>(3));
+		vari.Set(sh.GetNumber<float>(3));
 		value = vari.Get<Rocket::Core::String>();
 	}
 
@@ -143,7 +143,7 @@ void ElementStyleProxy::Bind(HSQUIRRELVM vm)
 	
 	cE.Constructor(&NoConstructable);
 
-	cE.NativeClassFunction(&ElementStyleProxy::SetAttr, _SC("_set"), sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC("xss|i")));
+	cE.NativeClassFunction(&ElementStyleProxy::SetAttr, _SC("_set"), sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC("xss|i|f")));
 	cE.NativeClassFunction(&ElementStyleProxy::GetAttr, _SC("_get"), sqb::FunctionOptions().ParamCheckCount(-2).TypeMask(_SC("xs")));
 }
 
