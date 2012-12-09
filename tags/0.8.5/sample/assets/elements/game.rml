@@ -1,0 +1,170 @@
+<rml>
+	<head>
+		<title>Game</title>
+		<style>
+			div
+			{
+				display: block;
+			}
+
+			p
+			{
+				display: block;
+			}
+
+			h1
+			{
+				display: block;
+			}
+
+			em
+			{
+				font-style: italic;
+			}
+
+			strong
+			{
+				font-weight: bold;
+			}
+
+			datagrid
+			{
+				display: block;
+			}
+
+			select, dataselect, datacombo
+			{
+				text-align: left;
+			}
+
+			tabset tabs
+			{
+				display: block;
+			}
+
+
+		
+			body
+			{
+				font-family: Delicious;
+				font-weight: normal;
+				font-style: normal;
+				font-size: 14px;
+				color: white;
+				background: black;
+			}
+		
+			div#background
+			{
+				width: 1920px;
+				height: 200px;
+				background-decorator: image;
+				background-image: background/background.tga;
+				margin: 0px;
+				padding: 0px;
+				display: block;
+				position: absolute;
+				top: 250px;
+			}
+			
+			.character
+			{
+				position: absolute;
+				width: 32px;
+				height: 48px;
+				overflow: hidden;
+				bottom: 0px;
+			}
+			
+			.character .sprite
+			{
+				position: absolute;
+				width: 479px;
+				height: 384px;
+				background-decorator: image;
+				background-image: sprites/characters.tga;
+			}
+			
+
+			.PlayerCharFront .sprite
+			{
+				left: -224px;
+				top: -192px;
+			}
+			
+			.PlayerCharLeft .sprite
+			{
+				left: -224px;
+				top: -240px;
+			}
+			
+			.PlayerCharLeftWalkA .sprite
+			{
+				left: -192px;
+				top: -240px;
+			}
+			
+			.PlayerCharLeftWalkB .sprite
+			{
+				left: -256px;
+				top: -240px;
+			}
+			
+			.PlayerCharRight .sprite
+			{
+				left: -224px;
+				top: -288px;
+			}
+			
+			.PlayerCharRightWalkA .sprite
+			{
+				left: -192px;
+				top: -288px;
+			}
+			
+			.PlayerCharRightWalkB .sprite
+			{
+				left: -256px;
+				top: -288px;
+			}
+			
+			#credits 
+			{
+				position: fixed;
+				width: 1024px;
+				height: 768px;
+				background-decorator: image;
+				background-image: background/credits-bg.tga;
+			}
+			
+			#creditsoverlay
+			{
+				position: absolute;
+				width: 1024px;
+				height: 768px;
+				background-decorator: image;
+				background-image: background/credits.tga;
+				background: rgba(0,0,0,0);
+			}
+			
+			#switcher
+			{
+				position: fixed;
+				width: 1024px;
+				height: 768px;
+				background: rgba(0,0,0,100);
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div id="background">
+		</div>
+		
+		<div id="credits">
+			<div id="creditsoverlay"></div>
+		</div>
+		
+		<div id="switcher"></div>
+	</body>
+</rml>

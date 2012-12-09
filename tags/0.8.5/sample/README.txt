@@ -1,0 +1,1 @@
+This sample uses the Shell framework from libRocket (see respective copyright in ../shell)
