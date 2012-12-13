@@ -27,6 +27,7 @@
 
 
 #include "SquirrelScript.h"
+#include "Debug.h"
 
 
 namespace Rocket {
@@ -120,7 +121,7 @@ bool SquirrelScript::IsCompiled() const
 
 void SquirrelScript::Run(HSQUIRRELVM vm)
 {
-	sq_pushroottable(vm);
+	//sq_pushroottable(vm);
 
 	if (mCacheBytecode)
 	{
@@ -143,7 +144,8 @@ void SquirrelScript::Run(HSQUIRRELVM vm)
 
 	sq_call(vm, 1, false, true);
 
-	sq_poptop(vm);
+
+	//sq_poptop(vm);
 }
 
 void SquirrelScript::SetSourceCode(const Rocket::Core::String& code)

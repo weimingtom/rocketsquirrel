@@ -29,6 +29,7 @@
 #include "../BindingUtil.h"
 #include "../NamespaceHelper.h"
 #include <Rocket/Core.h>
+#include "../Debug.h"
 
 
 namespace Rocket {
@@ -132,6 +133,40 @@ void ScriptInterface::BindIntoSquirrelVM(HSQUIRRELVM vm) const
 	{
 		mBindingFunctions[i](mVM);
 	}
+
+	//now lets create the document tables array
+	sq_pushroottable(vm);
+
+	NamespaceHelper::switchTo(vm, "Rocket");
+
+	sq_pushstring(vm, _SC("__docTables"), -1);
+	sq_newtable(vm);
+	sq_newslot(vm, -3, true);
+
+	sq_pop(vm, 2);
+}
+
+void ScriptInterface::PushDocumentTable(HSQUIRRELVM vm, Rocket::Core::ElementDocument* pDoc)
+{
+	SQInteger i = -1;
+
+	SQRESULT sqr;
+
+	//sq_pushroottable(vm);
+
+	NamespaceHelper::switchTo(vm, "Rocket");
+
+	sq_pushstring(vm, _SC("__docTables"), -1);
+	sqr = sq_get(vm, -2);
+
+	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+	sq_pushuserpointer(vm, (SQUserPointer)pDoc);
+	sqr = sq_get(vm, -2);
+
+	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+	//sq_pop(vm, 3);
 }
 
 void ScriptInterface::AddBindFunction(ScriptBindFunction function)

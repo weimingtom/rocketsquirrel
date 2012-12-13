@@ -27,6 +27,12 @@
 
 #include "ElementInstancer.h"
 #include "ElementDocument.h"
+#include <sqbind/SquirrelBind.h>
+#include <squirrel.h>
+#include "RocketSquirrel/Core/Module.h"
+#include "../NamespaceHelper.h"
+#include "../Debug.h"
+#include "ElementWrapperDerived.h"
 
 
 namespace Rocket {
@@ -50,7 +56,54 @@ ElementInstancer::~ElementInstancer()
 Element* ElementInstancer::InstanceElement(Element* parent, const Rocket::Core::String& tag, const Rocket::Core::XMLAttributes& attributes)
 {
 	ElementDocument* doc = new ElementDocument(tag);
+
+	HSQUIRRELVM vm = Module::instance().getScriptInterface().getSquirrelVM();
+
+	sq_pushroottable(vm);
+
+	NamespaceHelper::switchTo(vm, "Rocket");
+
+	SQRESULT sqr;
+
+	sq_pushstring(vm, _SC("__docTables"), -1);
+	sqr = sq_get(vm, -2);
+
+	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+	sq_pushuserpointer(vm, (SQUserPointer)doc);
+	sq_newtable(vm);
+	sqr = sq_newslot(vm, -3, false);
 	
+	sq_pop(vm, 2);
+
+
+
+
+	sq_pushroottable(vm);
+
+	NamespaceHelper::switchTo(vm, "Rocket");
+
+	sq_pushstring(vm, _SC("__docTables"), -1);
+	sqr = sq_get(vm, -2);
+
+	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+	sq_pushuserpointer(vm, (SQUserPointer)doc);
+	sqr = sq_get(vm, -2);
+	
+	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+	ElementDocumentWrapper wrapper;
+	wrapper.setElement(doc);
+
+	sq_pushstring(vm, _SC("document"), -1);
+	sqb::Push(vm, wrapper);
+	sqr = sq_newslot(vm, -3, true);
+
+	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+	sq_pop(vm, 2);
+
 	return doc;
 }
 

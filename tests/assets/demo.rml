@@ -28,8 +28,13 @@
 		</style>
 		<script>
 			
+			print("\n\n@@@@@@@@@@@@@@@@@@@\n\n" + Rocket.__docTables.len() + "\n\n\n\n");
+			print(this.document);
+			
+			
 			InitDemo <- function()
 			{
+				print(this.document);
 				print("\n\n\n\nDemo Initialized / onLoad\n\n\n\n");
 				
 				local button = document.GetElementById("mybutton");
