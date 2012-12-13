@@ -283,30 +283,13 @@ GlobalUtility::GlobalUtility(HSQUIRRELVM vm, Rocket::Core::ElementDocument* doc,
 	mEvtSet(false),
 	mVM(vm)
 {
+	ROCKETSQUIRREL_ASSERT(doc);
 }
 
 void GlobalUtility::Set()
 {
-	sq_pushroottable(mVM);
+	Module::instance().getScriptInterface().PushDocumentTable(mVM, m_pDoc);
 	SQRESULT sqr;
-	
-	if (m_pDoc)
-	{
-		ElementDocumentWrapper wrapper;
-		wrapper.setElement(m_pDoc);
-
-		//Add the global slot document
-		sq_pushstring(mVM, "document", -1);
-		sqr = sqb::Push<ElementDocumentWrapper>(mVM, wrapper);
-
-		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
-
-		sqr = sq_newslot(mVM, -3, false);
-
-		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
-
-		mDocSet = true;
-	}
 
 	if (m_pSelf)
 	{
@@ -349,22 +332,15 @@ void GlobalUtility::Set()
 void GlobalUtility::deleteSlot(const char* name) const
 {
 	SQRESULT sqr;
-	sq_pushroottable(mVM);
 	sq_pushstring(mVM, name, -1);
 	sqr = sq_deleteslot(mVM, -2, false);
 
-	sq_poptop(mVM);
 	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
 }
 
 void GlobalUtility::Restore()
 {
-	if (mDocSet)
-	{
-		deleteSlot("document");
-		mDocSet = false;
-	}
-
+	Module::instance().getScriptInterface().PushDocumentTable(mVM, m_pDoc);
 	if (mSelfSet)
 	{
 		deleteSlot("self");
@@ -377,6 +353,7 @@ void GlobalUtility::Restore()
 		mEvtSet = false;
 	}
 
+	sq_poptop(mVM);
 }
 
 

@@ -122,6 +122,14 @@ public:
 	void AddBindFunction(ScriptBindFunction function);
 	void RemoveBindFunction(ScriptBindFunction function);
 
+	/*!
+	 * Pushes a table related the the document, where all slots 
+	 * can be created/accesed without messing with the root table
+	 * if you want to call function on your own use this to bind the
+	 * table and some other variables aswell.
+	 */
+	void PushDocumentTable(HSQUIRRELVM vm, Rocket::Core::ElementDocument* pDoc);
+
 	bool Initialize();
 	void Destroy();
 };

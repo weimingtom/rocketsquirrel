@@ -62,17 +62,26 @@ void EventListener::ProcessEvent(Rocket::Core::Event& event)
 
 	if (!mScript.IsCompiled())
 	{
-		mScript.Compile(vm, true);
+		
 	}
+
+	mScript.Compile(vm, false);
 
 	GlobalUtility gutil(vm, m_pElement->GetOwnerDocument(), m_pElement, &event);
 
 	SQInteger i = sq_gettop(vm);
 
+	SQRESULT sqr;
+	
 	gutil.Set();
 
-	mScript.Run(vm);
+	Module::instance().getScriptInterface().PushDocumentTable(vm, m_pElement->GetOwnerDocument());
+	sqr = sq_bindenv(vm, i);
 
+	ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+	sq_pushroottable(vm);
+	mScript.Run(vm);
 	gutil.Restore();
 
 	sq_pop(vm, i);

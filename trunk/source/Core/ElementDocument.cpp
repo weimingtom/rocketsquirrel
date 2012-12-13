@@ -77,17 +77,22 @@ void ElementDocument::LoadScript(Rocket::Core::Stream* stream, const Rocket::Cor
 		
 		SquirrelScript script(buffer, source_name);
 
+
 		script.Compile(vm, false);
 
 		SQInteger i = sq_gettop(vm);
 
-		GlobalUtility gutil(vm, this);
+		Module::instance().getScriptInterface().PushDocumentTable(vm, this);
+		sqr = sq_bindenv(vm, i);
 
-		gutil.Set();
+		ROCKETSQUIRREL_ASSERT(SQ_SUCCEEDED(sqr));
+
+		sq_pushroottable(vm);
 		script.Run(vm);
-		gutil.Restore();
 
 		sq_pop(vm, i);
+
+
 	}
 }
 
