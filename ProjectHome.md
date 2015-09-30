@@ -1,0 +1,1 @@
+RocketSquirel is an extension to libRocket to support Squirrel scripting (http://www.squirrel-lang.org/) straight forward and modeled around Javascript (like the default script system in python).
